@@ -86,31 +86,28 @@
         .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
-        /* КОНСТРУКТОР (ВСЕ 7 ТОВАРОВ) */
+        /* ПОДПИСКИ */
+        .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
+        .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
+        .sub-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); border: 1px solid #444; border-radius: 16px; padding: 35px; }
+        .sub-card.premium { border-color: var(--accent); }
+        .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
+        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+
+        /* КОНСТРУКТОР */
         .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); }
         .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
         .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
         .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .product-img { width: 100%; height: 160px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 15px; }
+        .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
         .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
         .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
         .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
         .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
-        .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
-
-        /* АНОНСЫ (3 КАРТОЧКИ) */
-        .upcoming { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-top: 1px solid var(--border); }
-        .upcoming h2 { text-align: center; font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
-        .upcoming-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; }
-        .upcoming-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
-        .upcoming-card { background: #1a1d21; padding: 30px; border-radius: 16px; text-align: center; border: 1px dashed #444; transition: border-color 0.3s;}
-        .upcoming-card:hover { border-color: var(--accent); }
-        .upcoming-card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
-        .upcoming-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; min-height: 40px;}
-        .upcoming-date { background: #333; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: #fff; display: inline-block; }
 
         .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
@@ -181,6 +178,11 @@
         .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
         .cart-warning { color: #ffcc00; font-size: 0.85rem; margin-bottom: 10px; display: none; line-height: 1.3; }
 
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ OZON */
+        .ozon-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: none; justify-content: center; align-items: center; }
+        .ozon-modal-content { background: var(--bg-card); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; max-width: 400px; text-align: center; position: relative; }
+        .close-ozon { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
+        
         /* ЧАТ */
         #chat-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--accent); color: #111; border: none; padding: 15px 25px; border-radius: 30px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 107, 26, 0.4); z-index: 1000; transition: transform 0.2s; }
         #chat-btn:hover { transform: scale(1.05); }
@@ -205,7 +207,7 @@
             .hero-text h1 { font-size: 2.5rem; }
             .hero-text p { margin: 0 auto 30px; }
             .features-grid { grid-template-columns: 1fr; }
-            .boxes-grid { grid-template-columns: 1fr; }
+            .boxes-grid, .subs-grid { grid-template-columns: 1fr; }
             .box-card.popular { transform: none; }
             .result-grid { grid-template-columns: 1fr; }
             .row-2 { grid-template-columns: 1fr; }
@@ -218,6 +220,18 @@
     </style>
 </head>
 <body>
+
+    <!-- МОДАЛКА OZON -->
+    <div id="ozon-modal" class="ozon-modal">
+        <div class="ozon-modal-content">
+            <button class="close-ozon" onclick="closeOzonModal()">✕</button>
+            <h2 style="color:var(--accent); margin-bottom:15px;">Мы заботимся о тебе</h2>
+            <p style="color:#ccc; margin-bottom:20px; font-size:0.95rem;">Похоже, ты из отдаленного региона. Доставка туда стоит очень дорого (около 650 ₽). Чтобы ты не переплачивал, закажи наш бокс напрямую на Ozon — там доставка быстрее и дешевле.</p>
+            <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ КАРТОЧКУ OZON -->
+            <a href="https://ozon.ru" target="_blank" class="btn" style="width:100%;">Перейти на Ozon</a>
+            <button class="btn-outline" style="width:100%; margin-top:10px; padding:12px;" onclick="closeOzonModal()">Остаться на сайте</button>
+        </div>
+    </div>
 
     <!-- ВИДЕО-ОВЕРЛЕЙ -->
     <div id="video-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column;">
@@ -248,7 +262,7 @@
             </div>
             <div class="form-group">
                 <label>Город</label>
-                <input type="text" id="order-city" placeholder="Москва" required>
+                <input type="text" id="order-city" placeholder="Москва" required onblur="checkCity()">
             </div>
             <div class="form-group">
                 <label>Способ доставки</label>
@@ -328,9 +342,9 @@
                         <li>Доступ к ЭЙВА Basic</li>
                         <li>Доставка Яндекс/СДЭК</li>
                     </ul>
-                    <div class="box-price">890 ₽</div>
-                    <div class="box-price-old">В рознице: 990 ₽</div>
-                    <button class="btn" onclick="addToCart('PROTOCOL WEEK (7 шт)', 890)">Собрать бокс</button>
+                    <div class="box-price">1 190 ₽</div>
+                    <div class="box-price-old">В рознице: 1 390 ₽</div>
+                    <button class="btn" onclick="addToCart('PROTOCOL WEEK (7 шт)', 1190)">Собрать бокс</button>
                 </div>
 
                 <!-- Месячный бокс -->
@@ -344,114 +358,79 @@
                         <li>Доступ к ЭЙВА Plus (Бесплатно)</li>
                         <li>Бесплатная доставка</li>
                     </ul>
-                    <div class="box-price">2 990 ₽</div>
-                    <div class="box-price-old">В рознице: 3 990 ₽</div>
-                    <button class="btn" onclick="addToCart('PROTOCOL MONTH (30 шт)', 2990)">Собрать бокс</button>
+                    <div class="box-price">3 990 ₽</div>
+                    <div class="box-price-old">В рознице: 4 490 ₽</div>
+                    <button class="btn" onclick="addToCart('PROTOCOL MONTH (30 шт)', 3990)">Собрать бокс</button>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- КОНСТРУКТОР (ВСЕ 7 ТОВАРОВ) -->
+    <!-- ПОДПИСКИ -->
+    <section class="subscriptions">
+        <div class="container">
+            <h2 style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:50px; font-size:1.1rem;">Ежемесячная система с доступом к закрытому ИИ-нутрициологу.</p>
+            <div class="subs-grid">
+                <!-- Клуб -->
+                <div class="sub-card">
+                    <div class="sub-title">С37 КЛУБ</div>
+                    <div class="sub-price">2 990 ₽/мес</div>
+                    <div class="sub-desc">10 батончиков на месяц + безлимитный доступ к ЭЙВА Plus + бесплатная доставка.</div>
+                    <button class="btn-outline" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
+                </div>
+                <!-- Премиум -->
+                <div class="sub-card premium">
+                    <div class="sub-title" style="color:var(--accent);">С37 PREMIUM</div>
+                    <div class="sub-price">4 990 ₽/мес</div>
+                    <div class="sub-desc">Полная линейка (батончики, шоты, сиропы) + ЭЙВА Plus + ранний доступ к новинкам.</div>
+                    <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КОНСТРУКТОР -->
     <section class="products">
         <div class="container">
             <h2>Или собери свой Бокс вручную</h2>
             <p class="products-sub">Выбери любые 7 батончиков (или больше), чтобы оформить заказ.</p>
             <div class="products-grid">
-                <!-- 1 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Протеин База</h4>
                         <p>12.9 г белка, стабильная энергия</p>
-                        <div class="price">99 ₽ <span>129 ₽</span></div>
+                        <div class="price">99 ₽</div>
                         <button class="btn-small" onclick="addToCart('Протеин База', 99)">Добавить в бокс</button>
                     </div>
                 </div>
-                <!-- 2 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Энергия Дисциплины</h4>
                         <p>Матча, L-теанин, фокус</p>
-                        <div class="price">99 ₽ <span>129 ₽</span></div>
+                        <div class="price">99 ₽</div>
                         <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 99)">Добавить в бокс</button>
                     </div>
                 </div>
-                <!-- 3 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>База Лимитированная</h4>
                         <p>12.3 г белка, 0 г сахара</p>
-                        <div class="price">149 ₽ <span>199 ₽</span></div>
+                        <div class="price">149 ₽</div>
                         <button class="btn-small" onclick="addToCart('База Лимитированная', 149)">Добавить в бокс</button>
                     </div>
                 </div>
-                <!-- 4 -->
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Омега Буст</h4>
-                        <p>Омега-3, клетчатка для мозга</p>
-                        <div class="price">99 ₽ <span>129 ₽</span></div>
-                        <button class="btn-small" onclick="addToCart('Омега Буст', 99)">Добавить в бокс</button>
-                    </div>
-                </div>
-                <!-- 5 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Восстановление</h4>
                         <p>Магний, электролиты</p>
-                        <div class="price">99 ₽ <span>129 ₽</span></div>
+                        <div class="price">99 ₽</div>
                         <button class="btn-small" onclick="addToCart('Восстановление', 99)">Добавить в бокс</button>
                     </div>
-                </div>
-                <!-- 6 -->
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Коллаген Лайт</h4>
-                        <p>5 г коллагена, пребиотик</p>
-                        <div class="price">119 ₽ <span>149 ₽</span></div>
-                        <button class="btn-small" onclick="addToCart('Коллаген Лайт', 119)">Добавить в бокс</button>
-                    </div>
-                </div>
-                <!-- 7 -->
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Экстрим</h4>
-                        <p>12 г белка, 0 г сахара</p>
-                        <div class="price">149 ₽ <span>199 ₽</span></div>
-                        <button class="btn-small" onclick="addToCart('Экстрим', 149)">Добавить в бокс</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- АНОНСЫ (3 КАРТОЧКИ) -->
-    <section class="upcoming">
-        <div class="container">
-            <h2>В разработке</h2>
-            <p class="upcoming-sub">Новые продукты экосистемы C37</p>
-            <div class="upcoming-grid">
-                <div class="upcoming-card">
-                    <h3>C37 SHOTS</h3>
-                    <p>Жидкие концентраты (Разгон, Отбой, Драйв, Иммуно).</p>
-                    <span class="upcoming-date">Январь 2027</span>
-                </div>
-                <div class="upcoming-card">
-                    <h3>C37 СИРОПЫ</h3>
-                    <p>5 вкусов. Натуральные сиропы без сахара для кофе и воды.</p>
-                    <span class="upcoming-date">Март 2027</span>
-                </div>
-                <div class="upcoming-card">
-                    <h3>САХАРОЗАМЕНИТЕЛЬ</h3>
-                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
-                    <span class="upcoming-date">Апрель 2027</span>
                 </div>
             </div>
         </div>
@@ -508,6 +487,21 @@
 
     <!-- Скрипты -->
     <script>
+        // --- УМНЫЙ ШЛЮЗ ДЛЯ OZON ---
+        function checkCity() {
+            const cityInput = document.getElementById('order-city');
+            const remoteCities = ['владивосток', 'хабаровск', 'новосибирск', 'красноярск', 'иркутск', 'якутск', 'магадан', 'петропавловск', 'южно-сахалинск'];
+            const val = cityInput.value.toLowerCase().trim();
+            
+            if (remoteCities.some(city => val.includes(city))) {
+                document.getElementById('ozon-modal').style.display = 'flex';
+            }
+        }
+
+        function closeOzonModal() {
+            document.getElementById('ozon-modal').style.display = 'none';
+        }
+
         // --- ЛОГИКА КОРЗИНЫ ---
         let cart = JSON.parse(localStorage.getItem('c37_cart')) || [];
 
@@ -751,7 +745,7 @@
             }
         }
 
-        // --- КВИЗ (5 экранов) ---
+        // --- ОПТИМИЗИРОВАННЫЙ КВИЗ ---
         const steps = [
             { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
             { id: 'params', type: 'group_params', question: 'Твои параметры' },
@@ -942,7 +936,11 @@
                     <p style="margin-bottom: 15px; color: #fff; font-size: 1.1rem; font-weight: bold;">📦 Твой Стартовый Бокс на 7 дней:</p>
                     <p style="margin-bottom: 10px;">🌅 Утро (вместо кофе): <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
                     <p style="margin-bottom: 15px;">💼 Офис/Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
-                    <button class="btn" style="width:100%;" onclick="addToCart('${boxName}', 890); toggleCart();">Заказать Бокс за 890 ₽</button>
+                    
+                    <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190); toggleCart();">Заказать Бокс за 1190 ₽</button>
+                    
+                    <!-- ССЫЛКА НА ТЕЛЕГРАМ БОТА ЭЙВЫ -->
+                    <a href="https://t.me/c37_eva" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none;">Подписаться на Эйву в TG</a>
                 </div>
                 <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Это ориентировочный протокол.</p>
             `;
