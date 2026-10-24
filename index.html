@@ -47,15 +47,8 @@
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             position: relative; overflow: hidden;
         }
-        .btn:hover { 
-            background-color: #FF8C42; 
-            transform: translateY(-2px) scale(1.02); 
-            box-shadow: 0 8px 25px rgba(255, 107, 26, 0.6);
-        }
-        .btn:active {
-            transform: translateY(1px) scale(0.98);
-            box-shadow: 0 2px 10px rgba(255, 107, 26, 0.4);
-        }
+        .btn:hover { background-color: #FF8C42; transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px rgba(255, 107, 26, 0.6); }
+        .btn:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 10px rgba(255, 107, 26, 0.4); }
         
         .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
         .btn-outline:hover { background: rgba(255, 107, 26, 0.1); color: var(--accent); box-shadow: 0 0 15px rgba(255, 107, 26, 0.2); transform: translateY(-2px); }
@@ -81,7 +74,7 @@
         .cart-icon-btn svg { width: 24px; height: 24px; fill: var(--accent); }
         .cart-count { background: var(--accent); color: #111; font-weight: bold; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; position: absolute; top: -8px; right: -8px; }
 
-        /* --- HERO С УСИЛЕННЫМ HUD-ЭФФЕКТОМ --- */
+        /* --- HERO С HUD (ЖЕЛЕЗНЫЙ ЧЕЛОВЕК) --- */
         .hero { padding: 80px 0 60px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .hero-text { flex: 1; }
         .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); font-weight: 900;}
@@ -96,10 +89,9 @@
         }
         .hero-img-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; z-index: 1; }
         
-        /* HUD-Элементы (Усиленные) */
+        /* HUD-Элементы */
         .hud-overlay { 
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; 
-            /* Киберпанк-сетка */
             background-image: 
                 linear-gradient(rgba(255, 107, 26, 0.15) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 107, 26, 0.15) 1px, transparent 1px);
@@ -108,33 +100,30 @@
             box-shadow: inset 0 0 50px rgba(255, 107, 26, 0.2);
         }
         
-        /* Уголки прицела */
         .hud-corner { position: absolute; width: 20px; height: 20px; border: 2px solid var(--accent); z-index: 6; }
         .hud-corner.tl { top: 15px; left: 15px; border-right: none; border-bottom: none; }
         .hud-corner.tr { top: 15px; right: 15px; border-left: none; border-bottom: none; }
         .hud-corner.bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
         .hud-corner.br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
 
-        /* Системный текст */
         .hud-text { 
             position: absolute; top: 25px; left: 25px; color: var(--accent); font-family: monospace; font-size: 10px; 
             letter-spacing: 2px; line-height: 1.4; text-transform: uppercase; opacity: 0.8; z-index: 6;
         }
         .hud-text span { color: #fff; font-weight: bold; animation: blink 1s infinite alternate; }
 
-        /* Бегущая линия */
+        /* Замедленная линия сканера */
         .hud-scanline {
             position: absolute; top: 0; left: 0; width: 100%; height: 3px;
             background: var(--accent); box-shadow: 0 0 20px 5px var(--accent);
-            animation: scan 3s linear infinite; opacity: 0.9; z-index: 7;
+            animation: scan 7s linear infinite; /* 7 секунд (медленнее) */
+            opacity: 0.9; z-index: 7;
         }
 
-        /* Радар (Кольца) */
         .hud-radar { position: absolute; top: 50%; left: 50%; width: 250px; height: 250px; transform: translate(-50%, -50%); border-radius: 50%; border: 1px solid rgba(255, 107, 26, 0.3); z-index: 4; }
-        .hud-radar::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border-top: 2px solid var(--accent); animation: spin 4s linear infinite; }
-        .hud-radar::after { content: ""; position: absolute; top: 20%; left: 20%; width: 60%; height: 60%; border-radius: 50%; border-bottom: 1px solid rgba(255, 107, 26, 0.6); animation: spin 6s linear infinite reverse; }
+        .hud-radar::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 100%; border-radius: 50%; border-top: 2px solid var(--accent); animation: spin 6s linear infinite; }
+        .hud-radar::after { content: ""; position: absolute; top: 20%; left: 20%; width: 60%; height: 60%; border-radius: 50%; border-bottom: 1px solid rgba(255, 107, 26, 0.6); animation: spin 8s linear infinite reverse; }
 
-        /* Пульсирующие ноды */
         .hud-node { position: absolute; width: 6px; height: 6px; background: #fff; border-radius: 50%; box-shadow: 0 0 15px 5px var(--accent); z-index: 6; }
         .hud-node.n1 { top: 30%; left: 20%; animation: pulse 1.5s infinite alternate; }
         .hud-node.n2 { top: 70%; right: 25%; animation: pulse 2s infinite alternate 0.5s; }
@@ -146,17 +135,12 @@
             90% { opacity: 1; }
             100% { top: 105%; opacity: 0; }
         }
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes pulse {
             0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0px var(--accent); }
             100% { transform: scale(1.5); opacity: 1; box-shadow: 0 0 20px 8px var(--accent); }
         }
-        @keyframes blink {
-            0% { opacity: 1; }
-            100% { opacity: 0.3; }
-        }
+        @keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.3; } }
 
         .trust-markers { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; letter-spacing: 0.5px; display: flex; gap: 15px; }
 
@@ -167,10 +151,7 @@
             transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
             will-change: opacity, transform;
         }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        .reveal.active { opacity: 1; transform: translateY(0); }
 
         /* БОКСЫ */
         .boxes { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-bottom: 1px solid var(--border); }
@@ -209,7 +190,11 @@
         .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
         .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
-        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
+        
+        /* ЗУМ-ЭФФЕКТ НА КАРТИНКАХ */
+        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); cursor: zoom-in; transition: transform 0.3s ease; }
+        .product-img img:hover { transform: scale(1.08); }
+
         .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
         .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
@@ -268,6 +253,20 @@
         footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: #777; font-size: 0.85rem; background: var(--bg-base); position: relative; z-index: 2; }
         footer a { color: #888; text-decoration: none; margin: 0 10px; transition: color 0.2s;}
         footer a:hover { color: var(--accent); }
+
+        /* МОДАЛЬНОЕ ОКНО ДЛЯ КАРТИНОК (LIGHTBOX) */
+        .image-lightbox { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); 
+            z-index: 10000; display: none; justify-content: center; align-items: center; cursor: zoom-out; 
+            opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
+        }
+        .image-lightbox.active { display: flex; opacity: 1; }
+        .image-lightbox img { 
+            max-width: 90%; max-height: 90vh; border-radius: 16px; border: 2px solid var(--accent); 
+            box-shadow: 0 0 50px rgba(255, 107, 26, 0.3); 
+            transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+        }
+        .image-lightbox.active img { transform: scale(1); }
 
         /* КОРЗИНА */
         .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 9998; display: none; opacity: 0; transition: opacity 0.3s; }
@@ -343,6 +342,11 @@
     </style>
 </head>
 <body>
+
+    <!-- LIGHTBOX ДЛЯ КАРТИНОК -->
+    <div id="image-lightbox" class="image-lightbox" onclick="closeImage()">
+        <img id="lightbox-img" src="" alt="Zoomed Image">
+    </div>
 
     <!-- МОДАЛКА OZON -->
     <div id="ozon-modal" class="ozon-modal">
@@ -428,7 +432,7 @@
         </div>
     </header>
 
-    <!-- Главный экран (ОБНОВЛЕННЫЙ HERO) -->
+    <!-- Главный экран -->
     <section class="hero container">
         <div class="hero-text reveal">
             <h1>Ты архитектор<br>своей жизни.<br><span>Мы — топливо.</span></h1>
@@ -443,20 +447,15 @@
         <div class="hero-image reveal">
             <div class="hero-img-box">
                 <img src="eva_base.jpg" alt="ЭЙВА" onerror="this.src='eva.jpg'" loading="lazy">
-                <!-- УСИЛЕННЫЙ HUD OVERLAY -->
+                <!-- HUD OVERLAY (ЖЕЛЕЗНЫЙ ЧЕЛОВЕК) -->
                 <div class="hud-overlay">
-                    <!-- Уголки -->
                     <div class="hud-corner tl"></div>
                     <div class="hud-corner tr"></div>
                     <div class="hud-corner bl"></div>
                     <div class="hud-corner br"></div>
-                    <!-- Текст -->
                     <div class="hud-text">SYS.ONLINE<br><span>TARGET: ACQUIRED</span></div>
-                    <!-- Линия -->
-                    <div class="hud-scanline"></div>
-                    <!-- Радар -->
+                    <div class="hud-scanline"></div> <!-- Линия теперь падает медленно (7s) -->
                     <div class="hud-radar"></div>
-                    <!-- Ноды -->
                     <div class="hud-node n1"></div>
                     <div class="hud-node n2"></div>
                     <div class="hud-node n3"></div>
@@ -474,7 +473,7 @@
             <div class="boxes-grid">
                 <!-- Стартовый бокс -->
                 <div class="box-card reveal" style="transition-delay: 0.2s;">
-                    <div class="box-title">PROTOCOL WEEK</div>
+                    <div class="box-title">ПРОТОКОЛ НЕДЕЛИ</div>
                     <div class="box-desc">Стартовый бокс на 7 дней. Идеально, чтобы протестировать систему и понять вкусы.</div>
                     <ul class="box-features">
                         <li>7 батончиков C37 FUEL</li>
@@ -484,13 +483,13 @@
                     </ul>
                     <div class="box-price">1 190 ₽</div>
                     <div class="box-price-old">В рознице: 1 390 ₽</div>
-                    <button class="btn" onclick="addToCart('PROTOCOL WEEK (7 шт)', 1190)">Собрать бокс</button>
+                    <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Собрать бокс</button>
                 </div>
 
                 <!-- Месячный бокс -->
                 <div class="box-card popular reveal" style="transition-delay: 0.3s;">
                     <div class="box-badge">ВЫГОДНО</div>
-                    <div class="box-title">PROTOCOL MONTH</div>
+                    <div class="box-title">ПРОТОКОЛ МЕСЯЦА</div>
                     <div class="box-desc">Полноценная система на 30 дней. Максимальная выгода и бесплатная доставка.</div>
                     <ul class="box-features">
                         <li>30 батончиков C37 FUEL</li>
@@ -500,7 +499,7 @@
                     </ul>
                     <div class="box-price">3 990 ₽</div>
                     <div class="box-price-old">В рознице: 4 490 ₽</div>
-                    <button class="btn" onclick="addToCart('PROTOCOL MONTH (30 шт)', 3990)">Собрать бокс</button>
+                    <button class="btn" onclick="addToCart('ПРОТОКОЛ МЕСЯЦА (30 шт)', 3990)">Собрать бокс</button>
                 </div>
             </div>
         </div>
@@ -538,7 +537,7 @@
             <div class="products-grid">
                 <!-- 1 -->
                 <div class="product-card reveal" style="transition-delay: 0.1s;">
-                    <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Протеин База</h4>
                         <p>12.9 г белка, стабильная энергия</p>
@@ -548,7 +547,7 @@
                 </div>
                 <!-- 2 -->
                 <div class="product-card reveal" style="transition-delay: 0.2s;">
-                    <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Энергия Дисциплины</h4>
                         <p>Матча, L-теанин, фокус</p>
@@ -558,7 +557,7 @@
                 </div>
                 <!-- 3 -->
                 <div class="product-card reveal" style="transition-delay: 0.3s;">
-                    <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>База Лимитированная</h4>
                         <p>12.3 г белка, 0 г сахара</p>
@@ -568,7 +567,7 @@
                 </div>
                 <!-- 4 -->
                 <div class="product-card reveal" style="transition-delay: 0.1s;">
-                    <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Восстановление</h4>
                         <p>Магний, электролиты</p>
@@ -578,7 +577,7 @@
                 </div>
                 <!-- 5 -->
                 <div class="product-card reveal" style="transition-delay: 0.2s;">
-                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Омега Буст</h4>
                         <p>Омега-3, клетчатка</p>
@@ -588,7 +587,7 @@
                 </div>
                 <!-- 6 -->
                 <div class="product-card reveal" style="transition-delay: 0.3s;">
-                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Коллаген Лайт</h4>
                         <p>5 г коллагена, ягоды</p>
@@ -598,7 +597,7 @@
                 </div>
                 <!-- 7 -->
                 <div class="product-card reveal" style="transition-delay: 0.1s;">
-                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Экстрим</h4>
                         <p>0 сахара, чистый состав</p>
@@ -719,6 +718,16 @@
 
     <!-- Скрипты -->
     <script>
+        // --- ЛОГИКА LIGHTBOX (ЗУМ КАРТИНОК) ---
+        function openImage(src) {
+            document.getElementById('lightbox-img').src = src;
+            document.getElementById('image-lightbox').classList.add('active');
+        }
+
+        function closeImage() {
+            document.getElementById('image-lightbox').classList.remove('active');
+        }
+
         // --- SCROLL REVEAL (Intersection Observer) ---
         document.addEventListener("DOMContentLoaded", () => {
             const revealElements = document.querySelectorAll('.reveal');
@@ -826,7 +835,8 @@
             cart.forEach((item, index) => {
                 total += item.price * item.qty;
                 totalItems += item.qty;
-                if(item.name.includes('PROTOCOL')) hasBox = true;
+                // Обновлено на русское название
+                if(item.name.includes('ПРОТОКОЛ')) hasBox = true;
 
                 const div = document.createElement('div');
                 div.className = 'cart-item';
@@ -1170,16 +1180,16 @@
             const fat = 0.9 * w;
             const carbs = (targetCalories - 4 * protein - 9 * fat) / 4;
 
-            let boxName = 'PROTOCOL WEEK (Похудение)';
+            let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)';
             let barMorning = 'База Лимитированная';
             let barEvening = 'Коллаген Лайт';
             
             if (answers.goal === 'Энергия') {
-                boxName = 'PROTOCOL WEEK (Энергия)';
+                boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)';
                 barMorning = 'Энергия Дисциплины';
                 barEvening = 'Омега Буст';
             } else if (answers.goal === 'Мышцы') {
-                boxName = 'PROTOCOL WEEK (Мышцы)';
+                boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)';
                 barMorning = 'Протеин База';
                 barEvening = 'Восстановление';
             }
@@ -1229,6 +1239,9 @@
             if (chat && chat.style.display === 'flex') { toggleChat(); }
             const video = document.getElementById('video-overlay');
             if (video && video.style.display === 'flex') { endVideo(); }
+            // Закрытие лайтбокса на Esc
+            const lightbox = document.getElementById('image-lightbox');
+            if (lightbox && lightbox.classList.contains('active')) { closeImage(); }
         });
     </script>
 </body>
