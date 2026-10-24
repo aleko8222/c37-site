@@ -86,20 +86,31 @@
         .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
-        /* КОНСТРУКТОР */
+        /* КОНСТРУКТОР (7 ТОВАРОВ) */
         .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); }
         .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
         .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; }
         .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
+        .product-img { width: 100%; height: 160px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 15px; }
         .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
         .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
         .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
         .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
         .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
         .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
+
+        /* СКОРО В ПРОДАЖЕ (3 КАРТОЧКИ) */
+        .upcoming { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-top: 1px solid var(--border); }
+        .upcoming h2 { text-align: center; font-size: 2.2rem; font-weight: 800; margin-bottom: 10px; }
+        .upcoming-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; }
+        .upcoming-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 25px; }
+        .upcoming-card { background: #1a1d21; padding: 30px; border-radius: 16px; text-align: center; border: 1px dashed #444; transition: border-color 0.3s;}
+        .upcoming-card:hover { border-color: var(--accent); }
+        .upcoming-card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
+        .upcoming-card p { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px; min-height: 40px;}
+        .upcoming-date { background: #333; padding: 6px 12px; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: #fff; display: inline-block; }
 
         .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
@@ -109,7 +120,7 @@
         .feature-item h3 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;}
         .feature-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;}
 
-        /* КВИЗ (СГРУППИРОВАННЫЙ) */
+        /* КВИЗ (5 экранов) */
         .quiz-section { padding: 60px 0 80px; display: none; } 
         .quiz-container { background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
         .progress-bar { width: 100%; height: 4px; background: #333; border-radius: 2px; margin-bottom: 30px; }
@@ -341,12 +352,13 @@
         </div>
     </section>
 
-    <!-- КОНСТРУКТОР -->
+    <!-- КОНСТРУКТОР (ВСЕ 7 ТОВАРОВ) -->
     <section class="products">
         <div class="container">
             <h2>Или собери свой Бокс вручную</h2>
             <p class="products-sub">Выбери любые 7 батончиков (или больше), чтобы оформить заказ.</p>
             <div class="products-grid">
+                <!-- 1 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
@@ -356,6 +368,7 @@
                         <button class="btn-small" onclick="addToCart('Протеин База', 99)">Добавить в бокс</button>
                     </div>
                 </div>
+                <!-- 2 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
@@ -365,6 +378,7 @@
                         <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 99)">Добавить в бокс</button>
                     </div>
                 </div>
+                <!-- 3 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
@@ -374,6 +388,17 @@
                         <button class="btn-small" onclick="addToCart('База Лимитированная', 149)">Добавить в бокс</button>
                     </div>
                 </div>
+                <!-- 4 -->
+                <div class="product-card">
+                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Омега Буст</h4>
+                        <p>Омега-3, клетчатка для мозга</p>
+                        <div class="price">99 ₽ <span>129 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Омега Буст', 99)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <!-- 5 -->
                 <div class="product-card">
                     <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
@@ -382,6 +407,51 @@
                         <div class="price">99 ₽ <span>129 ₽</span></div>
                         <button class="btn-small" onclick="addToCart('Восстановление', 99)">Добавить в бокс</button>
                     </div>
+                </div>
+                <!-- 6 -->
+                <div class="product-card">
+                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Коллаген Лайт</h4>
+                        <p>5 г коллагена, пребиотик</p>
+                        <div class="price">119 ₽ <span>149 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Коллаген Лайт', 119)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <!-- 7 -->
+                <div class="product-card">
+                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Экстрим</h4>
+                        <p>12 г белка, 0 г сахара</p>
+                        <div class="price">149 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Экстрим', 149)">Добавить в бокс</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- В РАЗРАБОТКЕ (3 КАРТОЧКИ) -->
+    <section class="upcoming">
+        <div class="container">
+            <h2>В разработке</h2>
+            <p class="upcoming-sub">Новые продукты экосистемы C37</p>
+            <div class="upcoming-grid">
+                <div class="upcoming-card">
+                    <h3>C37 SHOTS</h3>
+                    <p>Жидкие концентраты (Разгон, Отбой, Драйв, Иммуно).</p>
+                    <span class="upcoming-date">Январь 2027</span>
+                </div>
+                <div class="upcoming-card">
+                    <h3>C37 СИРОПЫ</h3>
+                    <p>5 вкусов. Натуральные сиропы без сахара для кофе и воды.</p>
+                    <span class="upcoming-date">Март 2027</span>
+                </div>
+                <div class="upcoming-card">
+                    <h3>САХАРОЗАМЕНИТЕЛЬ</h3>
+                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
+                    <span class="upcoming-date">Апрель 2027</span>
                 </div>
             </div>
         </div>
@@ -517,7 +587,6 @@
 
             totalPriceEl.innerText = total + ' ₽';
 
-            // Логика минимального заказа (7 шт или готовый бокс)
             if (hasBox || totalItems >= 7) {
                 checkoutBtn.disabled = false;
                 checkoutBtn.style.opacity = '1';
@@ -682,7 +751,7 @@
             }
         }
 
-        // --- ОПТИМИЗИРОВАННЫЙ КВИЗ (5 экранов) ---
+        // --- КВИЗ (5 экранов) ---
         const steps = [
             { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
             { id: 'params', type: 'group_params', question: 'Твои параметры' },
@@ -788,7 +857,6 @@
         function nextStep() {
             const step = steps[currentStep];
             
-            // Валидация для сгруппированных шагов
             if (step.type === 'group_params') {
                 if (!answers.gender || !answers.age || !answers.height || !answers.weight) {
                     alert('Пожалуйста, заполни все параметры.'); return;
@@ -801,7 +869,6 @@
                 if (!answers.allergies || !answers.stop) {
                     alert('Пожалуйста, ответь на оба вопроса.'); return;
                 }
-                // Логика стоп-факторов
                 if (answers.stop === 'Да') {
                     document.getElementById('quiz-content').innerHTML = `
                         <div style="text-align: center; padding: 20px;">
@@ -844,7 +911,6 @@
             const fat = 0.9 * w;
             const carbs = (targetCalories - 4 * protein - 9 * fat) / 4;
 
-            // Сборка Бокса
             let boxName = 'PROTOCOL WEEK (Похудение)';
             let barMorning = 'База Лимитированная';
             let barEvening = 'Коллаген Лайт';
