@@ -111,11 +111,18 @@
         /* ПОДПИСКИ */
         .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
         .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
-        .sub-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); border: 1px solid #444; border-radius: 16px; padding: 35px; }
+        .sub-card { 
+            background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); 
+            border: 1px solid #444; 
+            border-radius: 16px; 
+            padding: 35px; 
+            display: flex; 
+            flex-direction: column; 
+        }
         .sub-card.premium { border-color: var(--accent); }
         .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
         .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
-        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; }
+        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
 
         /* КОНСТРУКТОР */
         .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); }
@@ -388,64 +395,6 @@
         </div>
     </section>
 
-    <!-- АНОНСЫ (В РАЗРАБОТКЕ) -->
-    <section class="coming-soon" id="coming-soon">
-        <div class="container">
-            <h2>Расширяем систему</h2>
-            <p style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Скоро в линейке C37 появятся новые форматы.</p>
-            
-            <div class="shots-grid">
-                <div class="shot-card orange">
-                    <div class="shot-name">РАЗГОН</div>
-                    <div class="shot-sub">Утренний разгон</div>
-                    <div class="shot-actives">
-                        <span>Гуарана + Матча</span> (кофеин ~95 мг)<br>L-теанин, имбирь, B6/B12
-                    </div>
-                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
-                </div>
-                <div class="shot-card blue">
-                    <div class="shot-name">ОТБОЙ</div>
-                    <div class="shot-sub">Вечернее восстановление</div>
-                    <div class="shot-actives">
-                        <span>Магний</span> (120 мг — 30% РСН)<br>Глицин, L-теанин, мелисса
-                    </div>
-                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
-                </div>
-                <div class="shot-card burgundy">
-                    <div class="shot-name">ДРАЙВ</div>
-                    <div class="shot-sub">Предтренировочный буст</div>
-                    <div class="shot-actives">
-                        <span>Свекольный концентрат</span><br>Кофеин (150 мг), электролиты
-                    </div>
-                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
-                </div>
-                <div class="shot-card red">
-                    <div class="shot-name">ИММУНО</div>
-                    <div class="shot-sub">Сезонная защита</div>
-                    <div class="shot-actives">
-                        <span>Ацерола + Облепиха</span> (Вит. С)<br>Цинк, имбирь, куркума
-                    </div>
-                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
-                </div>
-            </div>
-
-            <div class="other-coming">
-                <div class="coming-card">
-                    <h3>Сиропы C37</h3>
-                    <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
-                    <div class="coming-date">Старт: Январь 2027</div>
-                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
-                </div>
-                <div class="coming-card">
-                    <h3>Сахарозаменитель</h3>
-                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
-                    <div class="coming-date">Старт: Март 2027</div>
-                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сахзам.')">В лист ожидания</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- ПОДПИСКИ -->
     <section class="subscriptions">
         <div class="container">
@@ -457,7 +406,7 @@
                     <div class="sub-title">С37 КЛУБ</div>
                     <div class="sub-price">2 990 ₽/мес</div>
                     <div class="sub-desc">10 батончиков на месяц + безлимитный доступ к ЭЙВА Plus + бесплатная доставка.</div>
-                    <button class="btn-outline" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
+                    <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
                 </div>
                 <!-- Премиум -->
                 <div class="sub-card premium">
@@ -545,6 +494,64 @@
                         <div class="price">220 ₽ <span>249 ₽</span></div>
                         <button class="btn-small" onclick="addToCart('Экстрим', 220)">Добавить в бокс</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- АНОНСЫ (В РАЗРАБОТКЕ) -->
+    <section class="coming-soon" id="coming-soon">
+        <div class="container">
+            <h2>Расширяем систему</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Скоро в линейке C37 появятся новые форматы.</p>
+            
+            <div class="shots-grid">
+                <div class="shot-card orange">
+                    <div class="shot-name">РАЗГОН</div>
+                    <div class="shot-sub">Утренний разгон</div>
+                    <div class="shot-actives">
+                        <span>Гуарана + Матча</span> (кофеин ~95 мг)<br>L-теанин, имбирь, B6/B12
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card blue">
+                    <div class="shot-name">ОТБОЙ</div>
+                    <div class="shot-sub">Вечернее восстановление</div>
+                    <div class="shot-actives">
+                        <span>Магний</span> (120 мг — 30% РСН)<br>Глицин, L-теанин, мелисса
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card burgundy">
+                    <div class="shot-name">ДРАЙВ</div>
+                    <div class="shot-sub">Предтренировочный буст</div>
+                    <div class="shot-actives">
+                        <span>Свекольный концентрат</span><br>Кофеин (150 мг), электролиты
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card red">
+                    <div class="shot-name">ИММУНО</div>
+                    <div class="shot-sub">Сезонная защита</div>
+                    <div class="shot-actives">
+                        <span>Ацерола + Облепиха</span> (Вит. С)<br>Цинк, имбирь, куркума
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+            </div>
+
+            <div class="other-coming">
+                <div class="coming-card">
+                    <h3>Сиропы C37</h3>
+                    <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
+                    <div class="coming-date">Старт: Январь 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
+                </div>
+                <div class="coming-card">
+                    <h3>Сахарозаменитель</h3>
+                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
+                    <div class="coming-date">Старт: Март 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сахзам.')">В лист ожидания</button>
                 </div>
             </div>
         </div>
