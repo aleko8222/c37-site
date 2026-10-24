@@ -38,12 +38,36 @@
         }
         
         .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
-        .btn { background-color: var(--accent); color: #111; border: none; padding: 16px 35px; font-size: 1.1rem; font-weight: bold; border-radius: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; letter-spacing: 0.5px; }
-        .btn:hover { background-color: #FF8C42; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 107, 26, 0.4); }
+        
+        /* --- АНИМАЦИИ КНОПОК --- */
+        .btn { 
+            background-color: var(--accent); color: #111; border: none; padding: 16px 35px; font-size: 1.1rem; font-weight: bold; 
+            border-radius: 12px; cursor: pointer; display: inline-flex; justify-content: center; align-items: center; text-decoration: none; 
+            letter-spacing: 0.5px;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); /* Плавная анимация */
+            position: relative; overflow: hidden;
+        }
+        .btn:hover { 
+            background-color: #FF8C42; 
+            transform: translateY(-2px) scale(1.02); 
+            box-shadow: 0 8px 25px rgba(255, 107, 26, 0.6); /* Усиленное свечение */
+        }
+        .btn:active {
+            transform: translateY(1px) scale(0.98); /* Эффект нажатия */
+            box-shadow: 0 2px 10px rgba(255, 107, 26, 0.4);
+        }
+        
         .btn-outline { background: transparent; border: 1px solid var(--accent); color: var(--accent); }
-        .btn-outline:hover { background: rgba(255, 107, 26, 0.1); color: var(--accent); box-shadow: none; transform: none;}
-        .btn-small { background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 10px 15px; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%; font-size: 0.95rem;}
-        .btn-small:hover { background: var(--accent); color: #111; }
+        .btn-outline:hover { background: rgba(255, 107, 26, 0.1); color: var(--accent); box-shadow: 0 0 15px rgba(255, 107, 26, 0.2); transform: translateY(-2px); }
+        .btn-outline:active { transform: translateY(1px); }
+
+        .btn-small { 
+            background: transparent; border: 1px solid var(--accent); color: var(--accent); padding: 10px 15px; border-radius: 8px; 
+            cursor: pointer; font-weight: 600; width: 100%; font-size: 0.95rem; 
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        .btn-small:hover { background: var(--accent); color: #111; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255, 107, 26, 0.3); }
+        .btn-small:active { transform: translateY(1px) scale(0.98); }
 
         header { padding: 15px 0; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(13, 15, 18, 0.85); backdrop-filter: blur(15px); z-index: 100; }
         .header-content { display: flex; justify-content: space-between; align-items: center; }
@@ -52,20 +76,79 @@
         .logo-c37 span { background: linear-gradient(to bottom, #e6e6e6 0%, #000 25%, #000 75%, #222 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.4)); letter-spacing: 2px; }
         .logo-fuel { color: #B0B0B0; font-style: italic; font-weight: 900; font-size: 2.2rem; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
         
-        .cart-icon-btn { background: transparent; border: none; cursor: pointer; position: relative; color: #fff; display: flex; align-items: center; gap: 8px;}
+        .cart-icon-btn { background: transparent; border: none; cursor: pointer; position: relative; color: #fff; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
+        .cart-icon-btn:hover { transform: scale(1.1); }
         .cart-icon-btn svg { width: 24px; height: 24px; fill: var(--accent); }
         .cart-count { background: var(--accent); color: #111; font-weight: bold; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; position: absolute; top: -8px; right: -8px; }
 
+        /* --- HERO С HUD-ЭФФЕКТОМ --- */
         .hero { padding: 80px 0 60px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
         .hero-text { flex: 1; }
         .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); font-weight: 900;}
         .hero-text h1 span { color: var(--accent); }
         .hero-text p { font-size: 1.2rem; color: #eee; margin-bottom: 30px; max-width: 500px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
-        .hero-image { flex: 1; display: flex; justify-content: flex-end; position: relative; }
-        .hero-img-box { width: 100%; max-width: 400px; height: 550px; border: 1px solid var(--border); border-radius: 16px; background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 10px 50px rgba(0,0,0,0.8); }
-        .hero-img-box img { width: 100%; height: 100%; object-fit: cover; }
         
+        .hero-image { flex: 1; display: flex; justify-content: flex-end; position: relative; }
+        .hero-img-box { 
+            width: 100%; max-width: 400px; height: 550px; border: 1px solid var(--border); border-radius: 16px; 
+            background: #000; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; 
+            box-shadow: 0 10px 50px rgba(0,0,0,0.8), inset 0 0 40px rgba(255, 107, 26, 0.1);
+        }
+        .hero-img-box img { width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
+        
+        /* HUD-Элементы */
+        .hud-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+        .hud-scanline {
+            position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+            background: linear-gradient(to right, transparent, var(--accent), transparent);
+            box-shadow: 0 0 15px var(--accent);
+            animation: scan 4s linear infinite;
+            opacity: 0.7;
+        }
+        .hud-circle {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            border-radius: 50%; border: 1px solid rgba(255, 107, 26, 0.2);
+        }
+        .hud-circle.c1 { width: 200px; height: 200px; border-top-color: var(--accent); animation: spin 8s linear infinite; border-width: 2px; }
+        .hud-circle.c2 { width: 300px; height: 300px; border-bottom-color: rgba(255, 107, 26, 0.5); animation: spin 12s linear infinite reverse; }
+        .hud-circle.c3 { width: 400px; height: 400px; border-left-color: rgba(255, 107, 26, 0.1); animation: spin 20s linear infinite; border-style: dashed; }
+        
+        .hud-node {
+            position: absolute; width: 8px; height: 8px; background: var(--accent);
+            border-radius: 50%; box-shadow: 0 0 10px var(--accent);
+            animation: pulse 2s ease-in-out infinite alternate;
+        }
+        .hud-node.n1 { top: 20%; left: 15%; animation-delay: 0s; }
+        .hud-node.n2 { top: 70%; right: 15%; animation-delay: 0.5s; }
+        .hud-node.n3 { bottom: 10%; left: 40%; animation-delay: 1s; }
+        
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        @keyframes spin {
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0px var(--accent); }
+            100% { transform: scale(1.5); opacity: 1; box-shadow: 0 0 20px var(--accent); }
+        }
+
         .trust-markers { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; letter-spacing: 0.5px; display: flex; gap: 15px; }
+
+        /* --- SCROLL REVEAL --- */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
 
         /* БОКСЫ */
         .boxes { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-bottom: 1px solid var(--border); }
@@ -73,7 +156,7 @@
         .boxes-sub { text-align: center; color: var(--text-muted); margin-bottom: 50px; font-size: 1.1rem; }
         
         .boxes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
-        .box-card { background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; position: relative; overflow: hidden;}
+        .box-card { background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
         .box-card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(255, 107, 26, 0.1); }
         .box-card.popular { border: 2px solid var(--accent); transform: scale(1.02); }
         .box-badge { position: absolute; top: 0; right: 0; background: var(--accent); color: #111; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-bottom-left-radius: 12px; }
@@ -86,28 +169,22 @@
         .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
-        /* ПОДПИСКИ (ИСПРАВЛЕНО) */
+        /* ПОДПИСКИ */
         .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
         .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; align-items: stretch; }
-        .sub-card { 
-            background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); 
-            border: 1px solid #444; 
-            border-radius: 16px; 
-            padding: 35px; 
-            display: flex; 
-            flex-direction: column; /* Делает карточку гибкой */
-        }
-        .sub-card.premium { border-color: var(--accent); }
+        .sub-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); border: 1px solid #444; border-radius: 16px; padding: 35px; display: flex; flex-direction: column; transition: transform 0.3s; }
+        .sub-card:hover { transform: translateY(-5px); }
+        .sub-card.premium { border-color: var(--accent); box-shadow: 0 0 30px rgba(255, 107, 26, 0.15); }
         .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
         .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
-        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; /* Прижимает кнопку к низу */ }
+        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
 
         /* КОНСТРУКТОР */
         .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
         .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
         .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
+        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
         .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
         .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
         .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
@@ -117,7 +194,7 @@
         .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
         .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
 
-        /* АНОНСЫ (ИДУТ ПОСЛЕ ПРОДУКТОВ) */
+        /* АНОНСЫ */
         .coming-soon { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-bottom: 1px solid var(--border); }
         .coming-soon h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; font-weight: 800;}
         .shots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 40px; }
@@ -139,14 +216,6 @@
         .coming-card p { color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;}
         .coming-date { color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 0.9rem;}
 
-        .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
-        .feature-item { background: var(--bg-card); padding: 35px 25px; border-radius: 12px; border: 1px solid rgba(255, 107, 26, 0.15); backdrop-filter: blur(10px); }
-        .feature-icon { margin-bottom: 20px; display: flex; }
-        .feature-icon svg { width: 35px; height: 35px; }
-        .feature-item h3 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;}
-        .feature-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;}
-
         /* КВИЗ */
         .quiz-section { padding: 60px 0 80px; display: none; } 
         .quiz-container { background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
@@ -161,7 +230,7 @@
         
         .quiz-group { display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .quiz-group label { font-size: 0.9rem; color: var(--text-muted); display: block; margin-bottom: 5px;}
-        .quiz-group input { background: rgba(0,0,0,0.6); border: 1px solid #444; padding: 16px; color: var(--text-main); border-radius: 10px; font-size: 1.05rem; outline: none; width: 100%;}
+        .quiz-group input { background: rgba(0,0,0,0.6); border: 1px solid #444; padding: 16px; color: var(--text-main); border-radius: 10px; font-size: 1.05rem; outline: none; width: 100%; transition: border-color 0.2s;}
         .quiz-group input:focus { border-color: var(--accent); }
         
         .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
@@ -175,7 +244,7 @@
         .disclaimer { font-size: 0.85rem; color: #777; text-align: center; margin-top: 30px; line-height: 1.4; }
 
         footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: #777; font-size: 0.85rem; background: var(--bg-base); position: relative; z-index: 2; }
-        footer a { color: #888; text-decoration: none; margin: 0 10px; }
+        footer a { color: #888; text-decoration: none; margin: 0 10px; transition: color 0.2s;}
         footer a:hover { color: var(--accent); }
 
         /* КОРЗИНА */
@@ -185,20 +254,21 @@
         .cart-sidebar.active { right: 0; }
         .cart-header { padding: 20px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
         .cart-header h3 { font-size: 1.5rem; color: var(--accent); }
-        .close-cart { background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
+        .close-cart { background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;}
+        .close-cart:hover { color: var(--accent); }
         .cart-items { flex-grow: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 15px; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 15px; border-radius: 8px; border: 1px solid #333;}
         .cart-item-info h4 { font-size: 1rem; margin-bottom: 5px; }
         .cart-item-info p { color: var(--accent); font-weight: bold; }
         .cart-item-actions { display: flex; align-items: center; gap: 10px; }
-        .cart-item-actions button { background: #333; border: none; color: #fff; width: 25px; height: 25px; border-radius: 4px; cursor: pointer; }
+        .cart-item-actions button { background: #333; border: none; color: #fff; width: 25px; height: 25px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
         .cart-item-actions button:hover { background: var(--accent); color: #000; }
         
         .checkout-form { padding: 20px; border-top: 1px solid #333; background: rgba(20, 24, 28, 0.95); display: none; }
         .checkout-form.active { display: block; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
-        .form-group input, .form-group select { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; }
+        .form-group input, .form-group select { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; transition: border-color 0.2s;}
         .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
         .pd-consent { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
         .pd-consent input { margin-top: 3px; width: auto; }
@@ -211,11 +281,12 @@
         /* МОДАЛЬНОЕ ОКНО ДЛЯ OZON */
         .ozon-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: none; justify-content: center; align-items: center; }
         .ozon-modal-content { background: var(--bg-card); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; max-width: 400px; text-align: center; position: relative; }
-        .close-ozon { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; }
+        .close-ozon { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; transition: color 0.2s;}
+        .close-ozon:hover { color: var(--accent); }
         
         /* ЧАТ */
-        #chat-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--accent); color: #111; border: none; padding: 15px 25px; border-radius: 30px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 107, 26, 0.4); z-index: 1000; transition: transform 0.2s; }
-        #chat-btn:hover { transform: scale(1.05); }
+        #chat-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--accent); color: #111; border: none; padding: 15px 25px; border-radius: 30px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(255, 107, 26, 0.4); z-index: 1000; transition: transform 0.2s, box-shadow 0.2s; }
+        #chat-btn:hover { transform: scale(1.05); box-shadow: 0 6px 25px rgba(255, 107, 26, 0.6); }
         #chat-btn svg { width: 20px; height: 20px; fill: #111; }
         #chat-window { position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: none; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.9); z-index: 1000; backdrop-filter: blur(20px); overflow: hidden; }
         .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #333; background: rgba(0,0,0,0.5); gap: 12px;}
@@ -228,15 +299,15 @@
         .message-eva { background: rgba(255, 107, 26, 0.1); border: 1px solid rgba(255, 107, 26, 0.3); padding: 12px 15px; border-radius: 12px; border-bottom-left-radius: 2px; max-width: 85%; align-self: flex-start; font-size: 0.95rem; }
         .message-user { background: #333; padding: 12px 15px; border-radius: 12px; border-bottom-right-radius: 2px; max-width: 85%; align-self: flex-end; font-size: 0.95rem; }
         .chat-input { display: flex; padding: 15px; border-top: 1px solid #333; background: rgba(0,0,0,0.6); }
-        .chat-input input { flex: 1; background: #1E2226; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; outline: none; }
+        .chat-input input { flex: 1; background: #1E2226; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 8px; outline: none; transition: border-color 0.2s;}
         .chat-input input:focus { border-color: var(--accent); }
-        .chat-input button { background: var(--accent); border: none; color: #111; padding: 0 20px; margin-left: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.2rem; }
+        .chat-input button { background: var(--accent); border: none; color: #111; padding: 0 20px; margin-left: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.2rem; transition: transform 0.2s;}
+        .chat-input button:hover { transform: scale(1.05); }
 
         @media (max-width: 768px) {
             .hero { flex-direction: column; text-align: center; padding: 40px 0; }
             .hero-text h1 { font-size: 2.5rem; }
             .hero-text p { margin: 0 auto 30px; }
-            .features-grid { grid-template-columns: 1fr; }
             .boxes-grid, .subs-grid, .other-coming { grid-template-columns: 1fr; }
             .box-card.popular { transform: none; }
             .result-grid { grid-template-columns: 1fr; }
@@ -337,7 +408,7 @@
 
     <!-- Главный экран -->
     <section class="hero container">
-        <div class="hero-text">
+        <div class="hero-text reveal">
             <h1>Ты архитектор<br>своей жизни.<br><span>Мы — топливо.</span></h1>
             <p>Собери свой Протокол C37 за 2 минуты. ЭЙВА рассчитает питание и подберет твой идеальный Бокс.</p>
             <button class="btn" onclick="playIntro()">Собрать протокол</button>
@@ -347,9 +418,19 @@
                 <span>Aw ≤ 0,65</span>
             </div>
         </div>
-        <div class="hero-image">
+        <div class="hero-image reveal">
             <div class="hero-img-box">
                 <img src="eva_base.jpg" alt="ЭЙВА" onerror="this.src='eva.jpg'" loading="lazy">
+                <!-- HUD Overlay -->
+                <div class="hud-overlay">
+                    <div class="hud-scanline"></div>
+                    <div class="hud-circle c1"></div>
+                    <div class="hud-circle c2"></div>
+                    <div class="hud-circle c3"></div>
+                    <div class="hud-node n1"></div>
+                    <div class="hud-node n2"></div>
+                    <div class="hud-node n3"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -357,12 +438,12 @@
     <!-- БОКСЫ -->
     <section class="boxes" id="boxes">
         <div class="container">
-            <h2>Выбери свой Бокс Протокола</h2>
-            <p class="boxes-sub">Мы не продаем батончики поштучно — мы продаем готовую систему на неделю или месяц.</p>
+            <h2 class="reveal">Выбери свой Бокс Протокола</h2>
+            <p class="boxes-sub reveal" style="transition-delay: 0.1s;">Мы не продаем батончики поштучно — мы продаем готовую систему на неделю или месяц.</p>
             
             <div class="boxes-grid">
                 <!-- Стартовый бокс -->
-                <div class="box-card">
+                <div class="box-card reveal" style="transition-delay: 0.2s;">
                     <div class="box-title">PROTOCOL WEEK</div>
                     <div class="box-desc">Стартовый бокс на 7 дней. Идеально, чтобы протестировать систему и понять вкусы.</div>
                     <ul class="box-features">
@@ -377,7 +458,7 @@
                 </div>
 
                 <!-- Месячный бокс -->
-                <div class="box-card popular">
+                <div class="box-card popular reveal" style="transition-delay: 0.3s;">
                     <div class="box-badge">ВЫГОДНО</div>
                     <div class="box-title">PROTOCOL MONTH</div>
                     <div class="box-desc">Полноценная система на 30 дней. Максимальная выгода и бесплатная доставка.</div>
@@ -395,22 +476,21 @@
         </div>
     </section>
 
-    <!-- ПОДПИСКИ (ИСПРАВЛЕНЫ КНОПКИ И ВЫСОТА) -->
+    <!-- ПОДПИСКИ -->
     <section class="subscriptions">
         <div class="container">
-            <h2 style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
-            <p style="text-align:center; color:var(--text-muted); margin-bottom:50px; font-size:1.1rem;">Ежемесячная система с доступом к закрытому ИИ-нутрициологу.</p>
+            <h2 class="reveal" style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
+            <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:50px; font-size:1.1rem; transition-delay: 0.1s;">Ежемесячная система с доступом к закрытому ИИ-нутрициологу.</p>
             <div class="subs-grid">
                 <!-- Клуб -->
-                <div class="sub-card">
+                <div class="sub-card reveal" style="transition-delay: 0.2s;">
                     <div class="sub-title">С37 КЛУБ</div>
                     <div class="sub-price">2 990 ₽/мес</div>
                     <div class="sub-desc">10 батончиков на месяц + безлимитный доступ к ЭЙВА Plus + бесплатная доставка.</div>
-                    <!-- Кнопка теперь залитая (btn), как и справа -->
                     <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
                 </div>
                 <!-- Премиум -->
-                <div class="sub-card premium">
+                <div class="sub-card premium reveal" style="transition-delay: 0.3s;">
                     <div class="sub-title" style="color:var(--accent);">С37 PREMIUM</div>
                     <div class="sub-price">4 990 ₽/мес</div>
                     <div class="sub-desc">Полная линейка (батончики, шоты, сиропы) + ЭЙВА Plus + ранний доступ к новинкам.</div>
@@ -420,14 +500,14 @@
         </div>
     </section>
 
-    <!-- КОНСТРУКТОР (ИДЕТ ПЕРЕД АНОНСАМИ) -->
+    <!-- КОНСТРУКТОР -->
     <section class="products">
         <div class="container">
-            <h2>Или собери свой Бокс вручную</h2>
-            <p class="products-sub">Выбери любые 7 батончиков (или больше), чтобы оформить заказ. Цена за штуку при сборке бокса.</p>
+            <h2 class="reveal">Или собери свой Бокс вручную</h2>
+            <p class="products-sub reveal" style="transition-delay: 0.1s;">Выбери любые 7 батончиков (или больше), чтобы оформить заказ. Цена за штуку при сборке бокса.</p>
             <div class="products-grid">
                 <!-- 1 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
                     <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Протеин База</h4>
@@ -437,7 +517,7 @@
                     </div>
                 </div>
                 <!-- 2 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.2s;">
                     <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Энергия Дисциплины</h4>
@@ -447,7 +527,7 @@
                     </div>
                 </div>
                 <!-- 3 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.3s;">
                     <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>База Лимитированная</h4>
@@ -457,7 +537,7 @@
                     </div>
                 </div>
                 <!-- 4 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
                     <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Восстановление</h4>
@@ -467,7 +547,7 @@
                     </div>
                 </div>
                 <!-- 5 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.2s;">
                     <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Омега Буст</h4>
@@ -477,7 +557,7 @@
                     </div>
                 </div>
                 <!-- 6 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.3s;">
                     <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Коллаген Лайт</h4>
@@ -487,7 +567,7 @@
                     </div>
                 </div>
                 <!-- 7 -->
-                <div class="product-card">
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
                     <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Экстрим</h4>
@@ -500,14 +580,14 @@
         </div>
     </section>
 
-    <!-- АНОНСЫ (ИДУТ ПОСЛЕ КОНСТРУКТОРА) -->
+    <!-- АНОНСЫ -->
     <section class="coming-soon" id="coming-soon">
         <div class="container">
-            <h2>Расширяем систему</h2>
-            <p style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Скоро в линейке C37 появятся новые форматы.</p>
+            <h2 class="reveal">Расширяем систему</h2>
+            <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem; transition-delay: 0.1s;">Скоро в линейке C37 появятся новые форматы.</p>
             
             <div class="shots-grid">
-                <div class="shot-card orange">
+                <div class="shot-card orange reveal" style="transition-delay: 0.1s;">
                     <div class="shot-name">РАЗГОН</div>
                     <div class="shot-sub">Утренний разгон</div>
                     <div class="shot-actives">
@@ -515,7 +595,7 @@
                     </div>
                     <div class="shot-badge">Концепт / Шоты 50 мл</div>
                 </div>
-                <div class="shot-card blue">
+                <div class="shot-card blue reveal" style="transition-delay: 0.2s;">
                     <div class="shot-name">ОТБОЙ</div>
                     <div class="shot-sub">Вечернее восстановление</div>
                     <div class="shot-actives">
@@ -523,7 +603,7 @@
                     </div>
                     <div class="shot-badge">Концепт / Шоты 50 мл</div>
                 </div>
-                <div class="shot-card burgundy">
+                <div class="shot-card burgundy reveal" style="transition-delay: 0.3s;">
                     <div class="shot-name">ДРАЙВ</div>
                     <div class="shot-sub">Предтренировочный буст</div>
                     <div class="shot-actives">
@@ -531,7 +611,7 @@
                     </div>
                     <div class="shot-badge">Концепт / Шоты 50 мл</div>
                 </div>
-                <div class="shot-card red">
+                <div class="shot-card red reveal" style="transition-delay: 0.4s;">
                     <div class="shot-name">ИММУНО</div>
                     <div class="shot-sub">Сезонная защита</div>
                     <div class="shot-actives">
@@ -542,13 +622,13 @@
             </div>
 
             <div class="other-coming">
-                <div class="coming-card">
+                <div class="coming-card reveal" style="transition-delay: 0.2s;">
                     <h3>Сиропы C37</h3>
                     <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
                     <div class="coming-date">Старт: Январь 2027</div>
                     <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
                 </div>
-                <div class="coming-card">
+                <div class="coming-card reveal" style="transition-delay: 0.3s;">
                     <h3>Сахарозаменитель</h3>
                     <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
                     <div class="coming-date">Старт: Март 2027</div>
@@ -558,7 +638,7 @@
         </div>
     </section>
 
-    <!-- Квиз (ИДЕТ В САМОМ КОНЦЕ) -->
+    <!-- Квиз -->
     <section id="quiz" class="quiz-section container">
         <div class="quiz-container">
             <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -609,6 +689,36 @@
 
     <!-- Скрипты -->
     <script>
+        // --- SCROLL REVEAL (Intersection Observer) ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOptions = {
+                threshold: 0.15, // Срабатывает, когда 15% элемента показалось на экране
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target); // Отключаем наблюдение после появления
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => {
+                revealOnScroll.observe(el);
+            });
+        });
+
+        // --- ТАКТИЛЬНАЯ ОТДАЧА ДЛЯ КНОПОК (Vibration API) ---
+        document.addEventListener('click', function(e) {
+            // Проверяем, является ли элемент кнопкой (или находится внутри кнопки)
+            const btn = e.target.closest('.btn') || e.target.closest('.btn-small') || e.target.closest('.btn-outline') || e.target.closest('.cart-icon-btn');
+            if (btn && navigator.vibrate) {
+                navigator.vibrate(30); // Короткая вибрация на 30мс
+            }
+        });
+
         // --- УМНЫЙ ШЛЮЗ ДЛЯ OZON ---
         function checkCity() {
             const cityInput = document.getElementById('order-city');
@@ -624,7 +734,6 @@
             document.getElementById('ozon-modal').style.display = 'none';
         }
 
-        // Закрытие Ozon-модалки по клику на фон
         document.getElementById('ozon-modal').addEventListener('click', function(e) {
             if (e.target === this) closeOzonModal();
         });
@@ -1083,16 +1192,12 @@
         // --- ГЛОБАЛЬНЫЙ ESC ---
         document.addEventListener('keydown', function(e) {
             if (e.key !== 'Escape') return;
-            // Ozon-модалка
             const ozon = document.getElementById('ozon-modal');
             if (ozon && ozon.style.display === 'flex') { closeOzonModal(); }
-            // Корзина
             const sidebar = document.getElementById('cart-sidebar');
             if (sidebar && sidebar.classList.contains('active')) { toggleCart(); }
-            // Чат
             const chat = document.getElementById('chat-window');
             if (chat && chat.style.display === 'flex') { toggleChat(); }
-            // Видеооверлей
             const video = document.getElementById('video-overlay');
             if (video && video.style.display === 'flex') { endVideo(); }
         });
