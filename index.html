@@ -284,7 +284,7 @@
             </div>
             <div class="form-group">
                 <label>Город</label>
-                <input type="text" id="order-city" placeholder="Москва" required onblur="checkCity()">
+                <input type="text" id="order-city" placeholder="Москва" required oninput="checkCity()" onblur="checkCity()">
             </div>
             <div class="form-group">
                 <label>Способ доставки</label>
@@ -389,7 +389,7 @@
     </section>
 
     <!-- АНОНСЫ (В РАЗРАБОТКЕ) -->
-    <section class="coming-soon">
+    <section class="coming-soon" id="coming-soon">
         <div class="container">
             <h2>Расширяем систему</h2>
             <p style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Скоро в линейке C37 появятся новые форматы.</p>
@@ -397,7 +397,7 @@
             <div class="shots-grid">
                 <div class="shot-card orange">
                     <div class="shot-name">РАЗГОН</div>
-                    <div class="shot-sub">Утро без кофеина</div>
+                    <div class="shot-sub">Утренний разгон</div>
                     <div class="shot-actives">
                         <span>Гуарана + Матча</span> (кофеин ~95 мг)<br>L-теанин, имбирь, B6/B12
                     </div>
@@ -615,6 +615,11 @@
         function closeOzonModal() {
             document.getElementById('ozon-modal').style.display = 'none';
         }
+
+        // Закрытие Ozon-модалки по клику на фон
+        document.getElementById('ozon-modal').addEventListener('click', function(e) {
+            if (e.target === this) closeOzonModal();
+        });
 
         // --- ЛОГИКА КОРЗИНЫ ---
         let cart = JSON.parse(localStorage.getItem('c37_cart')) || [];
@@ -1051,7 +1056,7 @@
                     <p style="margin-bottom: 10px;">🌅 Утро (вместо кофе): <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
                     <p style="margin-bottom: 15px;">💼 Офис/Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
                     
-                    <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190); toggleCart();">Заказать Бокс за 1190 ₽</button>
+                    <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190);">Заказать Бокс за 1190 ₽</button>
                     
                     <a href="https://t.me/c37_eva" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none;">Подписаться на Эйву в TG</a>
                 </div>
@@ -1066,6 +1071,23 @@
             document.querySelector('.nav-buttons').style.display = 'flex';
             renderStep();
         }
+
+        // --- ГЛОБАЛЬНЫЙ ESC ---
+        document.addEventListener('keydown', function(e) {
+            if (e.key !== 'Escape') return;
+            // Ozon-модалка
+            const ozon = document.getElementById('ozon-modal');
+            if (ozon && ozon.style.display === 'flex') { closeOzonModal(); }
+            // Корзина
+            const sidebar = document.getElementById('cart-sidebar');
+            if (sidebar && sidebar.classList.contains('active')) { toggleCart(); }
+            // Чат
+            const chat = document.getElementById('chat-window');
+            if (chat && chat.style.display === 'flex') { toggleChat(); }
+            // Видеооверлей
+            const video = document.getElementById('video-overlay');
+            if (video && video.style.display === 'flex') { endVideo(); }
+        });
     </script>
 </body>
 </html>
