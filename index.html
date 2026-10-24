@@ -108,6 +108,7 @@
         .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
         .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
         .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
+        .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
 
         .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
@@ -227,7 +228,6 @@
             <button class="close-ozon" onclick="closeOzonModal()">✕</button>
             <h2 style="color:var(--accent); margin-bottom:15px;">Мы заботимся о тебе</h2>
             <p style="color:#ccc; margin-bottom:20px; font-size:0.95rem;">Похоже, ты из отдаленного региона. Доставка туда стоит очень дорого (около 650 ₽). Чтобы ты не переплачивал, закажи наш бокс напрямую на Ozon — там доставка быстрее и дешевле.</p>
-            <!-- ЗАМЕНИ ССЫЛКУ НА СВОЮ КАРТОЧКУ OZON -->
             <a href="https://ozon.ru" target="_blank" class="btn" style="width:100%;">Перейти на Ozon</a>
             <button class="btn-outline" style="width:100%; margin-top:10px; padding:12px;" onclick="closeOzonModal()">Остаться на сайте</button>
         </div>
@@ -394,15 +394,15 @@
     <section class="products">
         <div class="container">
             <h2>Или собери свой Бокс вручную</h2>
-            <p class="products-sub">Выбери любые 7 батончиков (или больше), чтобы оформить заказ.</p>
+            <p class="products-sub">Выбери любые 7 батончиков (или больше), чтобы оформить заказ. Цена за штуку при сборке бокса.</p>
             <div class="products-grid">
                 <div class="product-card">
                     <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Протеин База</h4>
                         <p>12.9 г белка, стабильная энергия</p>
-                        <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Протеин База', 99)">Добавить в бокс</button>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Протеин База', 170)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -410,8 +410,8 @@
                     <div class="product-info">
                         <h4>Энергия Дисциплины</h4>
                         <p>Матча, L-теанин, фокус</p>
-                        <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 99)">Добавить в бокс</button>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 170)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -419,8 +419,8 @@
                     <div class="product-info">
                         <h4>База Лимитированная</h4>
                         <p>12.3 г белка, 0 г сахара</p>
-                        <div class="price">149 ₽</div>
-                        <button class="btn-small" onclick="addToCart('База Лимитированная', 149)">Добавить в бокс</button>
+                        <div class="price">220 ₽ <span>249 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('База Лимитированная', 220)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
@@ -428,8 +428,8 @@
                     <div class="product-info">
                         <h4>Восстановление</h4>
                         <p>Магний, электролиты</p>
-                        <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Восстановление', 99)">Добавить в бокс</button>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Восстановление', 170)">Добавить в бокс</button>
                     </div>
                 </div>
             </div>
@@ -939,7 +939,6 @@
                     
                     <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190); toggleCart();">Заказать Бокс за 1190 ₽</button>
                     
-                    <!-- ССЫЛКА НА ТЕЛЕГРАМ БОТА ЭЙВЫ -->
                     <a href="https://t.me/c37_eva" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none;">Подписаться на Эйву в TG</a>
                 </div>
                 <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Это ориентировочный протокол.</p>
