@@ -6,11 +6,7 @@
     
     <!-- SEO И OPEN GRAPH ТЕГИ -->
     <title>C37 FUEL — Функциональное питание и ИИ-нутрициолог ЭЙВА</title>
-    <meta name="description" content="Премиальные батончики без сахара с чистым составом. Собери свой персональный протокол питания с ИИ-нутрициологом ЭЙВОЙ.">
-    <meta property="og:title" content="C37 FUEL — Топливо для дисциплины">
-    <meta property="og:description" content="Собери свой Протокол C37 за 2 минуты. Чистый состав. 0 г сахара. 12+ г белка.">
-    <meta property="og:image" content="https://c37fuel.ru/eva.jpg"> <!-- Замени на реальный домен -->
-    <meta property="og:type" content="website">
+    <meta name="description" content="Премиальные батончики без сахара. Собери свой персональный протокол питания с ИИ-нутрициологом ЭЙВОЙ и закажи готовый бокс.">
     
     <!-- ИКОНКА САЙТА -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF6B1A'/><text x='50' y='72' font-size='55' font-family='Arial' font-weight='900' font-style='italic' fill='%23000' text-anchor='middle'>C37</text></svg>">
@@ -20,7 +16,7 @@
             --bg-base: #0d0f12;
             --bg-card: rgba(20, 24, 28, 0.85);
             --text-main: #FFFFFF;
-            --text-muted: #c0c0c0; /* Улучшен контраст для Accessibility */
+            --text-muted: #c0c0c0;
             --accent: #FF6B1A;
             --border: rgba(255, 107, 26, 0.3);
             --green: #4CAF50;
@@ -79,6 +75,40 @@
         
         .trust-markers { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; letter-spacing: 0.5px; display: flex; gap: 15px; }
 
+        /* БОКСЫ */
+        .boxes { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-bottom: 1px solid var(--border); }
+        .boxes h2 { text-align: center; font-size: 2.5rem; margin-bottom: 10px; font-weight: 800;}
+        .boxes-sub { text-align: center; color: var(--text-muted); margin-bottom: 50px; font-size: 1.1rem; }
+        
+        .boxes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
+        .box-card { background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; position: relative; overflow: hidden;}
+        .box-card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(255, 107, 26, 0.1); }
+        .box-card.popular { border: 2px solid var(--accent); transform: scale(1.02); }
+        .box-badge { position: absolute; top: 0; right: 0; background: var(--accent); color: #111; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-bottom-left-radius: 12px; }
+        
+        .box-title { font-size: 1.8rem; font-weight: 900; color: #fff; margin-bottom: 10px; }
+        .box-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
+        .box-price { font-size: 2.5rem; font-weight: 900; color: var(--accent); margin-bottom: 5px; }
+        .box-price-old { font-size: 1.2rem; text-decoration: line-through; color: #777; margin-bottom: 20px; }
+        .box-features { list-style: none; margin-bottom: 30px; }
+        .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
+
+        /* МАГАЗИН (Добавить в бокс) */
+        .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); }
+        .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
+        .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
+        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
+        .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
+        .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
+
+        /* ... (Остальные стили без изменений: Преимущества, Квиз, Чат, Корзина) ... */
         .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
         .feature-item { background: var(--bg-card); padding: 35px 25px; border-radius: 12px; border: 1px solid rgba(255, 107, 26, 0.15); backdrop-filter: blur(10px); }
@@ -86,53 +116,6 @@
         .feature-icon svg { width: 35px; height: 35px; }
         .feature-item h3 { color: var(--text-main); font-size: 1.2rem; margin-bottom: 10px; font-weight: 700;}
         .feature-item p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.5;}
-
-        .products { padding: 80px 0; background: rgba(13, 15, 18, 0.7); }
-        .products h2 { text-align: center; font-size: 2.5rem; margin-bottom: 50px; font-weight: 800;}
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; }
-        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(255, 107, 26, 0.15); }
-        .product-img { width: 100%; height: 200px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
-        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
-        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-info h4 { font-size: 1.1rem; margin-bottom: 8px; font-weight: 700;}
-        .product-info p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; flex-grow: 1;}
-        .product-info .price { font-size: 1.4rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
-
-        .coming-soon { padding: 80px 0; border-top: 1px solid var(--border); background: rgba(13, 15, 18, 0.5); }
-        .coming-soon h2 { text-align: center; font-size: 2.5rem; margin-bottom: 10px; font-weight: 800;}
-        .coming-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 1.1rem; }
-        
-        .shots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 50px; }
-        .shot-card { background: rgba(20, 24, 28, 0.95); border: 1px solid #333; border-radius: 16px; padding: 25px; text-align: left; position: relative; overflow: hidden; transition: transform 0.3s; display: flex; flex-direction: column;}
-        .shot-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
-        .shot-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
-        .shot-card.orange::before { background: #FF6B1A; }
-        .shot-card.blue::before { background: #2C3E50; }
-        .shot-card.burgundy::before { background: #800020; }
-        .shot-card.red::before { background: #D32F2F; }
-        
-        .shot-name { font-size: 1.4rem; font-weight: 900; margin-bottom: 5px; color: #fff; letter-spacing: 1px;}
-        .shot-sub { font-size: 0.85rem; color: var(--accent); font-weight: bold; margin-bottom: 15px; text-transform: uppercase;}
-        .shot-actives { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-grow: 1;}
-        .shot-actives span { color: #fff; font-weight: bold;}
-        .shot-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #333; color: #fff; margin-bottom: 15px;}
-
-        .other-coming { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
-        .coming-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.5) 0%, rgba(30, 34, 38, 0.8) 100%); border: 1px dashed var(--border); padding: 25px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;}
-        .coming-card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
-        .coming-card p { color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;}
-        .coming-date { color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 0.9rem;}
-
-        .subscription { padding: 60px 0; }
-        .sub-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px);}
-        .sub-info { flex: 2; }
-        .sub-info h2 { font-size: 2rem; margin-bottom: 10px; font-weight: 800; color: var(--accent);}
-        .sub-info p { color: var(--text-muted); font-size: 1.1rem; margin-bottom: 15px;}
-        .sub-features { list-style: none; color: #ddd; font-size: 0.95rem;}
-        .sub-features li { margin-bottom: 5px; }
-        .sub-features li::before { content: "✓"; color: var(--green); margin-right: 8px; font-weight: bold;}
-        .sub-action { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 15px; }
 
         .quiz-section { padding: 60px 0 80px; display: none; } 
         .quiz-container { background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
@@ -188,12 +171,9 @@
         .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; }
         .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
-        
-        /* ЧЕКБОКС 152-ФЗ */
         .pd-consent { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
         .pd-consent input { margin-top: 3px; width: auto; }
         .pd-consent a { color: var(--accent); text-decoration: none; }
-
         .cart-footer { padding: 20px; border-top: 1px solid #333; }
         .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
         
@@ -221,10 +201,9 @@
             .hero-text h1 { font-size: 2.5rem; }
             .hero-text p { margin: 0 auto 30px; }
             .features-grid { grid-template-columns: 1fr; }
-            .other-coming { grid-template-columns: 1fr; }
+            .boxes-grid { grid-template-columns: 1fr; }
+            .box-card.popular { transform: none; }
             .result-grid { grid-template-columns: 1fr; }
-            .sub-card { flex-direction: column; text-align: center; }
-            .sub-action { align-items: center; }
             .logo-c37 { font-size: 2.2rem; padding: 6px 12px 8px 10px; }
             .logo-fuel { font-size: 1.6rem; }
             #chat-window { width: calc(100% - 40px); right: 20px; bottom: 90px; height: 60vh; }
@@ -274,13 +253,10 @@
                     <option value="Курьер (Москва)">Курьер по Москве</option>
                 </select>
             </div>
-            
-            <!-- ЧЕКБОКС 152-ФЗ -->
             <label class="pd-consent">
                 <input type="checkbox" id="agree-pd">
                 <span>Согласен на обработку персональных данных в соответствии с <a href="#">политикой конфиденциальности</a></span>
             </label>
-            
             <button class="btn" style="width:100%; margin-top:5px;" onclick="submitOrder()">Подтвердить заказ</button>
         </div>
 
@@ -314,7 +290,7 @@
     <section class="hero container">
         <div class="hero-text">
             <h1>Ты архитектор<br>своей жизни.<br><span>Мы — топливо.</span></h1>
-            <p>Собери свой Протокол C37 за 2 минуты. ЭЙВА рассчитает питание и восстановление под твою цель.</p>
+            <p>Собери свой Протокол C37 за 2 минуты. ЭЙВА рассчитает питание и подберет твой идеальный Бокс.</p>
             <button class="btn" onclick="playIntro()">Собрать протокол</button>
             <div class="trust-markers">
                 <span>0 г сахара*</span>
@@ -350,156 +326,108 @@
         </div>
     </section>
 
-    <!-- Магазин -->
+    <!-- БОКСЫ -->
+    <section class="boxes" id="boxes">
+        <div class="container">
+            <h2>Выбери свой Бокс Протокола</h2>
+            <p class="boxes-sub">Мы не продаем батончики поштучно — мы продаем готовую систему на неделю или месяц.</p>
+            
+            <div class="boxes-grid">
+                <!-- Стартовый бокс -->
+                <div class="box-card">
+                    <div class="box-title">PROTOCOL WEEK</div>
+                    <div class="box-desc">Стартовый бокс на 7 дней. Идеально, чтобы протестировать систему и понять вкусы.</div>
+                    <ul class="box-features">
+                        <li>7 батончиков C37 FUEL</li>
+                        <li>Сбалансированный набор (Утро/День/Вечер)</li>
+                        <li>Доступ к ЭЙВА Basic</li>
+                        <li>Доставка Яндекс/СДЭК</li>
+                    </ul>
+                    <div class="box-price">890 ₽</div>
+                    <div class="box-price-old">В рознице: 990 ₽</div>
+                    <button class="btn" onclick="addToCart('PROTOCOL WEEK (7 шт)', 890)">Собрать бокс</button>
+                </div>
+
+                <!-- Месячный бокс -->
+                <div class="box-card popular">
+                    <div class="box-badge">ВЫГОДНО</div>
+                    <div class="box-title">PROTOCOL MONTH</div>
+                    <div class="box-desc">Полноценная система на 30 дней. Максимальная выгода и бесплатная доставка.</div>
+                    <ul class="box-features">
+                        <li>30 батончиков C37 FUEL</li>
+                        <li>Подбор под твой протокол</li>
+                        <li>Доступ к ЭЙВА Plus (Бесплатно)</li>
+                        <li>Бесплатная доставка</li>
+                    </ul>
+                    <div class="box-price">2 990 ₽</div>
+                    <div class="box-price-old">В рознице: 3 990 ₽</div>
+                    <button class="btn" onclick="addToCart('PROTOCOL MONTH (30 шт)', 2990)">Собрать бокс</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Магазин (Опционально: Дополнить бокс) -->
     <section class="products">
         <div class="container">
-            <h2>Топливо для твоего протокола</h2>
+            <h2>Дополнить свой бокс</h2>
+            <p class="products-sub">Хочешь добавить конкретный вкус? Выбери батончики отдельно (они будут добавлены в твой Бокс).</p>
             <div class="products-grid">
                 <div class="product-card">
-                    <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Протеин База</h4>
                         <p>12.9 г белка, стабильная энергия</p>
                         <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Протеин База', 99)">В корзину</button>
+                        <button class="btn-small" onclick="addToCart('Протеин База', 99)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
-                    <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Энергия Дисциплины</h4>
-                        <p>Матча, L-теанин, фокус без скачков</p>
+                        <p>Матча, L-теанин, фокус</p>
                         <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 99)">В корзину</button>
+                        <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 99)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
-                    <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>База Лимитированная</h4>
-                        <p>12.3 г белка, 0 г сахара, клетчатка</p>
+                        <p>12.3 г белка, 0 г сахара</p>
                         <div class="price">149 ₽</div>
-                        <button class="btn-small" onclick="addToCart('База Лимитированная', 149)">В корзину</button>
+                        <button class="btn-small" onclick="addToCart('База Лимитированная', 149)">Добавить в бокс</button>
                     </div>
                 </div>
                 <div class="product-card">
-                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Омега Буст</h4>
-                        <p>Омега-3, клетчатка для мозга</p>
-                        <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Омега Буст', 99)">В корзину</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
+                    <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
                     <div class="product-info">
                         <h4>Восстановление</h4>
-                        <p>Магний, электролиты, банан-кокос</p>
+                        <p>Магний, электролиты</p>
                         <div class="price">99 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Восстановление', 99)">В корзину</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Коллаген Лайт</h4>
-                        <p>5 г коллагена, пребиотик, ягоды</p>
-                        <div class="price">119 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Коллаген Лайт', 119)">В корзину</button>
-                    </div>
-                </div>
-                <div class="product-card">
-                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото+Батончика'" loading="lazy"></div>
-                    <div class="product-info">
-                        <h4>Экстрим</h4>
-                        <p>12 г белка, 0 г сахара, чистый состав</p>
-                        <div class="price">149 ₽</div>
-                        <button class="btn-small" onclick="addToCart('Экстрим', 149)">В корзину</button>
+                        <button class="btn-small" onclick="addToCart('Восстановление', 99)">Добавить в бокс</button>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- СКОРО В ПРОДАЖЕ -->
-    <section class="coming-soon">
+    <!-- СКОРО В ПРОДАЖЕ (Концепты) -->
+    <section style="padding: 60px 0; background: rgba(13, 15, 18, 0.5); border-top: 1px solid var(--border);">
         <div class="container">
-            <h2>Новая линейка: C37 SHOTS (Концепт)</h2>
-            <p class="coming-sub">Концентрированные функциональные шоты (50 мл). Батончик в жидкой форме.</p>
-            
-            <div class="shots-grid">
-                <div class="shot-card orange">
-                    <div class="shot-name">РАЗГОН</div>
-                    <div class="shot-sub">Утро без кофеина</div>
-                    <div class="shot-actives">
-                        <span>Гуарана + Матча</span> (кофеин ~95 мг)<br>
-                        L-теанин, имбирь, B6/B12
-                    </div>
-                    <div class="shot-badge">Кофеин ~95 мг</div>
+            <h2 style="text-align: center; font-size: 2rem; font-weight: 800; margin-bottom: 20px;">В разработке</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 800px; margin: 0 auto;">
+                <div style="background: #1a1d21; padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed #444;">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">C37 SHOTS</h3>
+                    <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;">Жидкие концентраты (Разгон, Отбой, Драйв).</p>
+                    <span style="background: #333; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">Январь 2027</span>
                 </div>
-                <div class="shot-card blue">
-                    <div class="shot-name">ОТБОЙ</div>
-                    <div class="shot-sub">Вечернее восстановление</div>
-                    <div class="shot-actives">
-                        <span>Магний</span> (120 мг — 30% РСН)<br>
-                        Глицин, L-теанин, мелисса
-                    </div>
-                    <div class="shot-badge">Магний 120 мг</div>
+                <div style="background: #1a1d21; padding: 20px; border-radius: 12px; text-align: center; border: 1px dashed #444;">
+                    <h3 style="color: var(--accent); margin-bottom: 10px;">C37 СИРОПЫ</h3>
+                    <p style="font-size: 0.9rem; color: #aaa; margin-bottom: 15px;">Натуральные сиропы 0 сахара.</p>
+                    <span style="background: #333; padding: 5px 10px; border-radius: 4px; font-size: 0.8rem;">Март 2027</span>
                 </div>
-                <div class="shot-card burgundy">
-                    <div class="shot-name">ДРАЙВ</div>
-                    <div class="shot-sub">Предтренировочный буст</div>
-                    <div class="shot-actives">
-                        <span>Свекольный концентрат</span><br>
-                        Кофеин (150 мг), электролиты
-                    </div>
-                    <div class="shot-badge">Кофеин 150 мг</div>
-                </div>
-                <div class="shot-card red">
-                    <div class="shot-name">ИММУНО</div>
-                    <div class="shot-sub">Сезонная защита</div>
-                    <div class="shot-actives">
-                        <span>Ацерола + Облепиха</span> (Вит. С)<br>
-                        Цинк, имбирь, куркума
-                    </div>
-                    <div class="shot-badge">Источник витамина С</div>
-                </div>
-            </div>
-
-            <div class="other-coming">
-                <div class="coming-card">
-                    <h3>Сиропы C37</h3>
-                    <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
-                    <div class="coming-date">Старт: Январь 2027</div>
-                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
-                </div>
-                <div class="coming-card">
-                    <h3>Сахарозаменитель</h3>
-                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
-                    <div class="coming-date">Старт: Март 2027</div>
-                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сахзам.')">В лист ожидания</button>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Подписка -->
-    <section class="subscription container" id="plus">
-        <div class="sub-card">
-            <div class="sub-info">
-                <h2>ЭЙВА PLUS</h2>
-                <p>Твой карманный диетолог без ограничений.</p>
-                <ul class="sub-features">
-                    <li>20 сообщений в день (Basic)</li>
-                    <li>Безлимитное общение (Plus)</li>
-                    <li>Анализ дневника и проактивные советы</li>
-                    <li>Доступ к эксклюзивным продуктам</li>
-                </ul>
-            </div>
-            <div class="sub-action">
-                <div class="price">Скоро</div>
-                <button class="btn" onclick="alert('Подписка появится в ближайшее время! Следи за обновлениями.')">Записаться</button>
             </div>
         </div>
     </section>
@@ -641,7 +569,6 @@
         }
 
         function submitOrder() {
-            // Проверка согласия 152-ФЗ
             if (!document.getElementById('agree-pd').checked) {
                 alert('Необходимо согласие на обработку персональных данных');
                 return;
@@ -689,8 +616,6 @@
             quizSection.style.display = 'none';
             overlay.style.display = 'flex';
             video.currentTime = 0; 
-            
-            // БАГФИКС: Если видео не загрузится (404), оверлей автоматически закроется
             video.onerror = endVideo;
             
             video.play().catch(error => {
@@ -742,7 +667,6 @@
             messages.appendChild(typingMsg);
             messages.scrollTop = messages.scrollHeight;
 
-            // БАГФИКС: Сохраняем ID таймаута, чтобы очистить его
             let isTyping = true;
             const timeoutId = setTimeout(() => {
                 if (isTyping && typingMsg.parentNode) {
@@ -759,7 +683,7 @@
                 
                 const data = await response.json();
                 isTyping = false;
-                clearTimeout(timeoutId); // Очищаем таймаут при успехе
+                clearTimeout(timeoutId); 
                 
                 if(typingMsg.parentNode) messages.removeChild(typingMsg);
                 
@@ -772,7 +696,7 @@
             } catch (error) {
                 console.error("Ошибка:", error);
                 isTyping = false;
-                clearTimeout(timeoutId); // Очищаем таймаут при ошибке
+                clearTimeout(timeoutId);
                 if(typingMsg.parentNode) messages.removeChild(typingMsg);
                 
                 const errorMsg = document.createElement('div');
@@ -883,19 +807,21 @@
             const fat = 0.9 * w;
             const carbs = (targetCalories - 4 * protein - 9 * fat) / 4;
 
-            // БАГФИКС: Матрица батончиков (не один, а слоты)
-            let barMorning = 'Протеин База';
-            let barEvening = 'Восстановление';
+            // Матрица бокса
+            let boxName = 'PROTOCOL WEEK (Похудение)';
+            let barMorning = 'База Лимитированная';
+            let barEvening = 'Коллаген Лайт';
             
-            if (answers.goal === 'Похудение') {
-                barMorning = 'База Лимитированная';
-                barEvening = 'Коллаген Лайт';
-            }
             if (answers.goal === 'Энергия') {
+                boxName = 'PROTOCOL WEEK (Энергия)';
                 barMorning = 'Энергия Дисциплины';
                 barEvening = 'Омега Буст';
+            } else if (answers.goal === 'Мышцы') {
+                boxName = 'PROTOCOL WEEK (Мышцы)';
+                barMorning = 'Протеин База';
+                barEvening = 'Восстановление';
             }
-            // Фильтр аллергий
+
             if (answers.allergies === 'Да') {
                 if (barMorning === 'База Лимитированная' || barMorning === 'Протеин База') barMorning = 'Коллаген Лайт';
                 if (barEvening === 'Протеин База' || barEvening === 'База Лимитированная') barEvening = 'Коллаген Лайт';
@@ -909,14 +835,11 @@
                     <div class="result-card"><h3>Жиры</h3><div class="value">${Math.round(fat)} г</div></div>
                     <div class="result-card"><h3>Углеводы</h3><div class="value">${Math.round(carbs)} г</div></div>
                 </div>
-                <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 20px; border-radius: 12px; border: 1px solid #444;">
-                    <p style="margin-bottom: 10px; color: #ccc;">Твой план на день:</p>
-                    <p style="margin-bottom: 10px;">🌅 Утро (вместо кофе): <strong style="color: var(--accent);">${barMorning}</strong></p>
-                    <p style="margin-bottom: 10px;">💼 Офис/День: <strong style="color: var(--accent);">${barEvening}</strong></p>
-                    ${answers.craving !== 'Нет тяги' ? `<p>🍫 Тяга (${answers.craving.toLowerCase()}): <strong style="color: var(--accent);">${barMorning}</strong></p>` : ''}
-                </div>
-                <div style="text-align: center; margin-top: 20px;">
-                    <button class="btn" onclick="addToCart('${barMorning}', ${barMorning === 'База Лимитированная' || barMorning === 'Экстрим' ? 149 : 99}); addToCart('${barEvening}', ${barEvening === 'База Лимитированная' || barEvening === 'Экстрим' ? 149 : 99}); toggleCart();">Купить набор по протоколу</button>
+                <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--accent);">
+                    <p style="margin-bottom: 15px; color: #fff; font-size: 1.1rem; font-weight: bold;">📦 Твой Стартовый Бокс на 7 дней:</p>
+                    <p style="margin-bottom: 10px;">🌅 Утро (вместо кофе): <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
+                    <p style="margin-bottom: 15px;">💼 Офис/Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
+                    <button class="btn" style="width:100%;" onclick="addToCart('${boxName}', 890); toggleCart();">Заказать Бокс за 890 ₽</button>
                 </div>
                 <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Это ориентировочный протокол.</p>
             `;
