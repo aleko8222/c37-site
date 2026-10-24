@@ -86,6 +86,28 @@
         .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
+        /* АНОНСЫ */
+        .coming-soon { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
+        .coming-soon h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; font-weight: 800;}
+        .shots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 40px; }
+        .shot-card { background: rgba(20, 24, 28, 0.95); border: 1px solid #333; border-radius: 16px; padding: 25px; text-align: left; position: relative; overflow: hidden; display: flex; flex-direction: column;}
+        .shot-card::before { content: ""; position: absolute; top: 0; left: 0; width: 100%; height: 4px; }
+        .shot-card.orange::before { background: #FF6B1A; }
+        .shot-card.blue::before { background: #2C3E50; }
+        .shot-card.burgundy::before { background: #800020; }
+        .shot-card.red::before { background: #D32F2F; }
+        .shot-name { font-size: 1.4rem; font-weight: 900; margin-bottom: 5px; color: #fff; letter-spacing: 1px;}
+        .shot-sub { font-size: 0.85rem; color: var(--accent); font-weight: bold; margin-bottom: 15px; text-transform: uppercase;}
+        .shot-actives { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; flex-grow: 1;}
+        .shot-actives span { color: #fff; font-weight: bold;}
+        .shot-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold; background: #333; color: #fff; margin-bottom: 15px;}
+        
+        .other-coming { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; }
+        .coming-card { background: linear-gradient(135deg, rgba(42, 47, 53, 0.5) 0%, rgba(30, 34, 38, 0.8) 100%); border: 1px dashed var(--border); padding: 25px; border-radius: 12px; text-align: center; display: flex; flex-direction: column; justify-content: space-between;}
+        .coming-card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
+        .coming-card p { color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;}
+        .coming-date { color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 0.9rem;}
+
         /* ПОДПИСКИ */
         .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
         .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
@@ -208,7 +230,7 @@
             .hero-text h1 { font-size: 2.5rem; }
             .hero-text p { margin: 0 auto 30px; }
             .features-grid { grid-template-columns: 1fr; }
-            .boxes-grid, .subs-grid { grid-template-columns: 1fr; }
+            .boxes-grid, .subs-grid, .other-coming { grid-template-columns: 1fr; }
             .box-card.popular { transform: none; }
             .result-grid { grid-template-columns: 1fr; }
             .row-2 { grid-template-columns: 1fr; }
@@ -366,6 +388,64 @@
         </div>
     </section>
 
+    <!-- АНОНСЫ (В РАЗРАБОТКЕ) -->
+    <section class="coming-soon">
+        <div class="container">
+            <h2>Расширяем систему</h2>
+            <p style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Скоро в линейке C37 появятся новые форматы.</p>
+            
+            <div class="shots-grid">
+                <div class="shot-card orange">
+                    <div class="shot-name">РАЗГОН</div>
+                    <div class="shot-sub">Утро без кофеина</div>
+                    <div class="shot-actives">
+                        <span>Гуарана + Матча</span> (кофеин ~95 мг)<br>L-теанин, имбирь, B6/B12
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card blue">
+                    <div class="shot-name">ОТБОЙ</div>
+                    <div class="shot-sub">Вечернее восстановление</div>
+                    <div class="shot-actives">
+                        <span>Магний</span> (120 мг — 30% РСН)<br>Глицин, L-теанин, мелисса
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card burgundy">
+                    <div class="shot-name">ДРАЙВ</div>
+                    <div class="shot-sub">Предтренировочный буст</div>
+                    <div class="shot-actives">
+                        <span>Свекольный концентрат</span><br>Кофеин (150 мг), электролиты
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card red">
+                    <div class="shot-name">ИММУНО</div>
+                    <div class="shot-sub">Сезонная защита</div>
+                    <div class="shot-actives">
+                        <span>Ацерола + Облепиха</span> (Вит. С)<br>Цинк, имбирь, куркума
+                    </div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+            </div>
+
+            <div class="other-coming">
+                <div class="coming-card">
+                    <h3>Сиропы C37</h3>
+                    <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
+                    <div class="coming-date">Старт: Январь 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
+                </div>
+                <div class="coming-card">
+                    <h3>Сахарозаменитель</h3>
+                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
+                    <div class="coming-date">Старт: Март 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сахзам.')">В лист ожидания</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ПОДПИСКИ -->
     <section class="subscriptions">
         <div class="container">
@@ -390,7 +470,7 @@
         </div>
     </section>
 
-    <!-- КОНСТРУКТОР -->
+    <!-- КОНСТРУКТОР (7 батончиков) -->
     <section class="products">
         <div class="container">
             <h2>Или собери свой Бокс вручную</h2>
