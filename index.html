@@ -86,8 +86,39 @@
         .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
         .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
-        /* АНОНСЫ */
-        .coming-soon { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
+        /* ПОДПИСКИ (ИСПРАВЛЕНО) */
+        .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
+        .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; align-items: stretch; }
+        .sub-card { 
+            background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); 
+            border: 1px solid #444; 
+            border-radius: 16px; 
+            padding: 35px; 
+            display: flex; 
+            flex-direction: column; /* Делает карточку гибкой */
+        }
+        .sub-card.premium { border-color: var(--accent); }
+        .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
+        .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
+        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; /* Прижимает кнопку к низу */ }
+
+        /* КОНСТРУКТОР */
+        .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
+        .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
+        .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
+        .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
+        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
+        .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
+        .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
+        .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
+
+        /* АНОНСЫ (ИДУТ ПОСЛЕ ПРОДУКТОВ) */
+        .coming-soon { padding: 80px 0; background: rgba(13, 15, 18, 0.8); border-bottom: 1px solid var(--border); }
         .coming-soon h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; font-weight: 800;}
         .shots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 40px; }
         .shot-card { background: rgba(20, 24, 28, 0.95); border: 1px solid #333; border-radius: 16px; padding: 25px; text-align: left; position: relative; overflow: hidden; display: flex; flex-direction: column;}
@@ -107,37 +138,6 @@
         .coming-card h3 { color: var(--accent); margin-bottom: 10px; font-size: 1.3rem; }
         .coming-card p { color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem;}
         .coming-date { color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 0.9rem;}
-
-        /* ПОДПИСКИ */
-        .subscriptions { padding: 80px 0; background: rgba(13, 15, 18, 0.6); border-bottom: 1px solid var(--border); }
-        .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
-        .sub-card { 
-            background: linear-gradient(135deg, rgba(42, 47, 53, 0.9) 0%, rgba(30, 34, 38, 0.9) 100%); 
-            border: 1px solid #444; 
-            border-radius: 16px; 
-            padding: 35px; 
-            display: flex; 
-            flex-direction: column; 
-        }
-        .sub-card.premium { border-color: var(--accent); }
-        .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
-        .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
-        .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
-
-        /* КОНСТРУКТОР */
-        .products { padding: 80px 0; background: rgba(13, 15, 18, 0.6); }
-        .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800;}
-        .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-        .product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; transition: all 0.3s; display: flex; flex-direction: column; }
-        .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
-        .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); }
-        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
-        .product-info h4 { font-size: 1rem; margin-bottom: 8px; font-weight: 700;}
-        .product-info p { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 15px; flex-grow: 1;}
-        .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px;}
-        .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px;}
 
         .features { padding: 60px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: rgba(13, 15, 18, 0.7); }
         .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; text-align: left; }
@@ -395,7 +395,7 @@
         </div>
     </section>
 
-    <!-- ПОДПИСКИ -->
+    <!-- ПОДПИСКИ (ИСПРАВЛЕНЫ КНОПКИ И ВЫСОТА) -->
     <section class="subscriptions">
         <div class="container">
             <h2 style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
@@ -406,6 +406,7 @@
                     <div class="sub-title">С37 КЛУБ</div>
                     <div class="sub-price">2 990 ₽/мес</div>
                     <div class="sub-desc">10 батончиков на месяц + безлимитный доступ к ЭЙВА Plus + бесплатная доставка.</div>
+                    <!-- Кнопка теперь залитая (btn), как и справа -->
                     <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
                 </div>
                 <!-- Премиум -->
@@ -419,7 +420,7 @@
         </div>
     </section>
 
-    <!-- КОНСТРУКТОР (7 батончиков) -->
+    <!-- КОНСТРУКТОР (ИДЕТ ПЕРЕД АНОНСАМИ) -->
     <section class="products">
         <div class="container">
             <h2>Или собери свой Бокс вручную</h2>
@@ -499,7 +500,7 @@
         </div>
     </section>
 
-    <!-- АНОНСЫ (В РАЗРАБОТКЕ) -->
+    <!-- АНОНСЫ (ИДУТ ПОСЛЕ КОНСТРУКТОРА) -->
     <section class="coming-soon" id="coming-soon">
         <div class="container">
             <h2>Расширяем систему</h2>
@@ -557,7 +558,7 @@
         </div>
     </section>
 
-    <!-- Квиз -->
+    <!-- Квиз (ИДЕТ В САМОМ КОНЦЕ) -->
     <section id="quiz" class="quiz-section container">
         <div class="quiz-container">
             <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
