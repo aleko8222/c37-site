@@ -20,8 +20,16 @@
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Manrope', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
-        
-        body { 
+        .site-logo {
+    height: 90px; /* Большой размер для компьютера */
+    width: auto;
+}
+
+@media (max-width: 768px) {
+    .site-logo {
+        height: 55px; /* Маленький размер для телефона */
+    }
+}        body { 
             background-color: var(--bg-base); color: var(--text-main); line-height: 1.6; overflow-x: hidden; position: relative; padding-bottom: env(safe-area-inset-bottom);
         }
         
@@ -419,7 +427,7 @@
     <header>
         <div class="container header-content">
            <div class="logo">
-    <a href="index.html"><img src="logo.png" alt="C37 FUEL" style="height: 70px; width: auto;"></a>
+    <a href="index.html"><img src="logo.png" alt="C37 FUEL" class="site-logo"></a>
 </div>
             <div style="display:flex; gap:20px; align-items:center;">
                 <button class="cart-icon-btn" onclick="toggleCart()" aria-label="Открыть корзину">
