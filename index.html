@@ -44,9 +44,7 @@ body::after {
 
 .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 2; }
 
-/* ==========================================
-   КНОПКИ — объединены дублирующиеся стили
-   ========================================== */
+/* КНОПКИ */
 .btn {
   background-color: var(--accent); color: #111; border: none; padding: 16px 35px;
   font-size: 1.1rem; font-weight: bold; border-radius: 12px; cursor: pointer;
@@ -58,7 +56,6 @@ body::after {
 .btn:hover { background-color: #FF8C42; transform: translateY(-2px) scale(1.02); box-shadow: 0 8px 25px rgba(255,107,26,0.6); }
 .btn:active { transform: translateY(1px) scale(0.98); box-shadow: 0 2px 10px rgba(255,107,26,0.4); }
 
-/* outline и small — общий transition вынесен, нет дублей */
 .btn-outline {
   background: transparent; border: 1px solid var(--accent); color: var(--accent);
   transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.3s;
@@ -75,9 +72,7 @@ body::after {
 .btn-small:hover { background: var(--accent); color: #111; transform: translateY(-1px); box-shadow: 0 4px 15px rgba(255,107,26,0.3); }
 .btn-small:active { transform: translateY(1px) scale(0.98); }
 
-/* ==========================================
-   HEADER
-   ========================================== */
+/* HEADER */
 header {
   padding: 15px 0; border-bottom: 1px solid var(--border);
   position: sticky; top: 0;
@@ -85,27 +80,12 @@ header {
 }
 .header-content { display: flex; justify-content: space-between; align-items: center; }
 .logo { display: flex; align-items: center; gap: 15px; line-height: 1; }
-.logo-c37 {
-  background-color: var(--accent); padding: 8px 16px 10px 12px; border-radius: 12px;
-  font-size: 3rem; font-style: italic; font-weight: 900;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 15px rgba(255,107,26,0.3);
-}
-.logo-c37 span {
-  background: linear-gradient(to bottom, #e6e6e6 0%, #000 25%, #000 75%, #222 100%);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.4)); letter-spacing: 2px;
-}
-.logo-fuel { color: #B0B0B0; font-style: italic; font-weight: 900; font-size: 2.2rem; letter-spacing: 2px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
-
 .cart-icon-btn { background: transparent; border: none; cursor: pointer; position: relative; color: #fff; display: flex; align-items: center; gap: 8px; transition: transform 0.2s; }
 .cart-icon-btn:hover { transform: scale(1.1); }
 .cart-icon-btn svg { width: 24px; height: 24px; fill: var(--accent); }
 .cart-count { background: var(--accent); color: #111; font-weight: bold; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; position: absolute; top: -8px; right: -8px; }
 
-/* ==========================================
-   HERO
-   ========================================== */
+/* HERO */
 .hero { padding: 80px 0 60px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
 .hero-text { flex: 1; }
 .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 20px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); font-weight: 900; }
@@ -141,9 +121,7 @@ header {
 .hud-node.n2 { top: 70%; right: 25%; animation: pulse 2s infinite alternate 0.5s; }
 .hud-node.n3 { bottom: 25%; left: 50%; animation: pulse 1.8s infinite alternate 1s; }
 
-/* ==========================================
-   KEYFRAMES — все в одном месте
-   ========================================== */
+/* KEYFRAMES */
 @keyframes scan {
   0%   { top: -5%; opacity: 0; }
   10%  { opacity: 1; }
@@ -156,47 +134,21 @@ header {
   100% { transform: scale(1.5); opacity: 1;   box-shadow: 0 0 20px 8px var(--accent); }
 }
 @keyframes blink { 0% { opacity: 1; } 100% { opacity: 0.3; } }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
 
-/* --- НОВАЯ АНИМАЦИЯ ПОЯВЛЕНИЯ КАРТОЧЕК --- */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(30px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* SCROLL REVEAL */
+.reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s cubic-bezier(0.5,0,0,1), transform 0.8s cubic-bezier(0.5,0,0,1); will-change: opacity, transform; }
+.reveal.active { opacity: 1; transform: translateY(0); }
+.product-card.reveal.active, .box-card.reveal.active, .sub-card.reveal.active, .shot-card.reveal.active, .coming-card.reveal.active { animation: fadeInUp 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) both; }
 
 .trust-markers { font-size: 0.85rem; color: var(--text-muted); margin-top: 15px; letter-spacing: 0.5px; display: flex; gap: 15px; }
 
-/* ==========================================
-   SCROLL REVEAL
-   ========================================== */
-.reveal {
-  opacity: 0; transform: translateY(40px);
-  transition: opacity 0.8s cubic-bezier(0.5,0,0,1), transform 0.8s cubic-bezier(0.5,0,0,1);
-  will-change: opacity, transform;
-}
-.reveal.active { opacity: 1; transform: translateY(0); }
-
-/* Анимация карточек при появлении через Intersection Observer */
-.product-card.reveal.active,
-.box-card.reveal.active,
-.sub-card.reveal.active,
-.shot-card.reveal.active,
-.coming-card.reveal.active {
-  animation: fadeInUp 0.6s cubic-bezier(0.25, 0.8, 0.25, 1) both;
-}
-
-/* ==========================================
-   БОКСЫ
-   ========================================== */
+/* БОКСЫ */
 .boxes { padding: 80px 0; background: rgba(13,15,18,0.8); border-bottom: 1px solid var(--border); }
 .boxes h2 { text-align: center; font-size: 2.5rem; margin-bottom: 10px; font-weight: 800; }
 .boxes-sub { text-align: center; color: var(--text-muted); margin-bottom: 50px; font-size: 1.1rem; }
 .boxes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; }
-
-.box-card {
-  background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 40px;
-  display: flex; flex-direction: column; position: relative; overflow: hidden;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
+.box-card { background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 40px; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: border-color 0.3s, box-shadow 0.3s; }
 .box-card:hover { border-color: var(--accent); box-shadow: 0 10px 40px rgba(255,107,26,0.1); }
 .box-card.popular { border: 2px solid var(--accent); transform: scale(1.02); }
 .box-badge { position: absolute; top: 0; right: 0; background: var(--accent); color: #111; padding: 5px 15px; font-weight: bold; font-size: 0.8rem; border-bottom-left-radius: 12px; }
@@ -208,38 +160,23 @@ header {
 .box-features li { color: #ddd; font-size: 0.95rem; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
 .box-features li::before { content: "✓"; color: var(--green); font-weight: bold; }
 
-/* ==========================================
-   ПОДПИСКИ
-   ========================================== */
+/* ПОДПИСКИ */
 .subscriptions { padding: 80px 0; background: rgba(13,15,18,0.6); border-bottom: 1px solid var(--border); }
 .subs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; max-width: 900px; margin: 0 auto; align-items: stretch; }
-.sub-card {
-  background: linear-gradient(135deg, rgba(42,47,53,0.9) 0%, rgba(30,34,38,0.9) 100%);
-  border: 1px solid #444; border-radius: 16px; padding: 35px;
-  display: flex; flex-direction: column;
-  transition: transform 0.3s;
-}
+.sub-card { background: linear-gradient(135deg, rgba(42,47,53,0.9) 0%, rgba(30,34,38,0.9) 100%); border: 1px solid #444; border-radius: 16px; padding: 35px; display: flex; flex-direction: column; transition: transform 0.3s; }
 .sub-card:hover { transform: translateY(-5px); }
 .sub-card.premium { border-color: var(--accent); box-shadow: 0 0 30px rgba(255,107,26,0.15); }
 .sub-title { font-size: 1.5rem; font-weight: 800; color: #fff; margin-bottom: 10px; }
 .sub-price { font-size: 2rem; font-weight: 900; color: var(--accent); margin-bottom: 20px; }
 .sub-desc { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 25px; flex-grow: 1; }
 
-/* ==========================================
-   КОНСТРУКТОР
-   ========================================== */
+/* КОНСТРУКТОР */
 .products { padding: 80px 0; background: rgba(13,15,18,0.6); border-bottom: 1px solid var(--border); }
 .products h2 { text-align: center; font-size: 2rem; margin-bottom: 10px; font-weight: 800; }
 .products-sub { text-align: center; color: var(--text-muted); margin-bottom: 40px; font-size: 0.95rem; }
 .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
-
-.product-card {
-  background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333;
-  border-radius: 16px; overflow: hidden; display: flex; flex-direction: column;
-  transition: transform 0.3s, border-color 0.3s;
-}
+.product-card { background: var(--bg-card); backdrop-filter: blur(10px); border: 1px solid #333; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.3s, border-color 0.3s; }
 .product-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-
 .product-img { width: 100%; height: 180px; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; border-bottom: 1px solid #333; padding: 20px; }
 .product-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.9)); cursor: zoom-in; transition: transform 0.3s ease; }
 .product-img img:hover { transform: scale(1.08); }
@@ -249,9 +186,7 @@ header {
 .product-info .price { font-size: 1.2rem; font-weight: 800; color: var(--accent); margin-bottom: 10px; }
 .product-info .price span { font-size: 0.8rem; color: #777; font-weight: normal; text-decoration: line-through; margin-left: 5px; }
 
-/* ==========================================
-   АНОНСЫ
-   ========================================== */
+/* АНОНСЫ */
 .coming-soon { padding: 80px 0; background: rgba(13,15,18,0.8); border-bottom: 1px solid var(--border); }
 .coming-soon h2 { text-align: center; font-size: 2.5rem; margin-bottom: 40px; font-weight: 800; }
 .shots-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 40px; }
@@ -272,9 +207,7 @@ header {
 .coming-card p  { color: var(--text-muted); margin-bottom: 15px; font-size: 0.9rem; }
 .coming-date    { color: var(--accent); font-weight: bold; margin-bottom: 20px; font-size: 0.9rem; }
 
-/* ==========================================
-   КВИЗ
-   ========================================== */
+/* КВИЗ */
 .quiz-section { padding: 60px 0 80px; display: none; }
 .quiz-container { background: var(--bg-card); backdrop-filter: blur(15px); border: 1px solid var(--border); border-radius: 16px; padding: 40px; max-width: 700px; margin: 0 auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); }
 .progress-bar  { width: 100%; height: 4px; background: #333; border-radius: 2px; margin-bottom: 30px; }
@@ -296,32 +229,18 @@ header {
 .result-card .value { font-size: 2rem; font-weight: 900; color: var(--accent); margin-top: 5px; }
 .disclaimer { font-size: 0.85rem; color: #777; text-align: center; margin-top: 30px; line-height: 1.4; }
 
-/* ==========================================
-   FOOTER
-   ========================================== */
+/* FOOTER */
 footer { padding: 40px 0; border-top: 1px solid var(--border); text-align: center; color: #777; font-size: 0.85rem; background: var(--bg-base); position: relative; z-index: 2; }
 footer a { color: #888; text-decoration: none; margin: 0 10px; transition: color 0.2s; }
 footer a:hover { color: var(--accent); }
 
-/* ==========================================
-   LIGHTBOX
-   ========================================== */
-.image-lightbox {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9);
-  z-index: 10000; display: none; justify-content: center; align-items: center;
-  cursor: zoom-out; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px);
-}
+/* LIGHTBOX */
+.image-lightbox { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: none; justify-content: center; align-items: center; cursor: zoom-out; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(5px); }
 .image-lightbox.active { display: flex; opacity: 1; }
-.image-lightbox img {
-  max-width: 90%; max-height: 90vh; border-radius: 16px; border: 2px solid var(--accent);
-  box-shadow: 0 0 50px rgba(255,107,26,0.3);
-  transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-}
+.image-lightbox img { max-width: 90%; max-height: 90vh; border-radius: 16px; border: 2px solid var(--accent); box-shadow: 0 0 50px rgba(255,107,26,0.3); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175,0.885,0.32,1.275); }
 .image-lightbox.active img { transform: scale(1); }
 
-/* ==========================================
-   КОРЗИНА
-   ========================================== */
+/* КОРЗИНА */
 .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 9998; display: none; opacity: 0; transition: opacity 0.3s; }
 .cart-overlay.active { display: block; opacity: 1; }
 .cart-sidebar { position: fixed; top: 0; right: -400px; width: 100%; max-width: 400px; height: 100%; background: var(--bg-base); border-left: 1px solid var(--accent); z-index: 9999; transition: right 0.3s ease; display: flex; flex-direction: column; box-shadow: -10px 0 30px rgba(0,0,0,0.8); }
@@ -341,10 +260,8 @@ footer a:hover { color: var(--accent); }
 .checkout-form.active { display: block; }
 .form-group { margin-bottom: 15px; }
 .form-group label { display: block; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 5px; }
-.form-group input,
-.form-group select { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; transition: border-color 0.2s; }
-.form-group input:focus,
-.form-group select:focus { border-color: var(--accent); }
+.form-group input, .form-group select { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; border-radius: 8px; outline: none; transition: border-color 0.2s; }
+.form-group input:focus, .form-group select:focus { border-color: var(--accent); }
 .pd-consent { display: flex; align-items: flex-start; gap: 8px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 15px; line-height: 1.4; }
 .pd-consent input { margin-top: 3px; width: auto; }
 .pd-consent a { color: var(--accent); text-decoration: none; }
@@ -352,17 +269,13 @@ footer a:hover { color: var(--accent); }
 .cart-total { display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: bold; margin-bottom: 15px; }
 .cart-warning { color: #ffcc00; font-size: 0.85rem; margin-bottom: 10px; display: none; line-height: 1.3; }
 
-/* ==========================================
-   МОДАЛКА OZON
-   ========================================== */
+/* МОДАЛКА OZON */
 .ozon-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 10000; display: none; justify-content: center; align-items: center; }
 .ozon-modal-content { background: var(--bg-card); border: 1px solid var(--accent); border-radius: 16px; padding: 40px; max-width: 400px; text-align: center; position: relative; }
 .close-ozon { position: absolute; top: 15px; right: 15px; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
 .close-ozon:hover { color: var(--accent); }
 
-/* ==========================================
-   ЧАТ
-   ========================================== */
+/* ЧАТ */
 #chat-btn { position: fixed; bottom: 30px; right: 30px; background-color: var(--accent); color: #111; border: none; padding: 15px 25px; border-radius: 30px; font-weight: 800; display: flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 20px rgba(255,107,26,0.4); z-index: 1000; transition: transform 0.2s, box-shadow 0.2s; }
 #chat-btn:hover { transform: scale(1.05); box-shadow: 0 6px 25px rgba(255,107,26,0.6); }
 #chat-btn svg { width: 20px; height: 20px; fill: #111; }
@@ -382,52 +295,18 @@ footer a:hover { color: var(--accent); }
 .chat-input button { background: var(--accent); border: none; color: #111; padding: 0 20px; margin-left: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.2rem; transition: transform 0.2s; }
 .chat-input button:hover { transform: scale(1.05); }
 
-/* ==========================================
-   TOAST-УВЕДОМЛЕНИЯ
-   ========================================== */
-#toast-container {
-  position: fixed; bottom: 30px; right: 30px;
-  display: flex; flex-direction: column; gap: 10px;
-  z-index: 99999; pointer-events: none;
-}
-.toast {
-  background: rgba(20, 24, 28, 0.97);
-  border: 1px solid var(--accent);
-  border-left: 4px solid var(--accent);
-  color: #fff;
-  padding: 14px 18px;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  min-width: 260px;
-  max-width: 320px;
-  box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255,107,26,0.15);
-  display: flex; align-items: center; gap: 12px;
-  pointer-events: auto;
-  animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-}
-.toast.hide {
-  animation: toastOut 0.35s ease forwards;
-}
-.toast-icon {
-  font-size: 1.3rem;
-  flex-shrink: 0;
-}
+/* TOAST-УВЕДОМЛЕНИЯ */
+#toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 99999; pointer-events: none; }
+.toast { background: rgba(20, 24, 28, 0.97); border: 1px solid var(--accent); border-left: 4px solid var(--accent); color: #fff; padding: 14px 18px; border-radius: 12px; font-size: 0.95rem; min-width: 260px; max-width: 320px; box-shadow: 0 8px 30px rgba(0,0,0,0.6), 0 0 20px rgba(255,107,26,0.15); display: flex; align-items: center; gap: 12px; pointer-events: auto; animation: toastIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+.toast.hide { animation: toastOut 0.35s ease forwards; }
+.toast-icon { font-size: 1.3rem; flex-shrink: 0; }
 .toast-body { display: flex; flex-direction: column; gap: 2px; }
 .toast-title { font-weight: 700; font-size: 0.9rem; color: var(--accent); }
 .toast-msg   { font-size: 0.85rem; color: #ccc; }
+@keyframes toastIn { from { opacity: 0; transform: translateX(60px) scale(0.92); } to { opacity: 1; transform: translateX(0) scale(1); } }
+@keyframes toastOut { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(60px) scale(0.92); } }
 
-@keyframes toastIn {
-  from { opacity: 0; transform: translateX(60px) scale(0.92); }
-  to   { opacity: 1; transform: translateX(0)   scale(1);    }
-}
-@keyframes toastOut {
-  from { opacity: 1; transform: translateX(0)   scale(1);    }
-  to   { opacity: 0; transform: translateX(60px) scale(0.92); }
-}
-
-/* ==========================================
-   АДАПТИВ
-   ========================================== */
+/* АДАПТИВ */
 @media (max-width: 768px) {
   .hero { flex-direction: column; text-align: center; padding: 40px 0; }
   .hero-text h1 { font-size: 2.5rem; }
@@ -436,8 +315,6 @@ footer a:hover { color: var(--accent); }
   .box-card.popular { transform: none; }
   .result-grid { grid-template-columns: 1fr; }
   .row-2 { grid-template-columns: 1fr; }
-  .logo-c37 { font-size: 2.2rem; padding: 6px 12px 8px 10px; }
-  .logo-fuel { font-size: 1.6rem; }
   #chat-window { width: calc(100% - 40px); right: 20px; bottom: 90px; height: 60vh; }
   #chat-btn    { bottom: 20px; right: 20px; padding: 12px 20px; }
   .cart-sidebar { max-width: 100%; right: -100%; }
@@ -447,15 +324,12 @@ footer a:hover { color: var(--accent); }
 </head>
 <body>
 
-<!-- TOAST КОНТЕЙНЕР -->
 <div id="toast-container"></div>
 
-<!-- LIGHTBOX ДЛЯ КАРТИНОК -->
 <div id="image-lightbox" class="image-lightbox" onclick="closeImage()">
   <img id="lightbox-img" src="" alt="Zoomed Image">
 </div>
 
-<!-- МОДАЛКА OZON -->
 <div id="ozon-modal" class="ozon-modal">
   <div class="ozon-modal-content">
     <button class="close-ozon" onclick="closeOzonModal()">✕</button>
@@ -466,13 +340,11 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
-<!-- ВИДЕО-ОВЕРЛЕЙ -->
 <div id="video-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column;">
   <video id="eva-video" src="intro.mp4" playsinline style="max-width:90%; max-height:80vh; border:1px solid var(--border); border-radius:12px; box-shadow:0 0 50px rgba(255,107,26,0.2);"></video>
   <button class="btn-outline" onclick="endVideo()" style="margin-top:20px; padding:12px 24px; border-radius:8px; cursor:pointer; background:transparent; font-size:1rem; transition:all 0.3s;">Пропустить видео ➔</button>
 </div>
 
-<!-- КОРЗИНА -->
 <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
 <div class="cart-sidebar" id="cart-sidebar">
   <div class="cart-header">
@@ -522,7 +394,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
-<!-- ШАПКА -->
 <header>
   <div class="container header-content">
     <div class="logo">
@@ -538,7 +409,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </header>
 
-<!-- HERO -->
 <section class="hero container">
   <div class="hero-text reveal">
     <h1>Ты архитектор<br>своей жизни.<br><span>Мы — топливо.</span></h1>
@@ -569,7 +439,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- БОКСЫ -->
 <section class="boxes" id="boxes">
   <div class="container">
     <h2 class="reveal">Выбери свой Бокс Протокола</h2>
@@ -606,7 +475,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- ПОДПИСКИ -->
 <section class="subscriptions">
   <div class="container">
     <h2 class="reveal" style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
@@ -628,7 +496,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- КОНСТРУКТОР -->
 <section class="products">
   <div class="container">
     <h2 class="reveal">Или собери свой Бокс вручную</h2>
@@ -701,7 +568,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- АНОНСЫ -->
 <section class="coming-soon" id="coming-soon">
   <div class="container">
     <h2 class="reveal">Расширяем систему</h2>
@@ -749,7 +615,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- КВИЗ -->
 <section id="quiz" class="quiz-section container">
   <div class="quiz-container">
     <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -761,7 +626,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </section>
 
-<!-- ЧАТ -->
 <button id="chat-btn" onclick="toggleChat()" aria-label="Открыть чат с Эйвой">
   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
   Чат с ЭЙВОЙ
@@ -784,7 +648,6 @@ footer a:hover { color: var(--accent); }
   </div>
 </div>
 
-<!-- ПОДВАЛ -->
 <footer>
   <div class="container">
     <p style="margin-bottom:15px;">
@@ -799,9 +662,6 @@ footer a:hover { color: var(--accent); }
 </footer>
 
 <script>
-// ==========================================
-// TOAST-УВЕДОМЛЕНИЯ
-// ==========================================
 function showToast(title, msg, icon = '🛒') {
   const container = document.getElementById('toast-container');
   const toast = document.createElement('div');
@@ -820,9 +680,6 @@ function showToast(title, msg, icon = '🛒') {
   }, 3000);
 }
 
-// ==========================================
-// LIGHTBOX
-// ==========================================
 function openImage(src) {
   document.getElementById('lightbox-img').src = src;
   document.getElementById('image-lightbox').classList.add('active');
@@ -831,9 +688,6 @@ function closeImage() {
   document.getElementById('image-lightbox').classList.remove('active');
 }
 
-// ==========================================
-// SCROLL REVEAL
-// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
   const revealElements = document.querySelectorAll('.reveal');
   const revealOnScroll = new IntersectionObserver(function(entries, observer) {
@@ -846,17 +700,11 @@ document.addEventListener("DOMContentLoaded", () => {
   revealElements.forEach(el => revealOnScroll.observe(el));
 });
 
-// ==========================================
-// ТАКТИЛЬНАЯ ОТДАЧА
-// ==========================================
 document.addEventListener('click', function(e) {
   const btn = e.target.closest('.btn, .btn-small, .btn-outline, .cart-icon-btn');
   if (btn && navigator.vibrate) navigator.vibrate(30);
 });
 
-// ==========================================
-// УМНЫЙ ШЛЮЗ OZON
-// ==========================================
 function checkCity() {
   const cityInput = document.getElementById('order-city');
   const remoteCities = ['владивосток','хабаровск','новосибирск','красноярск','иркутск','якутск','магадан','петропавловск','южно-сахалинск'];
@@ -872,9 +720,6 @@ document.getElementById('ozon-modal').addEventListener('click', function(e) {
   if (e.target === this) closeOzonModal();
 });
 
-// ==========================================
-// КОРЗИНА
-// ==========================================
 let cart = JSON.parse(localStorage.getItem('c37_cart')) || [];
 
 function toggleCart() {
@@ -901,9 +746,6 @@ function addToCart(name, price) {
   }
   saveCart();
   updateCartCount();
-  if (!document.getElementById('cart-sidebar').classList.contains('active')) {
-    toggleCart();
-  }
   renderCart();
 }
 
@@ -1020,9 +862,6 @@ function submitOrder() {
   toggleCart();
 }
 
-// ==========================================
-// ВИДЕО
-// ==========================================
 function playIntro() {
   const overlay     = document.getElementById('video-overlay');
   const video       = document.getElementById('eva-video');
@@ -1044,9 +883,6 @@ function endVideo() {
   setTimeout(() => quizSection.scrollIntoView({ behavior: 'smooth' }), 100);
 }
 
-// ==========================================
-// ЧАТ
-// ==========================================
 function toggleChat() {
   const chat = document.getElementById('chat-window');
   chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
@@ -1105,9 +941,6 @@ async function sendMessage() {
   }
 }
 
-// ==========================================
-// КВИЗ
-// ==========================================
 const steps = [
   { id: 'goal',         type: 'options',            question: 'Твоя цель?',             options: ['Похудение','Энергия','Мышцы'] },
   { id: 'params',       type: 'group_params',        question: 'Твои параметры' },
@@ -1277,9 +1110,6 @@ function resetQuiz() {
   renderStep();
 }
 
-// ==========================================
-// ГЛОБАЛЬНЫЙ ESC
-// ==========================================
 document.addEventListener('keydown', function(e) {
   if (e.key !== 'Escape') return;
   const ozon = document.getElementById('ozon-modal');
