@@ -2,115 +2,155 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Мой Дневник — C37 FUEL</title>
+<!-- Подключаем общие стили сайта -->
 <link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+/* Стили, которые есть только в дневнике */
+.diary-wrap { max-width: 760px; margin: 40px auto; padding: 0 20px; }
+.top-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+.card{background:rgba(20,24,28,.9); border:1px solid #333; border-radius:16px; padding:20px; margin-bottom:16px;}
+.card h2{font-size:1.05rem;margin-bottom:12px;color:#FF6B1A;text-transform:uppercase;letter-spacing:1px;}
+.row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
+.ring-box{text-align:center;}
+.ring{width:110px;height:110px;border-radius:50%;border:6px solid #333;position:relative;margin:0 auto 8px;}
+.ring i{position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:#FF6B1A;border-right-color:#FF6B1A; transition: transform 0.5s;}
+.ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.5rem;}
+.ring b small{font-size:.6rem;color:#c0c0c0;text-transform:uppercase;letter-spacing:1px;}
+.stat{flex:1;min-width:120px;}
+.stat .v{font-size:1.6rem;font-weight:900;color:#FF6B1A;}
+.stat .l{font-size:.75rem;color:#c0c0c0;text-transform:uppercase;letter-spacing:1px;}
+.eva{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.3);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:12px;}
+.eva b{color:#FF6B1A;}
+.slot{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;}
+.slot .name{font-weight:700;font-size:.95rem;}
+.slot .hint{font-size:.8rem;color:#c0c0c0;margin:4px 0 8px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px;}
+.chip{background:rgba(0,0,0,.5);border:1px solid #444;border-radius:20px;padding:6px 12px;font-size:.78rem;cursor:pointer;color:#fff;}
+.chip:hover{border-color:#FF6B1A;}
+.btns{display:flex;gap:8px;flex-wrap:wrap;}
+.btn-diary{background:#FF6B1A;color:#111;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.85rem;}
+.btn-diary.ghost{background:transparent;border:1px solid #FF6B1A;color:#FF6B1A;}
+.btn-diary:disabled{opacity:.4;cursor:not-allowed;}
+.tap{display:flex;gap:8px;flex-wrap:wrap;}
+.tap button{width:44px;height:44px;border-radius:10px;border:1px solid #444;background:rgba(0,0,0,.5);color:#fff;font-size:1.1rem;cursor:pointer;}
+.tap button.sel{background:#FF6B1A;color:#111;border-color:#FF6B1A;font-weight:900;}
+input[type=number],input[type=text],select{background:rgba(0,0,0,.6);border:1px solid #444;color:#fff;border-radius:10px;padding:10px 12px;width:120px;font-size:1rem;outline:none;}
+input:focus, select:focus{border-color:#FF6B1A;}
+label{font-size:.8rem;color:#c0c0c0;display:block;margin-bottom:4px;}
+.warn{color:#ffcc00;font-size:.8rem;margin-top:8px;display:none;}
+.badge{display:inline-block;background:#333;border-radius:6px;padding:4px 10px;font-size:.75rem;font-weight:700;margin:0 6px 6px 0;}
+.badge.on{background:#FF6B1A;color:#111;}
+.upsell{border:2px solid #FF6B1A;background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(20,24,28,.95));}
+svg.spark{width:100%;height:60px;}
+.disc{font-size:.75rem;color:#777;margin-top:16px;text-align:center;}
+.hidden{display:none;}
+</style>
 </head>
 <body>
 
+<!-- ГЛОБАЛЬНАЯ ШАПКА С КОРЗИНОЙ -->
 <div id="header-placeholder"></div>
 
-<div class="container" style="padding: 60px 20px; max-width: 900px; margin: 0 auto;">
-    
-    <!-- ШАПКА ДНЕВНИКА: СТРИК И КОЛЬЦО -->
-    <div class="diary-header reveal">
-        <div class="diary-ring">
-            <div class="ring-text"><span id="day-count">1</span><br><small>ДЕНЬ</small></div>
-        </div>
-        <div class="diary-streak">
-            <div class="fire-icon">🔥</div>
-            <div>
-                <div style="font-size: 1.5rem; font-weight: 900;" id="streak-count">0</div>
-                <div style="font-size: 0.8rem; color: var(--text-muted);">ДНЕЙ ПОДРЯД</div>
-            </div>
-        </div>
-        <div class="diary-goal-box">
-            <div style="font-size: 0.8rem; color: var(--text-muted);">ЦЕЛЬ НА ДЕНЬ</div>
-            <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent);" id="daily-cal-goal">0 ккал</div>
-        </div>
-    </div>
+<div class="diary-wrap">
+  <div class="top-bar">
+      <h1 style="font-size:1.6rem; margin:0;">Мой <span style="color:#FF6B1A;">Дневник</span></h1>
+      <a href="index.html" style="color:#c0c0c0; text-decoration:none; font-size:0.9rem;">← На главную</a>
+  </div>
+  <div style="color:#c0c0c0; font-size:.85rem; margin-bottom:20px;">20 секунд в день: слоты, энергия, чек-ин раз в неделю.</div>
 
-    <!-- СЛОТЫ ПИТАНИЯ -->
-    <h2 class="reveal" style="margin-top: 40px; font-size: 1.5rem;">Приемы пищи на сегодня</h2>
-    <div class="slots-grid reveal">
-        <div class="slot-card" id="slot-breakfast">
-            <div class="slot-title">🌅 Завтрак</div>
-            <div class="slot-desc">Белки + сложные углеводы</div>
-            <div class="slot-actions">
-                <button class="btn-slot eaten" onclick="markSlot('breakfast', 'eaten')">Съел</button>
-                <button class="btn-slot skipped" onclick="markSlot('breakfast', 'skipped')">Пропустил</button>
-            </div>
-        </div>
-        <div class="slot-card" id="slot-lunch">
-            <div class="slot-title">☀️ Обед</div>
-            <div class="slot-desc">Белок + овощи</div>
-            <div class="slot-actions">
-                <button class="btn-slot eaten" onclick="markSlot('lunch', 'eaten')">Съел</button>
-                <button class="btn-slot skipped" onclick="markSlot('lunch', 'skipped')">Пропустил</button>
-            </div>
-        </div>
-        <div class="slot-card" id="slot-dinner">
-            <div class="slot-title">🌙 Ужин</div>
-            <div class="slot-desc">Легкий белок</div>
-            <div class="slot-actions">
-                <button class="btn-slot eaten" onclick="markSlot('dinner', 'eaten')">Съел</button>
-                <button class="btn-slot skipped" onclick="markSlot('dinner', 'skipped')">Пропустил</button>
-            </div>
-        </div>
-        <div class="slot-card" id="slot-snacks">
-            <div class="slot-title">🍎 Перекус</div>
-            <div class="slot-desc">Батончик C37</div>
-            <div class="slot-actions">
-                <button class="btn-slot eaten" onclick="markSlot('snacks', 'eaten')">Съел</button>
-                <button class="btn-slot skipped" onclick="markSlot('snacks', 'skipped')">Пропустил</button>
-            </div>
-        </div>
+  <!-- ДАШБОРД -->
+  <div class="card">
+    <div class="row">
+      <div class="ring-box"><div class="ring"><i id="ringArc"></i><b><span id="dayNum">—</span><small>день</small></b></div></div>
+      <div class="stat"><div class="v" id="streakV">0</div><div class="l">🔥 стрик</div></div>
+      <div class="stat"><div class="v" id="discV">0/0</div><div class="l">слоты сегодня</div></div>
+      <div class="stat"><div class="v" id="weightV">—</div><div class="l">вес, кг</div></div>
     </div>
+    <div style="margin-top:12px;"><label>Энергия за 7 дней</label><svg class="spark" id="sparkE"></svg></div>
+    <div class="eva" id="evaComment"><b>ЭЙВА:</b> Загружаюсь…</div>
+    <div style="margin-top:10px;" id="badges"></div>
+  </div>
 
-    <!-- БЫСТРОЕ ДОБАВЛЕНИЕ БАТОНЧИКОВ -->
-    <div class="quick-add-c37 reveal" style="margin-top: 30px;">
-        <h3>Съел батончик C37? Отметь:</h3>
-        <div class="quick-buttons">
-            <button onclick="addSnackC37('Протеин База', 170)">Протеин База</button>
-            <button onclick="addSnackC37('Коллаген Лайт', 220)">Коллаген Лайт</button>
-            <button onclick="addSnackC37('Энергия Дисциплины', 170)">Энергия</button>
-            <button onclick="addSnackC37('Восстановление', 170)">Восстановление</button>
-            <button onclick="addSnackC37('Экстрим', 220)">Экстрим</button>
-        </div>
-        <p style="margin-top: 10px; font-size: 0.9rem; color: #aaa;">Съедено батончиков: <strong id="snack-count" style="color:var(--accent);">0</strong></p>
+  <!-- АПСЕЙЛ ДЕНЬ 8 -->
+  <div class="card upsell hidden" id="upsell8">
+    <h2>Батончики закончились?</h2>
+    <p style="font-size:.92rem;margin-bottom:12px;">Неделя протокола закрыта. Продолжим без паузы: в подписке батончики приходят сами, а протокол живёт дальше.</p>
+    <div class="btns">
+      <button class="btn-diary" onclick="location.href='index.html#boxes'">Выбрать подписку</button>
     </div>
+  </div>
 
-    <hr style="border-color: #333; margin: 40px 0;">
-
-    <!-- ГРАФИК ВЕСА -->
-    <h2 class="reveal" style="font-size: 1.5rem;">Трекер веса</h2>
-    <div class="weight-input-card reveal" style="margin-top: 15px;">
-        <div class="weight-input-group">
-            <label>Текущий вес (кг):</label>
-            <input type="number" id="current-weight" placeholder="75.5" step="0.1">
-            <button class="btn" onclick="saveWeight()">Записать</button>
-        </div>
-        <div class="weight-input-group" style="margin-top: 15px; border-top: 1px solid #444; padding-top: 15px;">
-            <label>Цель (кг):</label>
-            <input type="number" id="target-weight" placeholder="70" step="0.1" onchange="saveTargetWeight()">
-        </div>
+  <!-- ЧЕК-ИН -->
+  <div class="card hidden" id="checkinCard">
+    <h2>Недельный чек-ин</h2>
+    <p style="font-size:.85rem;color:#c0c0c0;margin-bottom:12px;">«Цифра на весах — это данные, а не приговор. Скинь — подкорректирую».</p>
+    <div class="row" style="margin-bottom:12px;">
+      <div><label>Вес, кг</label><input type="number" id="ciWeight" step="0.1" min="30" max="250"></div>
+      <div><label>Талия, см (опц.)</label><input type="number" id="ciWaist" min="40" max="200"></div>
     </div>
-    <div class="chart-container reveal" style="margin-top: 20px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); height: 300px;">
-        <canvas id="weightChart"></canvas>
+    <label>Тяга к сладкому на неделе</label>
+    <div class="tap" id="ciCraving" style="margin-bottom:12px;">
+      <button data-v="спала">Спала</button><button data-v="как обычно">Как обычно</button><button data-v="усилилась">Усилилась</button>
     </div>
+    <div class="btns"><button class="btn-diary" onclick="submitCheckin()">Отправить ЭЙВЕ</button></div>
+    <div class="warn" id="ciWarn"></div>
+  </div>
 
-    <!-- ЧЕК-ИН И ЭЙВА -->
-    <div style="text-align: center; margin: 50px 0;">
-        <button class="btn" style="font-size: 1.2rem; padding: 18px 40px;" onclick="askEvaAboutProgress()">✨ Спросить ЭЙВУ о прогрессе</button>
+  <!-- СЛОТЫ СЕГОДНЯ -->
+  <div class="card">
+    <h2>Слоты сегодня</h2>
+    <div id="slotsBox"></div>
+  </div>
+
+  <!-- ДНЕВНЫЕ ТАПЫ -->
+  <div class="card">
+    <h2>Как ты сегодня?</h2>
+    <label>Энергия (1 — качели, 5 — ровное пламя)</label>
+    <div class="tap" id="tapEnergy" style="margin:6px 0 12px;">
+      <button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button>
     </div>
+    <label>Сон, часов</label>
+    <div class="tap" id="tapSleep">
+      <button data-v="5">&lt;6</button><button data-v="6">6–7</button><button data-v="7">7–9</button><button data-v="9">&gt;9</button>
+    </div>
+  </div>
 
+  <!-- БАТОНЧИК ПО КОДУ -->
+  <div class="card">
+    <h2>Батончик с упаковки</h2>
+    <div class="row">
+      <input type="text" id="barCode" placeholder="Код с упаковки" style="width: 150px;">
+      <select id="barSku" style="width: 180px;">
+        <option>Протеин База</option><option>Омега Буст</option><option>Энергия Дисциплины</option>
+        <option>Восстановление</option><option>Коллаген Лайт</option><option>Экстрим</option><option>База Лимитированная</option>
+      </select>
+      <button class="btn-diary" onclick="scanBar()">Зачесть</button>
+    </div>
+  </div>
+
+  <!-- ВЕС И ЦЕЛЬ -->
+  <div class="card">
+    <h2>Трекер веса</h2>
+    <div class="row">
+      <div><label>Текущий вес, кг</label><input type="number" id="wNow" step="0.1"></div>
+      <div><label>Цель, кг</label><input type="number" id="wGoal" step="0.1"></div>
+      <button class="btn-diary ghost" onclick="saveGoal()">Сохранить цель</button>
+    </div>
+    <div class="warn" id="goalWarn"></div>
+    <div style="margin-top:12px;"><label>Динамика веса</label><svg class="spark" id="sparkW"></svg></div>
+  </div>
+
+  <div class="disc">ЭЙВА — цифровой ведущий, а не врач. Дневник и корректировки носят информационный характер и не являются медицинской консультацией.</div>
 </div>
 
+<!-- ГЛОБАЛЬНЫЙ ПОДВАЛ -->
 <div id="footer-placeholder"></div>
 
 <script src="script.js"></script>
 <script>
+  // Скрипт для подгрузки шапки и подвала
   async function loadComponents() {
     try {
       const headerRes = await fetch('header.html');
@@ -118,22 +158,179 @@
       const footerRes = await fetch('footer.html');
       document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
       if (typeof updateCartCount === 'function') updateCartCount();
-      
-      const revealElements = document.querySelectorAll('.reveal');
-      const revealOnScroll = new IntersectionObserver(function(entries, observer) {
-          entries.forEach(entry => {
-              if (!entry.isIntersecting) return;
-              entry.target.classList.add('active');
-              observer.unobserve(entry.target);
-          });
-      }, { threshold: 0.15 });
-      revealElements.forEach(el => revealOnScroll.observe(el));
-
     } catch (error) {
       console.error('Ошибка загрузки компонентов:', error);
     }
   }
   loadComponents();
+
+  // ======== ЛОГИКА ДНЕВНИКА (ТОТ САМЫЙ КРУТОЙ КОД) ========
+  const LS_D='c37_diary', LS_P='c37_protocol';
+  const today=()=>new Date().toISOString().slice(0,10);
+  const DAY=86400000;
+
+  let D=JSON.parse(localStorage.getItem(LS_D)||'null')||{start:null,streak:0,lastDay:null,weights:[],energy:[],sleep:[],slots:{},checkins:[],badges:[]};
+  let P=JSON.parse(localStorage.getItem(LS_P)||'null');
+  function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
+  if(!D.start){ D.start=Date.now(); save(); }
+
+  const DISH={
+   'Завтрак':['Омлет с овощами','Творог 5% с ягодами','Овсянка + протеин'],
+   'Обед':['Грудка + гречка + салат','Рыба + картофель','Чечевица с курицей'],
+   'Ужин':['Рыба на пару + брокколи','Творог с зеленью','Куриные котлеты + салат'],
+   'Перекус утра':['Греческий йогурт','Горсть орехов','Банан + арахисовая паста'],
+   'Вместо сладкого':['База Лимитированная','Какао без сахара','Яблоко + миндаль'],
+   'Предтрен':['Энергия Дисциплины','Банан + кофе','Овсяное печенье б/с'],
+   'Посттрен':['Протеин База','Протеиновый коктейль','Творог с бананом']
+  };
+
+  function slotList(){
+    const s=['Завтрак','Обед','Ужин','Перекус утра'];
+    s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
+    if(P&&(P.goal==='Энергия'))s.push('Предтрен');
+    if(P&&(P.goal==='Мышцы'))s.push('Предтрен','Посттрен');
+    return s;
+  }
+  function slotHint(name){
+    if(name==='Вместо сладкого'&&P)return 'Бар: '+(P.barEvening||'База Лимитированная');
+    if(name==='Предтрен'&&P)return 'Бар: '+(P.goal==='Энергия'?'Энергия Дисциплины':'Экстрим');
+    if(name==='Посттрен'&&P)return 'Бар: '+(P.barMorning||'Протеин База');
+    return (DISH[name]||[]).join(' · ')||'Белок + клетчатка';
+  }
+
+  function dayNum(){ return Math.floor((Date.now()-D.start)/DAY)+1; }
+  function renderDash(){
+    const dn=dayNum();
+    document.getElementById('dayNum').textContent=dn;
+    document.getElementById('ringArc').style.transform='rotate('+(Math.min(dn,30)/30*360)+'deg)';
+    document.getElementById('streakV').textContent=D.streak;
+    const sl=D.slots[today()]||{}; const list=slotList();
+    const done=list.filter(n=>sl[n]&&sl[n].st==='съел').length;
+    document.getElementById('discV').textContent=done+'/'+list.length;
+    document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
+    spark('sparkE',D.energy.slice(-7),1,5);
+    spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
+    renderBadges(); renderComment();
+    if(dn>=8) { document.getElementById('upsell8').classList.remove('hidden'); }
+    const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
+    if(need) document.getElementById('checkinCard').classList.remove('hidden');
+  }
+  function spark(id,arr,min,max){
+    const el=document.getElementById(id); if(!arr.length){el.innerHTML='<text x="4" y="30" fill="#777" font-size="11">Пока нет данных — отметь первый день</text>';return;}
+    const mn=min!==undefined?min:Math.min(...arr), mx=max!==undefined?max:Math.max(...arr);
+    const pts=arr.map((v,i)=>{const x=4+i*(292/Math.max(arr.length-1,1));const y=54-((v-mn)/((mx-mn)||1))*46;return x+','+y;}).join(' ');
+    el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
+  }
+  function renderBadges(){
+    const defs=[[7,'7 дней'],[14,'14 дней'],[30,'Месяц']];
+    document.getElementById('badges').innerHTML=defs.map(d=>'<span class="badge '+(D.streak>=d[0]?'on':'')+'">'+(D.streak>=d[0]?'🏅 ':'')+d[1]+'</span>').join('');
+  }
+  function renderComment(){
+    const e=D.energy.slice(-3); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
+    let t;
+    if(!D.checkins.length&&dayNum()>=7)t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
+    else if(avg!==null&&avg<3)t='Средняя энергия '+avg.toFixed(1)+' — ниже пламени. Проверь сон и белок в завтрак.';
+    else if(D.streak>=3)t='Стрик '+D.streak+'. Твоя кривая энергии впервые ровная за месяц. Поленья работают.';
+    else t='Протокол — это слоты, а не подвиги. Отметь сегодня свои — и день засчитан.';
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
+  }
+
+  function renderSlots(){
+    const box=document.getElementById('slotsBox'); const sl=D.slots[today()]||(D.slots[today()]={});
+    box.innerHTML=slotList().map(n=>{
+      const st=(sl[n]||{}).st;
+      return '<div class="slot"><div class="name">'+n+'</div><div class="hint">'+slotHint(n)+'</div>'+
+        '<div class="chips">'+(DISH[n]||[]).map(d=>'<span class="chip" onclick="markSlot(\''+n+'\',\'съел\',\''+d+'\')">'+d+'</span>').join('')+'</div>'+
+        '<div class="btns"><button class="btn-diary '+(st==='съел'?'':'ghost')+'" onclick="markSlot(\''+n+'\',\'съел\')">'+(st==='съел'?'✓ Съел':'Съел')+'</button>'+
+        '<button class="btn-diary ghost" onclick="markSlot(\''+n+'\',\'пропустил\')">Пропустил</button>'+
+        '<button class="btn-diary ghost" onclick="markSlot(\''+n+'\',\'перенёс\')">Перенести</button></div></div>';
+    }).join('');
+  }
+  function markSlot(name,st,dish){
+    D.slots[today()]=D.slots[today()]||{}; D.slots[today()][name]={st:st,dish:dish||null};
+    bumpStreak(); save(); renderSlots(); renderDash();
+    if(typeof showToast === 'function') showToast('Записано', name + ' отмечен', '✅');
+  }
+
+  function bumpStreak(){
+    const t=today();
+    if(D.lastDay===t)return;
+    const y=new Date(Date.now()-DAY).toISOString().slice(0,10);
+    D.streak=(D.lastDay===y)?D.streak+1:1;
+    D.lastDay=t; save();
+  }
+
+  function bindTap(id,key){
+    document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
+      document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');
+      const rec=D[key].find(r=>r.date===today());
+      if(rec)rec.v=+b.dataset.v; else D[key].push({date:today(),v:+b.dataset.v});
+      bumpStreak(); save(); renderDash();
+    });
+  }
+
+  let ciCraving=null;
+  document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); ciCraving=b.dataset.v;
+  });
+  function submitCheckin(){
+    const w=parseFloat(document.getElementById('ciWeight').value);
+    const warn=document.getElementById('ciWarn');
+    if(!w||w<30||w>250){warn.style.display='block';warn.textContent='Проверь вес: 30–250 кг.';return;}
+    const waist=document.getElementById('ciWaist').value||null;
+    const prev=D.weights.length?D.weights[D.weights.length-1].kg:null;
+    D.weights.push({date:Date.now(),kg:w,waist:waist});
+    const rec={date:Date.now(),kg:w,waist:waist,craving:ciCraving,delta:null,adj:null};
+    let msg='';
+    if(prev){
+      const delta=(w-prev)/prev*100; rec.delta=+delta.toFixed(2);
+      const goal=P?P.goal:'Похудение';
+      if(goal==='Похудение'){
+        if(delta<=-1){rec.adj='carbs+10';msg='Темп быстрее −1% в неделю — это уже не жир, а вода. Добавляю +10% углеводов в обед.';}
+        else if(delta<=-0.25){rec.adj=null;msg='Норма: −'+Math.abs(delta).toFixed(1)+'% за неделю. Ровно то, что горит без мышц.';}
+        else{
+          const prevCh=D.checkins.slice(-1)[0];
+          if(prevCh&&prevCh.delta!==null&&prevCh.delta>-0.25){rec.adj='carbs-10';msg='Две недели плато. Выбирай: −10% углеводов или +2000 шагов.';}
+          else{rec.adj=null;msg='Пока плато, но это одна неделя — не вывод. Держим линию.';}
+        }
+      }
+    }else msg='Первая точка зафиксирована. Через неделю смогу считать тренд.';
+    D.checkins.push(rec); save();
+    document.getElementById('checkinCard').classList.add('hidden');
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА (чек-ин):</b> '+msg;
+    renderDash();
+  }
+
+  function saveGoal(){
+    const cur=parseFloat(document.getElementById('wNow').value)|| (D.weights.length?D.weights[D.weights.length-1].kg:null);
+    const g=parseFloat(document.getElementById('wGoal').value);
+    const warn=document.getElementById('goalWarn');
+    if(!cur||!g){warn.style.display='block';warn.textContent='Заполни текущий вес и цель.';return;}
+    const need=Math.abs(cur-g)/(cur*0.01);
+    if(g<cur&&need<8){warn.style.display='block';warn.textContent='Такое снижение быстрее 1% в неделю — небезопасно. Минимум '+Math.ceil(need)+' недель.';return;}
+    warn.style.display='none'; D.goal={cur:cur,goal:g}; save();
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель принята: '+g+' кг. Безопасный горизонт — '+Math.ceil(need)+' недель.';
+  }
+
+  function scanBar(){
+    const code=document.getElementById('barCode').value.trim();
+    if(!code){alert('Введи код с упаковки.');return;}
+    const sku=document.getElementById('barSku').value;
+    const slot=(sku==='Энергия Дисциплины'||sku==='Экстрим')?'Предтрен':(sku==='Восстановление'?'Посттрен':'Вместо сладкого');
+    D.slots[today()]=D.slots[today()]||{}; D.slots[today()][slot]={st:'съел',dish:sku,code:code};
+    bumpStreak(); save(); renderSlots(); renderDash();
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+sku+' встал в слот «'+slot+'». БЖУ зачтены.';
+    if(typeof showToast === 'function') showToast('Успех', sku + ' добавлен', '🍫');
+  }
+
+  // Запуск
+  bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
+  if(!P){
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Протокола пока нет — дневник будет считать слоты, но цели возьмём из анкеты. Собери протокол на главной.';
+  }
+  renderSlots(); renderDash();
 </script>
 </body>
 </html>
