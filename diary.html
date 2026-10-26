@@ -135,11 +135,12 @@ svg.spark{width:100%;height:60px;}
   </div>
 
   <!-- ВЕС И ЦЕЛЬ -->
-  <div class="card">
+   <div class="card">
     <h2>Трекер веса</h2>
     <div class="row">
       <div><label>Текущий вес, кг</label><input type="number" id="wNow" step="0.1"></div>
       <div><label>Цель, кг</label><input type="number" id="wGoal" step="0.1"></div>
+      <div><label>За сколько недель?</label><input type="number" id="wWeeks" min="1" max="104" placeholder="8"></div>
       <button class="btn ghost" onclick="saveGoal()">Сохранить цель</button>
     </div>
     <div class="warn" id="goalWarn"></div>
