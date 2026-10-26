@@ -344,11 +344,28 @@ function applyAdj(adj){
 function saveGoal(){
   const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
   const g=parseFloat(document.getElementById('wGoal').value);
+  const weeks=parseInt(document.getElementById('wWeeks').value)||8;
   const warn=document.getElementById('goalWarn');
   if(!cur||!g){ warn.style.display='block'; warn.textContent='Заполни текущий вес и цель.'; return; }
-  const need=Math.abs(cur-g)/(cur*0.01);
-  warn.style.display='none'; D.goal={cur:cur,goal:g}; save();
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель принята: '+g+' кг. Безопасный горизонт — '+Math.ceil(need)+' недель. Иду с тобой по чек-инам.';
+  
+  const diff=Math.abs(cur-g);
+  const safeMinWeeks=Math.ceil(diff/(cur*0.01));
+  
+  if(g<cur&&weeks<safeMinWeeks){ 
+    warn.style.display='block'; 
+    warn.textContent='За '+weeks+' недель это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю. Безопасный темп — до 1% в неделю, то есть минимум '+safeMinWeeks+' недель.'; 
+    return; 
+  }
+  if(g>cur&&weeks<Math.ceil(diff/(cur*0.005))){
+    warn.style.display='block'; 
+    warn.textContent='Для набора безопасный темп — 0.5% в неделю, то есть минимум '+Math.ceil(diff/(cur*0.005))+' недель.'; 
+    return;
+  }
+  
+  warn.style.display='none'; 
+  D.goal={cur:cur,goal:g,weeks:weeks}; 
+  save();
+  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю — безопасно. Иду с тобой по чек-инам.';
 }
 
 /* --- код с упаковки --- */
