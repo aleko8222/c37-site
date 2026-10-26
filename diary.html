@@ -5,16 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Мой Дневник — C37 FUEL</title>
 <link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div id="header-placeholder"></div>
 
 <div class="container" style="padding: 60px 20px; max-width: 900px; margin: 0 auto;">
-    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 10px; color: var(--accent); font-weight: 900; text-align: center;">ТВОЙ ДНЕВНИК</h1>
-    <p class="reveal" style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">Записывай питание, следи за БЖУ и спрашивай совета у ЭЙВЫ.</p>
-
-    <!-- ДАШБОРД -->
+    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 10px; color: var(--accent); font-weight: 900; text-align: center;">ТВОЙ ПРОГРЕСС</h1>
+    
+    <!-- ДАШБОРД КБЖУ -->
     <div class="diary-dashboard reveal">
         <div class="macro-card">
             <div class="macro-title">Калории</div>
@@ -38,68 +38,47 @@
         </div>
     </div>
 
-    <!-- ВОДА -->
-    <div class="water-tracker reveal">
-        <div class="water-info">
-            <span>💧 Вода:</span>
-            <strong id="water-total">0</strong> / 8 стаканов
-        </div>
-        <button class="btn-small" style="width: auto;" onclick="addWater()">+ Выпить стакан</button>
+    <!-- УМНЫЙ ВВОД ЕДЫ -->
+    <div class="ai-food-input reveal" style="margin-top: 30px;">
+        <h3>Что ты сегодня ел(а)?</h3>
+        <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 10px;">Напиши простыми словами: «Два яйца и кофе с молоком», «Гречка с котлетой».</p>
+        <textarea id="food-input" placeholder="Например: Съел тарелку овсянки с бананом и выпил стакан кефира..."></textarea>
+        <button class="btn" style="width: 100%; margin-top: 10px;" onclick="analyzeFood()" id="btn-analyze">✨ Посчитать через ИИ</button>
     </div>
 
-    <!-- ПРИЕМЫ ПИЩИ -->
-    <div class="meals-container reveal">
-        <!-- Завтрак -->
-        <div class="meal-card">
-            <div class="meal-header">
-                <h3>🌅 Завтрак</h3>
-                <button class="btn-add" onclick="addFoodPrompt('breakfast')">+ Добавить</button>
-            </div>
-            <ul class="meal-list" id="list-breakfast"></ul>
+    <!-- СПИСОК СЪЕДЕННОГО -->
+    <div class="food-list-container reveal" style="margin-top: 30px;">
+        <h3>Съедено за сегодня:</h3>
+        <ul id="food-list" class="food-list">
+            <li style="color:#777; text-align:center; padding: 20px;">Пока пусто. Напиши, что съел!</li>
+        </ul>
+        <button class="btn-outline" style="width:100%; margin-top:10px; font-size:0.9rem;" onclick="resetFood()">Очистить дневник еды</button>
+    </div>
+
+    <hr style="border-color: #333; margin: 50px 0;">
+
+    <!-- ВЕС И ГРАФИК -->
+    <h2 class="reveal" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent); text-align: center;">Трекер веса</h2>
+    
+    <div class="weight-input-card reveal">
+        <div class="weight-input-group">
+            <label>Мой текущий вес (кг):</label>
+            <input type="number" id="current-weight" placeholder="75.5" step="0.1">
+            <button class="btn" onclick="saveWeight()">Записать</button>
         </div>
-        <!-- Обед -->
-        <div class="meal-card">
-            <div class="meal-header">
-                <h3>☀️ Обед</h3>
-                <button class="btn-add" onclick="addFoodPrompt('lunch')">+ Добавить</button>
-            </div>
-            <ul class="meal-list" id="list-lunch"></ul>
-        </div>
-        <!-- Ужин -->
-        <div class="meal-card">
-            <div class="meal-header">
-                <h3>🌙 Ужин</h3>
-                <button class="btn-add" onclick="addFoodPrompt('dinner')">+ Добавить</button>
-            </div>
-            <ul class="meal-list" id="list-dinner"></ul>
-        </div>
-        <!-- Перекусы -->
-        <div class="meal-card">
-            <div class="meal-header">
-                <h3>🍎 Перекусы</h3>
-                <button class="btn-add" onclick="addFoodPrompt('snacks')">+ Добавить</button>
-            </div>
-            <ul class="meal-list" id="list-snacks"></ul>
+        <div class="weight-input-group" style="margin-top: 15px; border-top: 1px solid #444; padding-top: 15px;">
+            <label>Моя цель (кг):</label>
+            <input type="number" id="target-weight" placeholder="70" step="0.1" onchange="saveTargetWeight()">
         </div>
     </div>
 
-    <!-- БЫСТРОЕ ДОБАВЛЕНИЕ C37 -->
-    <div class="quick-add-c37 reveal">
-        <h3>Быстро добавить батончик C37:</h3>
-        <div class="quick-buttons">
-            <button onclick="addFood('snacks', 'Протеин База', 170, 12.9, 6, 12)">Протеин База</button>
-            <button onclick="addFood('snacks', 'Коллаген Лайт', 220, 5, 9, 18)">Коллаген Лайт</button>
-            <button onclick="addFood('snacks', 'Энергия Дисциплины', 170, 10, 5, 14)">Энергия Дисциплины</button>
-            <button onclick="addFood('snacks', 'Восстановление', 170, 11, 6, 13)">Восстановление</button>
-            <button onclick="addFood('snacks', 'Экстрим', 220, 12, 8, 15)">Экстрим</button>
-            <button onclick="addFood('snacks', 'Омега Буст', 170, 9, 7, 12)">Омега Буст</button>
-            <button onclick="addFood('snacks', 'База Лимитированная', 220, 12.3, 8, 16)">База Лимитированная</button>
-        </div>
+    <div class="chart-container reveal" style="margin-top: 20px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+        <canvas id="weightChart" style="width: 100%; height: 300px;"></canvas>
     </div>
 
     <!-- ИИ АНАЛИЗ -->
     <div style="text-align: center; margin: 50px 0;">
-        <button class="btn" style="font-size: 1.2rem; padding: 18px 40px;" onclick="askEvaAboutDiet()">✨ Спросить ЭЙВУ о моем дне</button>
+        <button class="btn" style="font-size: 1.2rem; padding: 18px 40px;" onclick="askEvaAboutProgress()">✨ Спросить ЭЙВУ о прогрессе</button>
     </div>
 
 </div>
@@ -108,7 +87,6 @@
 
 <script src="script.js"></script>
 <script>
-  // Загрузка шапки и подвала
   async function loadComponents() {
     try {
       const headerRes = await fetch('header.html');

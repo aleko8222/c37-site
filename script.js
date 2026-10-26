@@ -470,104 +470,219 @@ document.addEventListener('keydown', function(e) {
     if (lightbox && lightbox.classList.contains('active')) { closeImage(); }
 });
 // ==========================================
-// ЛОГИКА ДНЕВНИКА
+// ЛОГИКА ДНЕВНИКА ЕДЫ (ИИ) И ВЕСА
 // ==========================================
-let diaryData = JSON.parse(localStorage.getItem('c37_diary')) || {
-    meals: { breakfast: [], lunch: [], dinner: [], snacks: [] },
-    water: 0
-};
+let foodData = JSON.parse(localStorage.getItem('c37_food_data')) || [];
+let weightData = JSON.parse(localStorage.getItem('c37_weight_history')) || [];
+let targetWeight = localStorage.getItem('c37_target_weight') || '';
+let weightChartInstance = null;
 
-function saveDiary() { localStorage.setItem('c37_diary', JSON.stringify(diaryData)); }
+// --- ЕДА ---
+async function analyzeFood() {
+    const input = document.getElementById('food-input');
+    const text = input.value.trim();
+    if (!text) { alert('Напиши, что ты съел!'); return; }
 
-function addFood(mealType, name, cal, prot, fat, carb) {
-    diaryData.meals[mealType].push({ id: Date.now(), name, cal, prot, fat, carb });
-    saveDiary();
-    renderDiary();
-    showToast ? showToast('Добавлено', name, '🍽️') : alert('Добавлено: ' + name);
-}
+    const btn = document.getElementById('btn-analyze');
+    btn.innerText = '⏳ Эйва думает...';
+    btn.disabled = true;
 
-function addFoodPrompt(mealType) {
-    const name = prompt("Что съел(а)? Название продукта:");
-    if (!name) return;
-    const cal = parseInt(prompt("Калории (ккал):", "0")) || 0;
-    const prot = parseInt(prompt("Белки (г):", "0")) || 0;
-    const fat = parseInt(prompt("Жиры (г):", "0")) || 0;
-    const carb = parseInt(prompt("Углеводы (г):", "0")) || 0;
-    addFood(mealType, name, cal, prot, fat, carb);
-}
-
-function removeFood(mealType, id) {
-    diaryData.meals[mealType] = diaryData.meals[mealType].filter(item => item.id !== id);
-    saveDiary();
-    renderDiary();
-}
-
-function addWater() {
-    if (diaryData.water < 15) {
-        diaryData.water++;
-        saveDiary();
-        renderDiary();
+    try {
+        const response = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ text: text })
+        });
+        
+        const data = await response.json();
+        
+        if (data.items && data.items.length > 0) {
+            data.items.forEach(item => {
+                foodData.push({
+                    id: Date.now() + Math.random(),
+                    name: item.name,
+                    cal: item.cal || 0,
+                    prot: item.prot || 0,
+                    fat: item.fat || 0,
+                    carb: item.carb || 0
+                });
+            });
+            localStorage.setItem('c37_food_data', JSON.stringify(foodData));
+            input.value = '';
+            renderFoodList();
+        } else {
+            alert('Не удалось распознать еду. Попробуй написать иначе.');
+        }
+    } catch (error) {
+        console.error(error);
+        alert('Ошибка соединения с сервером ИИ.');
+    } finally {
+        btn.innerText = '✨ Посчитать через ИИ';
+        btn.disabled = false;
     }
 }
 
-function renderDiary() {
-    if (!document.getElementById('total-calories')) return;
+function removeFood(id) {
+    foodData = foodData.filter(item => item.id !== id);
+    localStorage.setItem('c37_food_data', JSON.stringify(foodData));
+    renderFoodList();
+}
 
+function resetFood() {
+    if(confirm('Ты уверен, что хочешь очистить дневник еды?')) {
+        foodData = [];
+        localStorage.setItem('c37_food_data', JSON.stringify(foodData));
+        renderFoodList();
+    }
+}
+
+function renderFoodList() {
+    const listEl = document.getElementById('food-list');
+    if (!listEl) return;
+
+    if (foodData.length === 0) {
+        listEl.innerHTML = '<li style="color:#777; text-align:center; padding: 20px;">Пока пусто. Напиши, что съел!</li>';
+        updateMacros(0, 0, 0, 0);
+        return;
+    }
+
+    listEl.innerHTML = '';
     let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
 
-    const meals = ['breakfast', 'lunch', 'dinner', 'snacks'];
-    meals.forEach(type => {
-        const listEl = document.getElementById(`list-${type}`);
-        listEl.innerHTML = '';
-        diaryData.meals[type].forEach(item => {
-            totalCal += item.cal; totalProt += item.prot; totalFat += item.fat; totalCarb += item.carb;
-            const li = document.createElement('li');
-            li.innerHTML = `
-                <div>${item.name} <br><small style="color:#777;">${item.cal} ккал</small></div>
-                <div>
-                    <span>${item.prot}Б / ${item.fat}Ж / ${item.carb}У</span>
-                    <button onclick="removeFood('${type}', ${item.id})">✕</button>
-                </div>
-            `;
-            listEl.appendChild(li);
-        });
+    foodData.forEach(item => {
+        totalCal += item.cal; totalProt += item.prot; totalFat += item.fat; totalCarb += item.carb;
+        const li = document.createElement('li');
+        li.innerHTML = `
+            <div>
+                <strong>${item.name}</strong><br>
+                <span class="macros">${item.cal} ккал | Б:${item.prot} Ж:${item.fat} У:${item.carb}</span>
+            </div>
+            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer;">✕</button>
+        `;
+        listEl.appendChild(li);
     });
 
-    document.getElementById('total-calories').innerText = totalCal;
-    document.getElementById('total-protein').innerText = totalProt;
-    document.getElementById('total-fat').innerText = totalFat;
-    document.getElementById('total-carbs').innerText = totalCarb;
+    updateMacros(totalCal, totalProt, totalFat, totalCarb);
+}
 
-    const calPercent = Math.min((totalCal / 2000) * 100, 100);
-    const protPercent = Math.min((totalProt / 120) * 100, 100);
-    const fatPercent = Math.min((totalFat / 70) * 100, 100);
-    const carbPercent = Math.min((totalCarb / 200) * 100, 100);
+function updateMacros(cal, prot, fat, carb) {
+    document.getElementById('total-calories').innerText = Math.round(cal);
+    document.getElementById('total-protein').innerText = Math.round(prot);
+    document.getElementById('total-fat').innerText = Math.round(fat);
+    document.getElementById('total-carbs').innerText = Math.round(carb);
 
-    if(document.getElementById('calories-bar')) {
-        document.getElementById('calories-bar').style.width = calPercent + '%';
-        document.getElementById('protein-bar').style.width = protPercent + '%';
-        document.getElementById('fat-bar').style.width = fatPercent + '%';
-        document.getElementById('carbs-bar').style.width = carbPercent + '%';
-        document.getElementById('water-total').innerText = diaryData.water;
+    document.getElementById('calories-bar').style.width = Math.min((cal / 2000) * 100, 100) + '%';
+    document.getElementById('protein-bar').style.width = Math.min((prot / 120) * 100, 100) + '%';
+    document.getElementById('fat-bar').style.width = Math.min((fat / 70) * 100, 100) + '%';
+    document.getElementById('carbs-bar').style.width = Math.min((carb / 200) * 100, 100) + '%';
+}
+
+// --- ВЕС ---
+function saveWeight() {
+    const input = document.getElementById('current-weight');
+    const weight = parseFloat(input.value);
+    if (!weight || weight < 30 || weight > 300) { alert('Введи корректный вес (30-300 кг).'); return; }
+
+    const today = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+    const existingIndex = weightData.findIndex(item => item.date === today);
+    
+    if (existingIndex !== -1) { weightData[existingIndex].weight = weight; } 
+    else { weightData.push({ date: today, weight: weight }); }
+    
+    if (weightData.length > 30) weightData.shift();
+
+    localStorage.setItem('c37_weight_history', JSON.stringify(weightData));
+    input.value = '';
+    renderChart();
+    if(typeof showToast === 'function') showToast('Вес записан', `Текущий вес: ${weight} кг`, '⚖️');
+}
+
+function saveTargetWeight() {
+    targetWeight = document.getElementById('target-weight').value;
+    localStorage.setItem('c37_target_weight', targetWeight);
+    renderChart();
+}
+
+function renderChart() {
+    const canvas = document.getElementById('weightChart');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const labels = weightData.map(item => item.date);
+    const dataPoints = weightData.map(item => item.weight);
+
+    if (weightChartInstance) { weightChartInstance.destroy(); }
+
+    Chart.defaults.color = '#a0a0a0';
+    Chart.defaults.font.family = "'Inter', sans-serif";
+
+    weightChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    label: 'Мой вес (кг)',
+                    data: dataPoints,
+                    borderColor: '#FF6B1A',
+                    backgroundColor: 'rgba(255, 107, 26, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#FF6B1A',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    fill: true,
+                    tension: 0.3
+                },
+                {
+                    label: 'Цель',
+                    data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null),
+                    borderColor: '#4CAF50',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: {
+                y: { grid: { color: 'rgba(255,255,255,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+
+    if (targetWeight && document.getElementById('target-weight')) {
+        document.getElementById('target-weight').value = targetWeight;
     }
 }
 
-function askEvaAboutDiet() {
-    const cal = document.getElementById('total-calories').innerText;
-    const prot = document.getElementById('total-protein').innerText;
-    const fat = document.getElementById('total-fat').innerText;
-    const carb = document.getElementById('total-carbs').innerText;
-    const water = diaryData.water;
+function askEvaAboutProgress() {
+    const calEl = document.getElementById('total-calories');
+    const cal = calEl ? calEl.innerText : 0;
+    
+    let weightText = "Я пока не записывал(а) свой вес.";
+    if (weightData.length > 0) {
+        const startWeight = weightData[0].weight;
+        const currentWeight = weightData[weightData.length - 1].weight;
+        const diff = (currentWeight - startWeight).toFixed(1);
+        const diffStr = diff < 0 ? `похудел(а) на ${Math.abs(diff)} кг` : (diff > 0 ? `набрал(а) ${diff} кг` : `вес стоит на месте`);
+        weightText = `Мой стартовый вес был ${startWeight} кг, сейчас ${currentWeight} кг. Я ${diffStr}. Цель: ${targetWeight || 'не задана'}.`;
+    }
 
-    const promptText = `Эйва, привет! Проанализируй мой дневник питания за сегодня. Я съел(а) ${cal} ккал, белков: ${prot}г, жиров: ${fat}г, углеводов: ${carb}г. Выпил(а) ${water} стаканов воды. Что скажешь, как тебе мой день? Что можно улучшить?`;
+    const promptText = `Эйва, привет! Проанализируй мой день. Я съел(а) сегодня ${cal} ккал. ${weightText} Как тебе мой прогресс и что мне съесть завтра, чтобы ускорить результат?`;
 
-    // Открываем чат
     toggleChat();
     document.getElementById('chat-input-field').value = promptText;
     sendMessage();
 }
 
-// Запускаем отрисовку при загрузке
+// Запуск при загрузке страницы
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('total-calories')) { renderDiary(); }
+    if (document.getElementById('weightChart')) { 
+        renderChart();
+        renderFoodList();
+    }
 });
