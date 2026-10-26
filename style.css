@@ -346,3 +346,28 @@ footer a:hover { color: var(--accent); }
     .weight-input-group { flex-direction: column; align-items: stretch; text-align: center; }
     .weight-input-group input { width: 100%; }
 }
+/* --- ДНЕВНИК V1 --- */
+.diary-header { display: flex; justify-content: space-between; align-items: center; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); gap: 15px; flex-wrap: wrap; }
+.diary-ring { width: 80px; height: 80px; border-radius: 50%; border: 4px solid var(--accent); display: flex; align-items: center; justify-content: center; text-align: center; box-shadow: 0 0 20px rgba(255,107,26,0.3); }
+.ring-text { font-size: 1.5rem; font-weight: 900; line-height: 1; color: #fff; }
+.ring-text small { font-size: 0.7rem; color: var(--accent); }
+.diary-streak { display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 12px; }
+.fire-icon { font-size: 2rem; }
+.diary-goal-box { background: rgba(0,0,0,0.4); padding: 10px 20px; border-radius: 12px; text-align: right; }
+
+.slots-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px; }
+.slot-card { background: var(--bg-card); padding: 20px; border-radius: 12px; border: 1px solid #333; }
+.slot-card.completed { border-color: var(--green); opacity: 0.7; }
+.slot-title { font-size: 1.1rem; font-weight: bold; margin-bottom: 5px; }
+.slot-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px; }
+.slot-actions { display: flex; gap: 10px; }
+.btn-slot { flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.btn-slot.eaten { background: rgba(76, 175, 80, 0.2); color: #4CAF50; border: 1px solid #4CAF50; }
+.btn-slot.eaten:hover { background: #4CAF50; color: #fff; }
+.btn-slot.skipped { background: rgba(255, 68, 68, 0.1); color: #ff4444; border: 1px solid #ff4444; }
+.btn-slot.skipped:hover { background: #ff4444; color: #fff; }
+
+@media (max-width: 768px) {
+    .diary-header { justify-content: center; text-align: center; }
+    .slots-grid { grid-template-columns: 1fr; }
+}
