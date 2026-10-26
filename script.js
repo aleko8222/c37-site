@@ -241,16 +241,29 @@ async function sendMessage() {
         if (isTyping && typingMsg.parentNode) { typingMsg.innerText = 'Просыпаюсь, подожди немного...'; }
     }, 5000);
 
-    try {
+        try {
         const response = await fetch('https://c37-python-rag.de1.netrun.io/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: text })
         });
-        const data = await response.json();
+        
         isTyping = false;
         clearTimeout(timeoutId); 
         if(typingMsg.parentNode) messages.removeChild(typingMsg);
+        
+        if (!response.ok) {
+            const errText = await response.text().catch(() => '');
+            console.error("Сервер вернул ошибку:", response.status, errText);
+            const errorMsg = document.createElement('div');
+            errorMsg.className = 'message-eva';
+            errorMsg.innerText = `Ошибка сервера (${response.status}). Попробуй позже.`;
+            messages.appendChild(errorMsg);
+            messages.scrollTop = messages.scrollHeight;
+            return;
+        }
+        
+        const data = await response.json();
         const evaMsg = document.createElement('div');
         evaMsg.className = 'message-eva';
         evaMsg.innerText = data.reply || 'Ошибка: пустой ответ.';
