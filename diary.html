@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Мой Дневник — C37 FUEL</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<div class="container" style="padding: 60px 20px; max-width: 900px; margin: 0 auto;">
+    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 10px; color: var(--accent); font-weight: 900; text-align: center;">ТВОЙ ДНЕВНИК</h1>
+    <p class="reveal" style="text-align: center; color: var(--text-muted); margin-bottom: 40px;">Записывай питание, следи за БЖУ и спрашивай совета у ЭЙВЫ.</p>
+
+    <!-- ДАШБОРД -->
+    <div class="diary-dashboard reveal">
+        <div class="macro-card">
+            <div class="macro-title">Калории</div>
+            <div class="macro-value"><span id="total-calories">0</span> / 2000</div>
+            <div class="progress-line"><div class="progress-fill" id="calories-bar"></div></div>
+        </div>
+        <div class="macro-card">
+            <div class="macro-title">Белки</div>
+            <div class="macro-value"><span id="total-protein">0</span> г / 120</div>
+            <div class="progress-line"><div class="progress-fill" id="protein-bar"></div></div>
+        </div>
+        <div class="macro-card">
+            <div class="macro-title">Жиры</div>
+            <div class="macro-value"><span id="total-fat">0</span> г / 70</div>
+            <div class="progress-line"><div class="progress-fill" id="fat-bar"></div></div>
+        </div>
+        <div class="macro-card">
+            <div class="macro-title">Углеводы</div>
+            <div class="macro-value"><span id="total-carbs">0</span> г / 200</div>
+            <div class="progress-line"><div class="progress-fill" id="carbs-bar"></div></div>
+        </div>
+    </div>
+
+    <!-- ВОДА -->
+    <div class="water-tracker reveal">
+        <div class="water-info">
+            <span>💧 Вода:</span>
+            <strong id="water-total">0</strong> / 8 стаканов
+        </div>
+        <button class="btn-small" style="width: auto;" onclick="addWater()">+ Выпить стакан</button>
+    </div>
+
+    <!-- ПРИЕМЫ ПИЩИ -->
+    <div class="meals-container reveal">
+        <!-- Завтрак -->
+        <div class="meal-card">
+            <div class="meal-header">
+                <h3>🌅 Завтрак</h3>
+                <button class="btn-add" onclick="addFoodPrompt('breakfast')">+ Добавить</button>
+            </div>
+            <ul class="meal-list" id="list-breakfast"></ul>
+        </div>
+        <!-- Обед -->
+        <div class="meal-card">
+            <div class="meal-header">
+                <h3>☀️ Обед</h3>
+                <button class="btn-add" onclick="addFoodPrompt('lunch')">+ Добавить</button>
+            </div>
+            <ul class="meal-list" id="list-lunch"></ul>
+        </div>
+        <!-- Ужин -->
+        <div class="meal-card">
+            <div class="meal-header">
+                <h3>🌙 Ужин</h3>
+                <button class="btn-add" onclick="addFoodPrompt('dinner')">+ Добавить</button>
+            </div>
+            <ul class="meal-list" id="list-dinner"></ul>
+        </div>
+        <!-- Перекусы -->
+        <div class="meal-card">
+            <div class="meal-header">
+                <h3>🍎 Перекусы</h3>
+                <button class="btn-add" onclick="addFoodPrompt('snacks')">+ Добавить</button>
+            </div>
+            <ul class="meal-list" id="list-snacks"></ul>
+        </div>
+    </div>
+
+    <!-- БЫСТРОЕ ДОБАВЛЕНИЕ C37 -->
+    <div class="quick-add-c37 reveal">
+        <h3>Быстро добавить батончик C37:</h3>
+        <div class="quick-buttons">
+            <button onclick="addFood('snacks', 'Протеин База', 170, 12.9, 6, 12)">Протеин База</button>
+            <button onclick="addFood('snacks', 'Коллаген Лайт', 220, 5, 9, 18)">Коллаген Лайт</button>
+            <button onclick="addFood('snacks', 'Энергия Дисциплины', 170, 10, 5, 14)">Энергия Дисциплины</button>
+            <button onclick="addFood('snacks', 'Восстановление', 170, 11, 6, 13)">Восстановление</button>
+            <button onclick="addFood('snacks', 'Экстрим', 220, 12, 8, 15)">Экстрим</button>
+            <button onclick="addFood('snacks', 'Омега Буст', 170, 9, 7, 12)">Омега Буст</button>
+            <button onclick="addFood('snacks', 'База Лимитированная', 220, 12.3, 8, 16)">База Лимитированная</button>
+        </div>
+    </div>
+
+    <!-- ИИ АНАЛИЗ -->
+    <div style="text-align: center; margin: 50px 0;">
+        <button class="btn" style="font-size: 1.2rem; padding: 18px 40px;" onclick="askEvaAboutDiet()">✨ Спросить ЭЙВУ о моем дне</button>
+    </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="script.js"></script>
+<script>
+  // Загрузка шапки и подвала
+  async function loadComponents() {
+    try {
+      const headerRes = await fetch('header.html');
+      document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+      const footerRes = await fetch('footer.html');
+      document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
+      if (typeof updateCartCount === 'function') updateCartCount();
+      
+      const revealElements = document.querySelectorAll('.reveal');
+      const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(entry => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+          });
+      }, { threshold: 0.15 });
+      revealElements.forEach(el => revealOnScroll.observe(el));
+
+    } catch (error) {
+      console.error('Ошибка загрузки компонентов:', error);
+    }
+  }
+  loadComponents();
+</script>
+</body>
+</html>
