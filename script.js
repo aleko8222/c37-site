@@ -568,9 +568,40 @@ function saveTargetWeight() {
 function renderChart() {
     const canvas = document.getElementById('weightChart');
     if (!canvas) return;
+    
+    // Если данных нет вообще
+    if (weightData.length === 0) {
+        canvas.parentElement.innerHTML = '<div style="height: 300px; display: flex; align-items: center; justify-content: center; color: #777; text-align: center;">Пока нет данных. Введи свой первый вес!</div>';
+        return;
+    }
+
     const ctx = canvas.getContext('2d');
-    const labels = weightData.map(item => item.date);
-    const dataPoints = weightData.map(item => item.weight);
+    
+    // Сортируем данные по дате (на всякий случай, чтобы линия не путалась)
+    // Для этого преобразуем "26.10" в объект даты для сортировки
+    const sortedData = [...weightData].sort((a, b) => {
+        const [dayA, monthA] = a.date.split('.');
+        const [dayB, monthB] = b.date.split('.');
+        return new Date(`2026-${monthA}-${dayA}`) - new Date(`2026-${monthB}-${dayB}`);
+    });
+
+    const labels = sortedData.map(item => item.date);
+    const dataPoints = sortedData.map(item => item.weight);
+
+    // Вычисляем минимальный и максимальный вес для красивой шкалы
+    let minWeight = Math.min(...dataPoints);
+    let maxWeight = Math.max(...dataPoints);
+    
+    // Если есть цель, учитываем её в шкале
+    if (targetWeight) {
+        minWeight = Math.min(minWeight, parseFloat(targetWeight));
+        maxWeight = Math.max(maxWeight, parseFloat(targetWeight));
+    }
+    
+    // Добавляем отступы по 1 кг вверх и вниз, чтобы линия не прилипала к краям
+    minWeight = Math.floor(minWeight - 1);
+    maxWeight = Math.ceil(maxWeight + 1);
+
     if (weightChartInstance) { weightChartInstance.destroy(); }
 
     Chart.defaults.color = '#a0a0a0';
@@ -581,18 +612,71 @@ function renderChart() {
         data: {
             labels: labels,
             datasets: [
-                { label: 'Мой вес (кг)', data: dataPoints, borderColor: '#FF6B1A', backgroundColor: 'rgba(255, 107, 26, 0.1)', borderWidth: 3, pointBackgroundColor: '#fff', pointBorderColor: '#FF6B1A', pointBorderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 },
-                { label: 'Цель', data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null), borderColor: '#4CAF50', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }
+                {
+                    label: 'Мой вес (кг)',
+                    data: dataPoints,
+                    borderColor: '#FF6B1A',
+                    backgroundColor: 'rgba(255, 107, 26, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#FF6B1A',
+                    pointBorderWidth: 2,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    fill: true,
+                    tension: 0.3 // Плавные линии
+                },
+                {
+                    label: 'Цель',
+                    data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null),
+                    borderColor: '#4CAF50',
+                    borderWidth: 2,
+                    borderDash: [5, 5],
+                    pointRadius: 0,
+                    fill: false
+                }
             ]
         },
         options: {
-            responsive: true, maintainAspectRatio: false,
-            plugins: { legend: { display: true, position: 'top' } },
-            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
+            responsive: true, 
+            maintainAspectRatio: false,
+            interaction: {
+                mode: 'index',
+                intersect: false,
+            },
+            plugins: { 
+                legend: { display: true, position: 'top' },
+                tooltip: {
+                    backgroundColor: 'rgba(20, 24, 28, 0.9)',
+                    titleColor: '#FF6B1A',
+                    bodyColor: '#fff',
+                    borderColor: 'rgba(255, 107, 26, 0.3)',
+                    borderWidth: 1,
+                    padding: 10,
+                    callbacks: {
+                        label: function(context) {
+                            return ` ${context.dataset.label}: ${context.parsed.y} кг`;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { 
+                    min: minWeight,
+                    max: maxWeight,
+                    grid: { color: 'rgba(255,255,255,0.05)' },
+                    ticks: { stepSize: 1 } // Делаем шаг в 1 кг, чтобы не было дробных чисел на оси
+                },
+                x: { 
+                    grid: { display: false } 
+                }
+            }
         }
     });
 
-    if (targetWeight && document.getElementById('target-weight')) document.getElementById('target-weight').value = targetWeight;
+    if (targetWeight && document.getElementById('target-weight')) {
+        document.getElementById('target-weight').value = targetWeight;
+    }
 }
 
 function askEvaAboutProgress() {
