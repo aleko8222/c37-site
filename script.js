@@ -1,16 +1,41 @@
 // ==========================================
-// LIGHTBOX (ЗУМ КАРТИНОК)
+// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (TOAST)
 // ==========================================
-function openImage(src) {
-    document.getElementById('lightbox-img').src = src;
-    document.getElementById('image-lightbox').classList.add('active');
-}
-function closeImage() {
-    document.getElementById('image-lightbox').classList.remove('active');
+function showToast(title, msg, icon = '✅') {
+    const container = document.getElementById('toast-container');
+    if (!container) return; // Если контейнера нет на странице, просто игнорируем
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerHTML = `
+        <div class="toast-icon">${icon}</div>
+        <div class="toast-body">
+            <div class="toast-title">${title}</div>
+            <div class="toast-msg">${msg}</div>
+        </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.classList.add('hide');
+        toast.addEventListener('animationend', () => toast.remove());
+    }, 3000);
 }
 
 // ==========================================
-// SCROLL REVEAL
+// LIGHTBOX (ЗУМ КАРТИНОК)
+// ==========================================
+function openImage(src) {
+    const lightbox = document.getElementById('image-lightbox');
+    if (!lightbox) return;
+    document.getElementById('lightbox-img').src = src;
+    lightbox.classList.add('active');
+}
+function closeImage() {
+    const lightbox = document.getElementById('image-lightbox');
+    if (lightbox) lightbox.classList.remove('active');
+}
+
+// ==========================================
+// SCROLL REVEAL (АНИМАЦИЯ ПОЯВЛЕНИЯ)
 // ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     const revealElements = document.querySelectorAll('.reveal');
@@ -26,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ==========================================
-// ТАКТИЛЬНАЯ ОТДАЧА
+// ТАКТИЛЬНАЯ ОТДАЧА (ВИБРАЦИЯ)
 // ==========================================
 document.addEventListener('click', function(e) {
     const btn = e.target.closest('.btn') || e.target.closest('.btn-small') || e.target.closest('.btn-outline') || e.target.closest('.cart-icon-btn');
@@ -34,7 +59,7 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// ШЛЮЗ OZON
+// ШЛЮЗ OZON (ДЛЯ ДАЛЬНИХ РЕГИОНОВ)
 // ==========================================
 function checkCity() {
     const cityInput = document.getElementById('order-city');
@@ -77,7 +102,9 @@ function addToCart(name, price) {
     saveCart();
     updateCartCount();
     renderCart();
-    if (typeof showToast === 'function') showToast('В корзине', name, '🛒');
+    
+    // Показываем всплывашку, но НЕ открываем корзину принудительно
+    showToast('Добавлено в корзину', name, '🛒');
 }
 
 function saveCart() { localStorage.setItem('c37_cart', JSON.stringify(cart)); }
@@ -128,6 +155,8 @@ function renderCart() {
     });
 
     if(totalPriceEl) totalPriceEl.innerText = total + ' ₽';
+    
+    // Ограничение минимального заказа (7 батончиков или 1 Бокс)
     if (hasBox || totalItems >= 7) {
         if(checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
         if(warningEl) warningEl.style.display = 'none';
@@ -279,7 +308,7 @@ async function sendMessage() {
 }
 
 // ==========================================
-// КВИЗ
+// КВИЗ (РАСЧЕТ КБЖУ)
 // ==========================================
 const steps = [
     { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
@@ -374,6 +403,10 @@ function calculateResult() {
     let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
     let tdee = bmr * mult;
     let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
+    
+    // СОХРАНЯЕМ ЦЕЛЬ В ПАМЯТЬ ДЛЯ ДНЕВНИКА
+    localStorage.setItem('c37_target_calories', Math.round(kcal));
+
     const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
     const fat = 0.9 * w;
     const carbs = (kcal - 4*protein - 9*fat) / 4;
@@ -410,141 +443,90 @@ function resetQuiz() {
 }
 
 // ==========================================
-// ГЛОБАЛЬНЫЙ ESC
+// ДНЕВНИК V1 (СЛОТЫ, СТРИК, ВЕС)
 // ==========================================
-document.addEventListener('keydown', function(e) {
-    if (e.key !== 'Escape') return;
-    const ozon = document.getElementById('ozon-modal');
-    if (ozon && ozon.style.display === 'flex') { closeOzonModal(); }
-    const sidebar = document.getElementById('cart-sidebar');
-    if (sidebar && sidebar.classList.contains('active')) { toggleCart(); }
-    const chat = document.getElementById('chat-window');
-    if (chat && chat.style.display === 'flex') { toggleChat(); }
-    const video = document.getElementById('video-overlay');
-    if (video && video.style.display === 'flex') { endVideo(); }
-    const lightbox = document.getElementById('image-lightbox');
-    if (lightbox && lightbox.classList.contains('active')) { closeImage(); }
-});
+let diaryState = JSON.parse(localStorage.getItem('c37_diary_v1')) || {
+    lastActiveDate: null,
+    streak: 0,
+    slots: { breakfast: null, lunch: null, dinner: null, snacks: null },
+    snacksC37: 0
+};
 
-// ==========================================
-// ДНЕВНИК: ЕДА + ВЕС
-// ==========================================
-let foodData = JSON.parse(localStorage.getItem('c37_food_data')) || [];
 let weightData = JSON.parse(localStorage.getItem('c37_weight_history')) || [];
 let targetWeight = localStorage.getItem('c37_target_weight') || '';
 let weightChartInstance = null;
 
-// --- ПАРСИНГ ЕДЫ ---
-async function analyzeFood() {
-    const input = document.getElementById('food-input');
-    if (!input) return;
-    const text = input.value.trim();
-    if (!text) { alert('Напиши, что ты съел!'); return; }
+function checkNewDay() {
+    const today = new Date().toLocaleDateString('ru-RU');
+    if (diaryState.lastActiveDate !== today) {
+        diaryState.slots = { breakfast: null, lunch: null, dinner: null, snacks: null };
+        diaryState.snacksC37 = 0;
+        diaryState.lastActiveDate = today;
+        saveDiaryState();
+    }
+}
 
-    const btn = document.getElementById('btn-analyze');
-    btn.innerText = '⏳ Эйва думает...';
-    btn.disabled = true;
+function saveDiaryState() {
+    localStorage.setItem('c37_diary_v1', JSON.stringify(diaryState));
+    renderDiaryUI();
+}
 
-    try {
-        const response = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ text: text })
-        });
+function markSlot(slotId, status) {
+    diaryState.slots[slotId] = status;
+    const allDone = Object.values(diaryState.slots).every(s => s !== null);
+    if (allDone && diaryState.streak === 0) {
+        diaryState.streak = 1; 
+    }
+    saveDiaryState();
+    if(typeof showToast === 'function') showToast('Записано', 'Прием пищи отмечен', '✅');
+}
+
+function addSnackC37(name) {
+    diaryState.snacksC37 += 1;
+    saveDiaryState();
+    if(typeof showToast === 'function') showToast('Батончик', `${name} добавлен в перекус`, '🍫');
+}
+
+function renderDiaryUI() {
+    const dayEl = document.getElementById('day-count');
+    if (!dayEl) return;
+
+    dayEl.innerText = localStorage.getItem('c37_day_count') || '1';
+    document.getElementById('streak-count').innerText = diaryState.streak;
+    document.getElementById('snack-count').innerText = diaryState.snacksC37;
+
+    const slots = ['breakfast', 'lunch', 'dinner', 'snacks'];
+    slots.forEach(slot => {
+        const card = document.getElementById(`slot-${slot}`);
+        if (!card) return;
         
-        if (!response.ok) {
-            throw new Error(`Сервер вернул ошибку ${response.status}`);
-        }
+        const status = diaryState.slots[slot];
+        card.classList.remove('completed');
         
-        const data = await response.json();
-        
-        if (data.items && data.items.length > 0) {
-            data.items.forEach(item => {
-                foodData.push({
-                    id: Date.now() + Math.random(),
-                    name: item.name,
-                    cal: item.cal || 0,
-                    prot: item.prot || 0,
-                    fat: item.fat || 0,
-                    carb: item.carb || 0
-                });
-            });
-            localStorage.setItem('c37_food_data', JSON.stringify(foodData));
-            input.value = '';
-            renderFoodList();
+        if (status === 'eaten') {
+            card.classList.add('completed');
+            card.querySelector('.slot-desc').innerText = "✅ Выполнено";
+        } else if (status === 'skipped') {
+            card.classList.add('completed');
+            card.querySelector('.slot-desc').innerText = "❌ Пропущено";
         } else {
-            alert('Не удалось распознать еду. Попробуй написать иначе.');
+            const defaultDesc = { breakfast: 'Белки + сложные углеводы', lunch: 'Белок + овощи', dinner: 'Легкий белок', snacks: 'Батончик C37' };
+            card.querySelector('.slot-desc').innerText = defaultDesc[slot];
         }
-    } catch (error) {
-        console.error("Ошибка парсинга:", error);
-        alert(`Ошибка: ${error.message}`);
-    } finally {
-        btn.innerText = '✨ Посчитать через ИИ';
-        btn.disabled = false;
-    }
-}
-
-function removeFood(id) {
-    foodData = foodData.filter(item => item.id !== id);
-    localStorage.setItem('c37_food_data', JSON.stringify(foodData));
-    renderFoodList();
-}
-
-function resetFood() {
-    if(confirm('Очистить дневник еды?')) {
-        foodData = [];
-        localStorage.setItem('c37_food_data', JSON.stringify(foodData));
-        renderFoodList();
-    }
-}
-
-function renderFoodList() {
-    const listEl = document.getElementById('food-list');
-    if (!listEl) return;
-
-    if (foodData.length === 0) {
-        listEl.innerHTML = '<li style="color:#777; text-align:center; padding: 20px;">Пока пусто. Напиши, что съел!</li>';
-        updateMacros(0, 0, 0, 0);
-        return;
-    }
-
-    listEl.innerHTML = '';
-    let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
-
-    foodData.forEach(item => {
-        totalCal += item.cal; totalProt += item.prot; totalFat += item.fat; totalCarb += item.carb;
-                const li = document.createElement('li');
-        li.innerHTML = `
-            <div style="display:flex; flex-direction:column;">
-                <strong>${item.name}</strong>
-                <span class="macros" style="font-size: 0.8rem; color: #777; margin-top: 4px;">
-                    ${item.cal} ккал &nbsp;•&nbsp; Белки: ${item.prot}г &nbsp;•&nbsp; Жиры: ${item.fat}г &nbsp;•&nbsp; Углеводы: ${item.carb}г
-                </span>
-            </div>
-            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size: 1.2rem;">✕</button>
-        `;
-        listEl.appendChild(li);
     });
 
-    updateMacros(totalCal, totalProt, totalFat, totalCarb);
-}
-
-function updateMacros(cal, prot, fat, carb) {
-    const calEl = document.getElementById('total-calories');
-    if (!calEl) return;
-    calEl.innerText = Math.round(cal);
-    document.getElementById('total-protein').innerText = Math.round(prot);
-    document.getElementById('total-fat').innerText = Math.round(fat);
-    document.getElementById('total-carbs').innerText = Math.round(carb);
-    document.getElementById('calories-bar').style.width = Math.min((cal / 2000) * 100, 100) + '%';
-    document.getElementById('protein-bar').style.width = Math.min((prot / 120) * 100, 100) + '%';
-    document.getElementById('fat-bar').style.width = Math.min((fat / 70) * 100, 100) + '%';
-    document.getElementById('carbs-bar').style.width = Math.min((carb / 200) * 100, 100) + '%';
+    const savedCal = localStorage.getItem('c37_target_calories');
+    if (savedCal) {
+        document.getElementById('daily-cal-goal').innerText = savedCal + ' ккал';
+    } else {
+        document.getElementById('daily-cal-goal').innerText = 'Собери протокол';
+    }
 }
 
 // --- ВЕС ---
 function saveWeight() {
     const input = document.getElementById('current-weight');
+    if (!input) return;
     const weight = parseFloat(input.value);
     if (!weight || weight < 30 || weight > 300) { alert('Введи корректный вес (30-300 кг).'); return; }
 
@@ -557,10 +539,13 @@ function saveWeight() {
     localStorage.setItem('c37_weight_history', JSON.stringify(weightData));
     input.value = '';
     renderChart();
+    if(typeof showToast === 'function') showToast('Вес записан', `Текущий вес: ${weight} кг`, '⚖️');
 }
 
 function saveTargetWeight() {
-    targetWeight = document.getElementById('target-weight').value;
+    const input = document.getElementById('target-weight');
+    if (!input) return;
+    targetWeight = input.value;
     localStorage.setItem('c37_target_weight', targetWeight);
     renderChart();
 }
@@ -569,16 +554,12 @@ function renderChart() {
     const canvas = document.getElementById('weightChart');
     if (!canvas) return;
     
-    // Если данных нет вообще
     if (weightData.length === 0) {
-        canvas.parentElement.innerHTML = '<div style="height: 300px; display: flex; align-items: center; justify-content: center; color: #777; text-align: center;">Пока нет данных. Введи свой первый вес!</div>';
+        canvas.parentElement.innerHTML = '<div style="height: 100%; display: flex; align-items: center; justify-content: center; color: #777; text-align: center;">Пока нет данных. Введи свой первый вес!</div>';
         return;
     }
 
     const ctx = canvas.getContext('2d');
-    
-    // Сортируем данные по дате (на всякий случай, чтобы линия не путалась)
-    // Для этого преобразуем "26.10" в объект даты для сортировки
     const sortedData = [...weightData].sort((a, b) => {
         const [dayA, monthA] = a.date.split('.');
         const [dayB, monthB] = b.date.split('.');
@@ -588,17 +569,12 @@ function renderChart() {
     const labels = sortedData.map(item => item.date);
     const dataPoints = sortedData.map(item => item.weight);
 
-    // Вычисляем минимальный и максимальный вес для красивой шкалы
     let minWeight = Math.min(...dataPoints);
     let maxWeight = Math.max(...dataPoints);
-    
-    // Если есть цель, учитываем её в шкале
     if (targetWeight) {
         minWeight = Math.min(minWeight, parseFloat(targetWeight));
         maxWeight = Math.max(maxWeight, parseFloat(targetWeight));
     }
-    
-    // Добавляем отступы по 1 кг вверх и вниз, чтобы линия не прилипала к краям
     minWeight = Math.floor(minWeight - 1);
     maxWeight = Math.ceil(maxWeight + 1);
 
@@ -624,27 +600,24 @@ function renderChart() {
                     pointRadius: 5,
                     pointHoverRadius: 7,
                     fill: true,
-                    tension: 0.3 // Плавные линии
+                    tension: 0.3
                 },
-                                {
+                {
                     label: 'Цель',
                     data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null),
-                    borderColor: '#4CAF50', // Зеленый цвет
-                    borderWidth: 3,         // Делаем линию толще
-                    borderDash: [],         // Убираем пунктир, делаем сплошной полосой
-                    pointRadius: 0,         // Убираем точки на линии цели
+                    borderColor: '#4CAF50',
+                    borderWidth: 3,
+                    borderDash: [],
+                    pointRadius: 0,
                     fill: false,
-                    tension: 0              // Линия идеально ровная (не изгибается)
+                    tension: 0
                 }
             ]
         },
         options: {
             responsive: true, 
             maintainAspectRatio: false,
-            interaction: {
-                mode: 'index',
-                intersect: false,
-            },
+            interaction: { mode: 'index', intersect: false },
             plugins: { 
                 legend: { display: true, position: 'top' },
                 tooltip: {
@@ -653,12 +626,7 @@ function renderChart() {
                     bodyColor: '#fff',
                     borderColor: 'rgba(255, 107, 26, 0.3)',
                     borderWidth: 1,
-                    padding: 10,
-                    callbacks: {
-                        label: function(context) {
-                            return ` ${context.dataset.label}: ${context.parsed.y} кг`;
-                        }
-                    }
+                    padding: 10
                 }
             },
             scales: {
@@ -666,11 +634,9 @@ function renderChart() {
                     min: minWeight,
                     max: maxWeight,
                     grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { stepSize: 1 } // Делаем шаг в 1 кг, чтобы не было дробных чисел на оси
+                    ticks: { stepSize: 1 }
                 },
-                x: { 
-                    grid: { display: false } 
-                }
+                x: { grid: { display: false } }
             }
         }
     });
@@ -681,17 +647,22 @@ function renderChart() {
 }
 
 function askEvaAboutProgress() {
-    const calEl = document.getElementById('total-calories');
-    const cal = calEl ? calEl.innerText : 0;
+    const calEl = document.getElementById('daily-cal-goal');
+    const cal = calEl ? calEl.innerText : 'неизвестно';
+    
     let weightText = "Я пока не записывал(а) свой вес.";
     if (weightData.length > 0) {
         const startWeight = weightData[0].weight;
         const currentWeight = weightData[weightData.length - 1].weight;
         const diff = (currentWeight - startWeight).toFixed(1);
         const diffStr = diff < 0 ? `похудел(а) на ${Math.abs(diff)} кг` : (diff > 0 ? `набрал(а) ${diff} кг` : `вес стоит на месте`);
-        weightText = `Стартовый вес ${startWeight} кг, сейчас ${currentWeight} кг. Я ${diffStr}. Цель: ${targetWeight || 'не задана'}.`;
+        weightText = `Мой стартовый вес был ${startWeight} кг, сейчас ${currentWeight} кг. Я ${diffStr}. Цель: ${targetWeight || 'не задана'}.`;
     }
-    const promptText = `Эйва, привет! Проанализируй мой день. Я съел(а) сегодня ${cal} ккал. ${weightText} Как тебе мой прогресс и что мне съесть завтра, чтобы ускорить результат?`;
+    
+    let snackText = diaryState.snacksC37 > 0 ? `Сегодня я съел(а) ${diaryState.snacksC37} батончиков C37.` : "";
+    
+    const promptText = `Эйва, привет! Проанализируй мой день. Моя цель по калориям: ${cal}. ${weightText} ${snackText} Как тебе мой прогресс и что мне съесть завтра, чтобы ускорить результат?`;
+
     toggleChat();
     document.getElementById('chat-input-field').value = promptText;
     sendMessage();
@@ -701,5 +672,9 @@ function askEvaAboutProgress() {
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
     if (document.getElementById('quiz-content')) renderStep();
-    if (document.getElementById('weightChart')) { renderChart(); renderFoodList(); }
+    if (document.getElementById('weightChart')) { 
+        checkNewDay();
+        renderDiaryUI(); 
+        renderChart(); 
+    }
 });
