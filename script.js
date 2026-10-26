@@ -513,10 +513,16 @@ function renderFoodList() {
 
     foodData.forEach(item => {
         totalCal += item.cal; totalProt += item.prot; totalFat += item.fat; totalCarb += item.carb;
-        const li = document.createElement('li');
+                const li = document.createElement('li');
         li.innerHTML = `
-            <div><strong>${item.name}</strong><br><span class="macros">${item.cal} ккал | Б:${item.prot} Ж:${item.fat} У:${item.carb}</span></div>
-            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer;">✕</button>`;
+            <div style="display:flex; flex-direction:column;">
+                <strong>${item.name}</strong>
+                <span class="macros" style="font-size: 0.8rem; color: #777; margin-top: 4px;">
+                    ${item.cal} ккал &nbsp;•&nbsp; Белки: ${item.prot}г &nbsp;•&nbsp; Жиры: ${item.fat}г &nbsp;•&nbsp; Углеводы: ${item.carb}г
+                </span>
+            </div>
+            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer; font-size: 1.2rem;">✕</button>
+        `;
         listEl.appendChild(li);
     });
 
