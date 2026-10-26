@@ -1,14 +1,17 @@
-// --- ЛОГИКА LIGHTBOX (ЗУМ КАРТИНОК) ---
+// ==========================================
+// LIGHTBOX (ЗУМ КАРТИНОК)
+// ==========================================
 function openImage(src) {
     document.getElementById('lightbox-img').src = src;
     document.getElementById('image-lightbox').classList.add('active');
 }
-
 function closeImage() {
     document.getElementById('image-lightbox').classList.remove('active');
 }
 
-// --- SCROLL REVEAL (Intersection Observer) ---
+// ==========================================
+// SCROLL REVEAL
+// ==========================================
 document.addEventListener("DOMContentLoaded", () => {
     const revealElements = document.querySelectorAll('.reveal');
     const revealOptions = { threshold: 0.15, rootMargin: "0px 0px -50px 0px" };
@@ -22,15 +25,20 @@ document.addEventListener("DOMContentLoaded", () => {
     revealElements.forEach(el => { revealOnScroll.observe(el); });
 });
 
-// --- ТАКТИЛЬНАЯ ОТДАЧА ДЛЯ КНОПОК ---
+// ==========================================
+// ТАКТИЛЬНАЯ ОТДАЧА
+// ==========================================
 document.addEventListener('click', function(e) {
     const btn = e.target.closest('.btn') || e.target.closest('.btn-small') || e.target.closest('.btn-outline') || e.target.closest('.cart-icon-btn');
     if (btn && navigator.vibrate) { navigator.vibrate(30); }
 });
 
-// --- УМНЫЙ ШЛЮЗ ДЛЯ OZON ---
+// ==========================================
+// ШЛЮЗ OZON
+// ==========================================
 function checkCity() {
     const cityInput = document.getElementById('order-city');
+    if (!cityInput) return;
     const remoteCities = ['владивосток', 'хабаровск', 'новосибирск', 'красноярск', 'иркутск', 'якутск', 'магадан', 'петропавловск', 'южно-сахалинск'];
     const val = cityInput.value.toLowerCase().trim();
     if (remoteCities.some(city => val.includes(city))) {
@@ -38,16 +46,20 @@ function checkCity() {
     }
 }
 function closeOzonModal() { document.getElementById('ozon-modal').style.display = 'none'; }
-document.getElementById('ozon-modal').addEventListener('click', function(e) {
-    if (e.target === this) closeOzonModal();
+document.addEventListener('DOMContentLoaded', () => {
+    const ozon = document.getElementById('ozon-modal');
+    if (ozon) ozon.addEventListener('click', function(e) { if (e.target === this) closeOzonModal(); });
 });
 
-// --- ЛОГИКА КОРЗИНЫ ---
+// ==========================================
+// КОРЗИНА
+// ==========================================
 let cart = JSON.parse(localStorage.getItem('c37_cart')) || [];
 
 function toggleCart() {
     const sidebar = document.getElementById('cart-sidebar');
     const overlay = document.getElementById('cart-overlay');
+    if (!sidebar) return;
     if (sidebar.classList.contains('active')) {
         sidebar.classList.remove('active');
         overlay.classList.remove('active');
@@ -65,7 +77,7 @@ function addToCart(name, price) {
     saveCart();
     updateCartCount();
     renderCart();
-    // Корзина больше не открывается сама, только обновляется счетчик
+    if (typeof showToast === 'function') showToast('В корзине', name, '🛒');
 }
 
 function saveCart() { localStorage.setItem('c37_cart', JSON.stringify(cart)); }
@@ -81,26 +93,22 @@ function updateCartCount() {
 
 function renderCart() {
     const container = document.getElementById('cart-items-container');
+    if (!container) return;
     const totalPriceEl = document.getElementById('cart-total-price');
     const checkoutBtn = document.getElementById('btn-go-checkout');
     const warningEl = document.getElementById('cart-warning');
     const warningCountEl = document.getElementById('cart-warning-count');
-    
-    if (!container) return;
 
     if (cart.length === 0) {
         container.innerHTML = '<p style="color:#777; text-align:center; margin-top:20px;">Пока пусто. Добавь топливо!</p>';
-        totalPriceEl.innerText = '0 ₽';
-        checkoutBtn.disabled = true;
-        checkoutBtn.style.opacity = '0.5';
+        if(totalPriceEl) totalPriceEl.innerText = '0 ₽';
+        if(checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.style.opacity = '0.5'; }
         if(warningEl) warningEl.style.display = 'none';
         return;
     }
 
     container.innerHTML = '';
-    let total = 0;
-    let totalItems = 0;
-    let hasBox = false;
+    let total = 0, totalItems = 0, hasBox = false;
 
     cart.forEach((item, index) => {
         total += item.price * item.qty;
@@ -110,28 +118,21 @@ function renderCart() {
         const div = document.createElement('div');
         div.className = 'cart-item';
         div.innerHTML = `
-            <div class="cart-item-info">
-                <h4>${item.name}</h4>
-                <p>${item.price} ₽</p>
-            </div>
+            <div class="cart-item-info"><h4>${item.name}</h4><p>${item.price} ₽</p></div>
             <div class="cart-item-actions">
                 <button onclick="changeQty(${index}, -1)">-</button>
                 <span>${item.qty}</span>
                 <button onclick="changeQty(${index}, 1)">+</button>
-            </div>
-        `;
+            </div>`;
         container.appendChild(div);
     });
 
-    totalPriceEl.innerText = total + ' ₽';
-
+    if(totalPriceEl) totalPriceEl.innerText = total + ' ₽';
     if (hasBox || totalItems >= 7) {
-        checkoutBtn.disabled = false;
-        checkoutBtn.style.opacity = '1';
+        if(checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
         if(warningEl) warningEl.style.display = 'none';
     } else {
-        checkoutBtn.disabled = true;
-        checkoutBtn.style.opacity = '0.5';
+        if(checkoutBtn) { checkoutBtn.disabled = true; checkoutBtn.style.opacity = '0.5'; }
         if(warningEl) warningEl.style.display = 'block';
         if(warningCountEl) warningCountEl.innerText = 7 - totalItems;
     }
@@ -152,73 +153,69 @@ function showCheckout() {
 
 function submitOrder() {
     if (!document.getElementById('agree-pd').checked) {
-        alert('Необходимо согласие на обработку персональных данных');
-        return;
+        alert('Необходимо согласие на обработку персональных данных'); return;
     }
     const name = document.getElementById('order-name').value;
     const phone = document.getElementById('order-phone').value;
     const city = document.getElementById('order-city').value;
     const delivery = document.getElementById('order-delivery').value;
-
-    if (!name || !phone || !city) {
-        alert('Пожалуйста, заполни все поля для доставки.');
-        return;
-    }
+    if (!name || !phone || !city) { alert('Пожалуйста, заполни все поля.'); return; }
 
     let orderText = `🚀 *Новый заказ C37 FUEL*\n\n`;
-    orderText += `👤 Имя: ${name}\n📞 Контакт: ${phone}\n🏙 Город: ${city}\n🚚 Доставка: ${delivery}\n\n*Состав заказа:*\n`;
-    
+    orderText += `👤 Имя: ${name}\n📞 Контакт: ${phone}\n🏙 Город: ${city}\n🚚 Доставка: ${delivery}\n\n*Состав:*\n`;
     let total = 0;
-    cart.forEach(item => {
-        orderText += `- ${item.name} x${item.qty} = ${item.price * item.qty} ₽\n`;
-        total += item.price * item.qty;
-    });
+    cart.forEach(item => { orderText += `- ${item.name} x${item.qty} = ${item.price * item.qty} ₽\n`; total += item.price * item.qty; });
     orderText += `\n💰 *Итого: ${total} ₽*`;
-
     console.log(orderText); 
-    alert('Заказ принят! Мы свяжемся с тобой в ближайшее время для подтверждения доставки.');
     
-    cart = [];
-    saveCart();
-    updateCartCount();
-    renderCart();
+    alert('Заказ принят! Мы свяжемся с тобой для подтверждения.');
+    cart = []; saveCart(); updateCartCount(); renderCart();
     document.getElementById('checkout-form').classList.remove('active');
     document.getElementById('btn-go-checkout').style.display = 'block';
     toggleCart(); 
 }
 
-// --- ЛОГИКА ВИДЕО ---
+// ==========================================
+// ВИДЕО
+// ==========================================
 function playIntro() {
     const overlay = document.getElementById('video-overlay');
     const video = document.getElementById('eva-video');
     const quizSection = document.getElementById('quiz');
-    quizSection.style.display = 'none';
+    if (!overlay) return;
+    if (quizSection) quizSection.style.display = 'none';
     overlay.style.display = 'flex';
     video.currentTime = 0; 
     video.onerror = endVideo;
-    video.play().catch(error => { console.log("Автовоспроизведение заблокировано:", error); endVideo(); });
+    video.play().catch(() => endVideo());
     video.onended = endVideo;
 }
-
 function endVideo() {
     const overlay = document.getElementById('video-overlay');
     const video = document.getElementById('eva-video');
     const quizSection = document.getElementById('quiz');
+    if (!overlay) return;
     overlay.style.display = 'none';
     video.pause();
-    quizSection.style.display = 'block';
-    setTimeout(() => { quizSection.scrollIntoView({ behavior: 'smooth' }); }, 100);
+    if (quizSection) {
+        quizSection.style.display = 'block';
+        setTimeout(() => { quizSection.scrollIntoView({ behavior: 'smooth' }); }, 100);
+    }
 }
 
-// --- ЛОГИКА ЧАТА ---
+// ==========================================
+// ЧАТ С ЭЙВОЙ
+// ==========================================
 function toggleChat() {
     const chat = document.getElementById('chat-window');
+    if (!chat) return;
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
 }
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
 async function sendMessage() {
     const input = document.getElementById('chat-input-field');
+    if (!input) return;
     const text = input.value.trim();
     if (!text) return;
 
@@ -241,7 +238,7 @@ async function sendMessage() {
         if (isTyping && typingMsg.parentNode) { typingMsg.innerText = 'Просыпаюсь, подожди немного...'; }
     }, 5000);
 
-        try {
+    try {
         const response = await fetch('https://c37-python-rag.de1.netrun.io/api/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -270,7 +267,6 @@ async function sendMessage() {
         messages.appendChild(evaMsg);
         messages.scrollTop = messages.scrollHeight;
     } catch (error) {
-        console.error("Ошибка:", error);
         isTyping = false;
         clearTimeout(timeoutId);
         if(typingMsg.parentNode) messages.removeChild(typingMsg);
@@ -282,7 +278,9 @@ async function sendMessage() {
     }
 }
 
-// --- КВИЗ ---
+// ==========================================
+// КВИЗ
+// ==========================================
 const steps = [
     { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
     { id: 'params', type: 'group_params', question: 'Твои параметры' },
@@ -290,16 +288,14 @@ const steps = [
     { id: 'rhythm', type: 'group_rhythm', question: 'Твой ритм' },
     { id: 'restrictions', type: 'group_restrictions', question: 'Ограничения' }
 ];
-
 let currentStep = 0;
 let answers = {};
 
 function renderStep() {
-    const step = steps[currentStep];
     const container = document.getElementById('quiz-content');
     if (!container) return;
-    
-    let html = `<div style="font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;">ШАГ ${currentStep + 1} ИЗ ${steps.length}</div>`;
+    const step = steps[currentStep];
+    let html = `<div style="font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; font-weight: bold; text-transform: uppercase;">ШАГ ${currentStep + 1} ИЗ ${steps.length}</div>`;
     html += `<p class="question-text">${step.question}</p>`;
     
     if (step.type === 'options') {
@@ -309,73 +305,41 @@ function renderStep() {
             html += `<button class="option-btn ${isSelected}" onclick="selectOption('${step.id}', '${opt}')">${opt}</button>`;
         });
         html += `</div>`;
-    } 
-    else if (step.type === 'group_params') {
+    } else if (step.type === 'group_params') {
         html += `
-            <div class="quiz-group">
-                <label>Пол</label>
-                <div class="row-2">
-                    <button class="option-btn ${answers.gender === 'Мужской' ? 'selected' : ''}" onclick="selectOption('gender', 'Мужской')">Мужской</button>
-                    <button class="option-btn ${answers.gender === 'Женский' ? 'selected' : ''}" onclick="selectOption('gender', 'Женский')">Женский</button>
-                </div>
-            </div>
+            <div class="quiz-group"><label>Пол</label><div class="row-2">
+                <button class="option-btn ${answers.gender === 'Мужской' ? 'selected' : ''}" onclick="selectOption('gender', 'Мужской')">Мужской</button>
+                <button class="option-btn ${answers.gender === 'Женский' ? 'selected' : ''}" onclick="selectOption('gender', 'Женский')">Женский</button>
+            </div></div>
             <div class="row-2">
-                <div class="quiz-group">
-                    <label>Возраст</label>
-                    <input type="number" id="input-age" placeholder="Лет" min="10" max="100" value="${answers.age || ''}" oninput="saveNumber('age', this.value)">
-                </div>
-                <div class="quiz-group">
-                    <label>Рост (см)</label>
-                    <input type="number" id="input-height" placeholder="См" min="100" max="250" value="${answers.height || ''}" oninput="saveNumber('height', this.value)">
-                </div>
+                <div class="quiz-group"><label>Возраст</label><input type="number" id="input-age" placeholder="Лет" value="${answers.age || ''}" oninput="saveNumber('age', this.value)"></div>
+                <div class="quiz-group"><label>Рост (см)</label><input type="number" id="input-height" placeholder="См" value="${answers.height || ''}" oninput="saveNumber('height', this.value)"></div>
             </div>
-            <div class="quiz-group">
-                <label>Вес (кг)</label>
-                <input type="number" id="input-weight" placeholder="Кг" min="30" max="300" value="${answers.weight || ''}" oninput="saveNumber('weight', this.value)">
-            </div>
-        `;
-    }
-    else if (step.type === 'group_rhythm') {
+            <div class="quiz-group"><label>Вес (кг)</label><input type="number" id="input-weight" placeholder="Кг" value="${answers.weight || ''}" oninput="saveNumber('weight', this.value)"></div>`;
+    } else if (step.type === 'group_rhythm') {
         html += `
-            <div class="quiz-group">
-                <label>Когда сильнее тянет на сладкое?</label>
-                <div class="row-2">
-                    <button class="option-btn ${answers.craving === 'Утро' ? 'selected' : ''}" onclick="selectOption('craving', 'Утро')">Утро</button>
-                    <button class="option-btn ${answers.craving === 'День' ? 'selected' : ''}" onclick="selectOption('craving', 'День')">День</button>
-                    <button class="option-btn ${answers.craving === 'Вечер' ? 'selected' : ''}" onclick="selectOption('craving', 'Вечер')">Вечер</button>
-                    <button class="option-btn ${answers.craving === 'Нет тяги' ? 'selected' : ''}" onclick="selectOption('craving', 'Нет тяги')">Нет тяги</button>
-                </div>
-            </div>
-            <div class="quiz-group">
-                <label>Средняя продолжительность сна?</label>
-                <div class="row-2">
-                    <button class="option-btn ${answers.sleep === 'Мало' ? 'selected' : ''}" onclick="selectOption('sleep', 'Мало')">Меньше 7 ч</button>
-                    <button class="option-btn ${answers.sleep === 'Норма' ? 'selected' : ''}" onclick="selectOption('sleep', 'Норма')">7-9 ч</button>
-                </div>
-            </div>
-        `;
-    }
-    else if (step.type === 'group_restrictions') {
+            <div class="quiz-group"><label>Когда тянет на сладкое?</label><div class="row-2">
+                <button class="option-btn ${answers.craving === 'Утро' ? 'selected' : ''}" onclick="selectOption('craving', 'Утро')">Утро</button>
+                <button class="option-btn ${answers.craving === 'День' ? 'selected' : ''}" onclick="selectOption('craving', 'День')">День</button>
+                <button class="option-btn ${answers.craving === 'Вечер' ? 'selected' : ''}" onclick="selectOption('craving', 'Вечер')">Вечер</button>
+            </div></div>
+            <div class="quiz-group"><label>Сон?</label><div class="row-2">
+                <button class="option-btn ${answers.sleep === 'Мало' ? 'selected' : ''}" onclick="selectOption('sleep', 'Мало')">Меньше 7 ч</button>
+                <button class="option-btn ${answers.sleep === 'Норма' ? 'selected' : ''}" onclick="selectOption('sleep', 'Норма')">7-9 ч</button>
+            </div></div>`;
+    } else if (step.type === 'group_restrictions') {
         html += `
-            <div class="quiz-group">
-                <label>Есть ли аллергии на арахис?</label>
-                <div class="row-2">
-                    <button class="option-btn ${answers.allergies === 'Нет' ? 'selected' : ''}" onclick="selectOption('allergies', 'Нет')">Нет</button>
-                    <button class="option-btn ${answers.allergies === 'Да' ? 'selected' : ''}" onclick="selectOption('allergies', 'Да')">Да</button>
-                </div>
-            </div>
-            <div class="quiz-group">
-                <label>Есть ли что-то из этого? (Стоп-факторы)</label>
-                <div class="row-2">
-                    <button class="option-btn ${answers.stop === 'Нет' ? 'selected' : ''}" onclick="selectOption('stop', 'Нет')">Нет</button>
-                    <button class="option-btn ${answers.stop === 'Да' ? 'selected' : ''}" onclick="selectOption('stop', 'Да')">Да</button>
-                </div>
-            </div>
-        `;
+            <div class="quiz-group"><label>Аллергия на арахис?</label><div class="row-2">
+                <button class="option-btn ${answers.allergies === 'Нет' ? 'selected' : ''}" onclick="selectOption('allergies', 'Нет')">Нет</button>
+                <button class="option-btn ${answers.allergies === 'Да' ? 'selected' : ''}" onclick="selectOption('allergies', 'Да')">Да</button>
+            </div></div>
+            <div class="quiz-group"><label>Стоп-факторы?</label><div class="row-2">
+                <button class="option-btn ${answers.stop === 'Нет' ? 'selected' : ''}" onclick="selectOption('stop', 'Нет')">Нет</button>
+                <button class="option-btn ${answers.stop === 'Да' ? 'selected' : ''}" onclick="selectOption('stop', 'Да')">Да</button>
+            </div></div>`;
     }
-
     container.innerHTML = html;
-    const progress = ((currentStep) / (steps.length - 1)) * 100;
+    const progress = (currentStep / (steps.length - 1)) * 100;
     document.getElementById('progress').style.width = progress + '%';
     document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'inline-block';
     document.getElementById('nextBtn').innerText = currentStep === steps.length - 1 ? 'Показать результат' : 'Далее';
@@ -386,81 +350,58 @@ function saveNumber(id, value) { answers[id] = value; }
 
 function nextStep() {
     const step = steps[currentStep];
-    if (step.type === 'group_params') {
-        if (!answers.gender || !answers.age || !answers.height || !answers.weight) { alert('Пожалуйста, заполни все параметры.'); return; }
-    } else if (step.type === 'group_rhythm') {
-        if (!answers.craving || !answers.sleep) { alert('Пожалуйста, ответь на оба вопроса.'); return; }
-    } else if (step.type === 'group_restrictions') {
-        if (!answers.allergies || !answers.stop) { alert('Пожалуйста, ответь на оба вопроса.'); return; }
+    if (step.type === 'group_params' && (!answers.gender || !answers.age || !answers.height || !answers.weight)) { alert('Заполни все параметры.'); return; }
+    if (step.type === 'group_rhythm' && (!answers.craving || !answers.sleep)) { alert('Ответь на оба вопроса.'); return; }
+    if (step.type === 'group_restrictions') {
+        if (!answers.allergies || !answers.stop) { alert('Ответь на оба вопроса.'); return; }
         if (answers.stop === 'Да') {
-            document.getElementById('quiz-content').innerHTML = `
-                <div style="text-align: center; padding: 20px;">
-                    <h2 style="color: var(--accent); margin-bottom: 20px;">Обратитесь к врачу</h2>
-                    <p style="margin-bottom: 20px;">Для твоей безопасности мы не можем собрать протокол автоматически.</p>
-                    <button class="btn" onclick="resetQuiz()">Начать заново</button>
-                </div>
-            `;
-            document.querySelector('.nav-buttons').style.display = 'none';
-            return;
+            document.getElementById('quiz-content').innerHTML = `<div style="text-align: center; padding: 20px;"><h2 style="color: var(--accent);">Обратитесь к врачу</h2><p style="margin: 20px 0;">Для твоей безопасности мы не можем собрать протокол.</p><button class="btn" onclick="resetQuiz()">Начать заново</button></div>`;
+            document.querySelector('.nav-buttons').style.display = 'none'; return;
         }
-    } else if (step.type === 'options') {
-        if (!answers[step.id]) { alert('Пожалуйста, выбери вариант'); return; }
     }
+    if (step.type === 'options' && !answers[step.id]) { alert('Выбери вариант'); return; }
+    
     if (currentStep < steps.length - 1) { currentStep++; renderStep(); } 
     else { calculateResult(); }
 }
-
 function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
 function calculateResult() {
     document.querySelector('.progress-bar').style.display = 'none';
-    const w = parseFloat(answers.weight);
-    const h = parseFloat(answers.height);
-    const a = parseFloat(answers.age);
+    const w = parseFloat(answers.weight), h = parseFloat(answers.height), a = parseFloat(answers.age);
     const isMale = answers.gender === 'Мужской';
-    let bmr = isMale ? (10 * w + 6.25 * h - 5 * a + 5) : (10 * w + 6.25 * h - 5 * a - 161);
-    let activityMultiplier = 1.375;
-    if (answers.activity === 'Сидячий') activityMultiplier = 1.2;
-    if (answers.activity === 'Высокий') activityMultiplier = 1.55;
-    let tdee = bmr * activityMultiplier;
-    let targetCalories = tdee;
-    if (answers.goal === 'Похудение') targetCalories = Math.max(bmr, tdee * 0.83);
-    if (answers.goal === 'Мышцы') targetCalories = tdee * 1.1;
+    let bmr = isMale ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
+    let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
+    let tdee = bmr * mult;
+    let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
     const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
     const fat = 0.9 * w;
-    const carbs = (targetCalories - 4 * protein - 9 * fat) / 4;
+    const carbs = (kcal - 4*protein - 9*fat) / 4;
 
-    let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)';
-    let barMorning = 'База Лимитированная';
-    let barEvening = 'Коллаген Лайт';
+    let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
     if (answers.goal === 'Энергия') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)'; barMorning = 'Энергия Дисциплины'; barEvening = 'Омега Буст'; } 
     else if (answers.goal === 'Мышцы') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)'; barMorning = 'Протеин База'; barEvening = 'Восстановление'; }
-    
     if (answers.allergies === 'Да') {
-        if (barMorning === 'База Лимитированная' || barMorning === 'Протеин База') barMorning = 'Коллаген Лайт';
-        if (barEvening === 'Протеин База' || barEvening === 'База Лимитированная') barEvening = 'Коллаген Лайт';
+        if (['База Лимитированная','Протеин База'].includes(barMorning)) barMorning = 'Коллаген Лайт';
+        if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
     }
 
     document.getElementById('quiz-content').innerHTML = `
-        <h2 style="color: var(--accent); margin-bottom: 10px;">Твой протокол готов</h2>
+        <h2 style="color: var(--accent);">Твой протокол готов</h2>
         <div class="result-grid">
-            <div class="result-card"><h3>Калории</h3><div class="value">${Math.round(targetCalories)}</div></div>
+            <div class="result-card"><h3>Калории</h3><div class="value">${Math.round(kcal)}</div></div>
             <div class="result-card"><h3>Белки</h3><div class="value">${Math.round(protein)} г</div></div>
             <div class="result-card"><h3>Жиры</h3><div class="value">${Math.round(fat)} г</div></div>
             <div class="result-card"><h3>Углеводы</h3><div class="value">${Math.round(carbs)} г</div></div>
         </div>
         <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--accent);">
-            <p style="margin-bottom: 15px; color: #fff; font-size: 1.1rem; font-weight: bold;">📦 Твой Стартовый Бокс на 7 дней:</p>
-            <p style="margin-bottom: 10px;">🌅 Утро (вместо кофе): <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
-            <p style="margin-bottom: 15px;">💼 Офис/Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
+            <p style="margin-bottom: 15px; font-weight: bold; color: #fff;">📦 Твой Бокс на 7 дней:</p>
+            <p style="margin-bottom: 10px;">🌅 Утро: <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
+            <p style="margin-bottom: 15px;">💼 Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
             <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190);">Заказать Бокс за 1190 ₽</button>
-            <a href="https://t.me/c37_eva" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none;">Подписаться на Эйву в TG</a>
-        </div>
-        <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Это ориентировочный протокол.</p>
-    `;
+        </div>`;
     document.querySelector('.nav-buttons').style.display = 'none';
 }
-
 function resetQuiz() {
     currentStep = 0; answers = {};
     document.querySelector('.progress-bar').style.display = 'block';
@@ -468,7 +409,9 @@ function resetQuiz() {
     renderStep();
 }
 
-// --- ГЛОБАЛЬНЫЙ ESC ---
+// ==========================================
+// ГЛОБАЛЬНЫЙ ESC
+// ==========================================
 document.addEventListener('keydown', function(e) {
     if (e.key !== 'Escape') return;
     const ozon = document.getElementById('ozon-modal');
@@ -482,17 +425,19 @@ document.addEventListener('keydown', function(e) {
     const lightbox = document.getElementById('image-lightbox');
     if (lightbox && lightbox.classList.contains('active')) { closeImage(); }
 });
+
 // ==========================================
-// ЛОГИКА ДНЕВНИКА ЕДЫ (ИИ) И ВЕСА
+// ДНЕВНИК: ЕДА + ВЕС
 // ==========================================
 let foodData = JSON.parse(localStorage.getItem('c37_food_data')) || [];
 let weightData = JSON.parse(localStorage.getItem('c37_weight_history')) || [];
 let targetWeight = localStorage.getItem('c37_target_weight') || '';
 let weightChartInstance = null;
 
-// --- ЕДА ---
+// --- ПАРСИНГ ЕДЫ ---
 async function analyzeFood() {
     const input = document.getElementById('food-input');
+    if (!input) return;
     const text = input.value.trim();
     if (!text) { alert('Напиши, что ты съел!'); return; }
 
@@ -506,6 +451,10 @@ async function analyzeFood() {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ text: text })
         });
+        
+        if (!response.ok) {
+            throw new Error(`Сервер вернул ошибку ${response.status}`);
+        }
         
         const data = await response.json();
         
@@ -527,8 +476,8 @@ async function analyzeFood() {
             alert('Не удалось распознать еду. Попробуй написать иначе.');
         }
     } catch (error) {
-        console.error(error);
-        alert('Ошибка соединения с сервером ИИ.');
+        console.error("Ошибка парсинга:", error);
+        alert(`Ошибка: ${error.message}`);
     } finally {
         btn.innerText = '✨ Посчитать через ИИ';
         btn.disabled = false;
@@ -542,7 +491,7 @@ function removeFood(id) {
 }
 
 function resetFood() {
-    if(confirm('Ты уверен, что хочешь очистить дневник еды?')) {
+    if(confirm('Очистить дневник еды?')) {
         foodData = [];
         localStorage.setItem('c37_food_data', JSON.stringify(foodData));
         renderFoodList();
@@ -566,12 +515,8 @@ function renderFoodList() {
         totalCal += item.cal; totalProt += item.prot; totalFat += item.fat; totalCarb += item.carb;
         const li = document.createElement('li');
         li.innerHTML = `
-            <div>
-                <strong>${item.name}</strong><br>
-                <span class="macros">${item.cal} ккал | Б:${item.prot} Ж:${item.fat} У:${item.carb}</span>
-            </div>
-            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer;">✕</button>
-        `;
+            <div><strong>${item.name}</strong><br><span class="macros">${item.cal} ккал | Б:${item.prot} Ж:${item.fat} У:${item.carb}</span></div>
+            <button onclick="removeFood(${item.id})" style="background:none; border:none; color:#ff4444; cursor:pointer;">✕</button>`;
         listEl.appendChild(li);
     });
 
@@ -579,11 +524,12 @@ function renderFoodList() {
 }
 
 function updateMacros(cal, prot, fat, carb) {
-    document.getElementById('total-calories').innerText = Math.round(cal);
+    const calEl = document.getElementById('total-calories');
+    if (!calEl) return;
+    calEl.innerText = Math.round(cal);
     document.getElementById('total-protein').innerText = Math.round(prot);
     document.getElementById('total-fat').innerText = Math.round(fat);
     document.getElementById('total-carbs').innerText = Math.round(carb);
-
     document.getElementById('calories-bar').style.width = Math.min((cal / 2000) * 100, 100) + '%';
     document.getElementById('protein-bar').style.width = Math.min((prot / 120) * 100, 100) + '%';
     document.getElementById('fat-bar').style.width = Math.min((fat / 70) * 100, 100) + '%';
@@ -598,16 +544,13 @@ function saveWeight() {
 
     const today = new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
     const existingIndex = weightData.findIndex(item => item.date === today);
-    
     if (existingIndex !== -1) { weightData[existingIndex].weight = weight; } 
     else { weightData.push({ date: today, weight: weight }); }
-    
     if (weightData.length > 30) weightData.shift();
 
     localStorage.setItem('c37_weight_history', JSON.stringify(weightData));
     input.value = '';
     renderChart();
-    if(typeof showToast === 'function') showToast('Вес записан', `Текущий вес: ${weight} кг`, '⚖️');
 }
 
 function saveTargetWeight() {
@@ -622,7 +565,6 @@ function renderChart() {
     const ctx = canvas.getContext('2d');
     const labels = weightData.map(item => item.date);
     const dataPoints = weightData.map(item => item.weight);
-
     if (weightChartInstance) { weightChartInstance.destroy(); }
 
     Chart.defaults.color = '#a0a0a0';
@@ -633,69 +575,40 @@ function renderChart() {
         data: {
             labels: labels,
             datasets: [
-                {
-                    label: 'Мой вес (кг)',
-                    data: dataPoints,
-                    borderColor: '#FF6B1A',
-                    backgroundColor: 'rgba(255, 107, 26, 0.1)',
-                    borderWidth: 3,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#FF6B1A',
-                    pointBorderWidth: 2,
-                    pointRadius: 4,
-                    fill: true,
-                    tension: 0.3
-                },
-                {
-                    label: 'Цель',
-                    data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null),
-                    borderColor: '#4CAF50',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    pointRadius: 0,
-                    fill: false
-                }
+                { label: 'Мой вес (кг)', data: dataPoints, borderColor: '#FF6B1A', backgroundColor: 'rgba(255, 107, 26, 0.1)', borderWidth: 3, pointBackgroundColor: '#fff', pointBorderColor: '#FF6B1A', pointBorderWidth: 2, pointRadius: 4, fill: true, tension: 0.3 },
+                { label: 'Цель', data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null), borderColor: '#4CAF50', borderWidth: 2, borderDash: [5, 5], pointRadius: 0, fill: false }
             ]
         },
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: { legend: { display: true, position: 'top' } },
-            scales: {
-                y: { grid: { color: 'rgba(255,255,255,0.05)' } },
-                x: { grid: { display: false } }
-            }
+            scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } }
         }
     });
 
-    if (targetWeight && document.getElementById('target-weight')) {
-        document.getElementById('target-weight').value = targetWeight;
-    }
+    if (targetWeight && document.getElementById('target-weight')) document.getElementById('target-weight').value = targetWeight;
 }
 
 function askEvaAboutProgress() {
     const calEl = document.getElementById('total-calories');
     const cal = calEl ? calEl.innerText : 0;
-    
     let weightText = "Я пока не записывал(а) свой вес.";
     if (weightData.length > 0) {
         const startWeight = weightData[0].weight;
         const currentWeight = weightData[weightData.length - 1].weight;
         const diff = (currentWeight - startWeight).toFixed(1);
         const diffStr = diff < 0 ? `похудел(а) на ${Math.abs(diff)} кг` : (diff > 0 ? `набрал(а) ${diff} кг` : `вес стоит на месте`);
-        weightText = `Мой стартовый вес был ${startWeight} кг, сейчас ${currentWeight} кг. Я ${diffStr}. Цель: ${targetWeight || 'не задана'}.`;
+        weightText = `Стартовый вес ${startWeight} кг, сейчас ${currentWeight} кг. Я ${diffStr}. Цель: ${targetWeight || 'не задана'}.`;
     }
-
     const promptText = `Эйва, привет! Проанализируй мой день. Я съел(а) сегодня ${cal} ккал. ${weightText} Как тебе мой прогресс и что мне съесть завтра, чтобы ускорить результат?`;
-
     toggleChat();
     document.getElementById('chat-input-field').value = promptText;
     sendMessage();
 }
 
-// Запуск при загрузке страницы
+// --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
 document.addEventListener('DOMContentLoaded', () => {
-    if (document.getElementById('weightChart')) { 
-        renderChart();
-        renderFoodList();
-    }
+    updateCartCount();
+    if (document.getElementById('quiz-content')) renderStep();
+    if (document.getElementById('weightChart')) { renderChart(); renderFoodList(); }
 });
