@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>О бренде C37 FUEL</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<!-- КОНТЕНТ СТРАНИЦЫ "О НАС" -->
+<div class="container" style="padding: 100px 20px; max-width: 800px; margin: 0 auto;">
+    
+    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 20px; color: var(--accent); font-weight: 900;">О БРЕНДЕ</h1>
+    
+    <p class="reveal" style="font-size: 1.2rem; color: #ccc; margin-bottom: 40px; line-height: 1.8; transition-delay: 0.1s;">
+        C37 FUEL — это не просто батончики. Это система, созданная для тех, кто относится к своему телу как к высокоточному механизму. Мы верим, что дисциплина — это не насилие над собой, а правильный выбор топлива.
+    </p>
+
+    <div class="box-card reveal" style="margin-bottom: 30px; transition-delay: 0.2s; padding: 30px;">
+        <div class="box-title" style="color: var(--accent); font-size: 1.5rem;">Наша философия</div>
+        <p style="color: #ddd; line-height: 1.8; margin-top: 15px;">
+            Мы не верим в жесткие диеты и запреты. Мы верим в умный подход. Наш лозунг: «Не запрещает — заменяет». Мы создаем продукты, которые дают стабильную энергию, убирают «сахарные качели» и помогают оставаться в фокусе в течение всего дня.
+        </p>
+    </div>
+
+    <div class="box-card reveal" style="margin-bottom: 30px; transition-delay: 0.3s; padding: 30px;">
+        <div class="box-title" style="color: var(--accent); font-size: 1.5rem;">Чистый состав</div>
+        <p style="color: #ddd; line-height: 1.8; margin-top: 15px;">
+            0 г сахара. Высокое содержание белка. Натуральная клетчатка. Мы показываем реальные лабораторные тесты каждой партии по QR-коду на упаковке. Никаких скрытых ингредиентов и маркетинговых уловок.
+        </p>
+    </div>
+
+    <div class="box-card reveal" style="margin-bottom: 60px; transition-delay: 0.4s; padding: 30px; background: linear-gradient(135deg, rgba(255,107,26,0.1) 0%, rgba(20,24,28,0.9) 100%); border-color: var(--accent);">
+        <div class="box-title" style="color: #fff; font-size: 1.5rem;">ЭЙВА — твой цифровой наставник</div>
+        <p style="color: #ccc; line-height: 1.8; margin-top: 15px; margin-bottom: 20px;">
+            Мы объединили экспертизу в нутрициологии с искусственным интеллектом. ЭЙВА — это ИИ-ассистент, который рассчитывает твой персональный протокол питания, следит за водным балансом и всегда готов поддержать.
+        </p>
+        <button class="btn" onclick="window.location.href='index.html#boxes'">Выбрать свой Протокол</button>
+    </div>
+
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="script.js"></script>
+<script>
+  async function loadComponents() {
+    try {
+      const headerRes = await fetch('header.html');
+      document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+      const footerRes = await fetch('footer.html');
+      document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
+      if (typeof updateCartCount === 'function') updateCartCount();
+      
+      // Запуск анимаций появления
+      setTimeout(() => {
+          const revealElements = document.querySelectorAll('.reveal');
+          const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+              entries.forEach(entry => {
+                  if (!entry.isIntersecting) return;
+                  entry.target.classList.add('active');
+                  observer.unobserve(entry.target);
+              });
+          }, { threshold: 0.15 });
+          revealElements.forEach(el => revealOnScroll.observe(el));
+      }, 100);
+
+    } catch (error) {
+      console.error('Ошибка загрузки компонентов:', error);
+    }
+  }
+  loadComponents();
+</script>
+</body>
+</html>

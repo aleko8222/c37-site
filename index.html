@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C37 FUEL — Функциональное питание и ИИ-нутрициолог ЭЙВА</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23FF6B1A'/><text x='50' y='72' font-size='55' font-family='Arial' font-weight='900' font-style='italic' fill='%23000' text-anchor='middle'>C37</text></svg>">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- ОВЕРЛЕИ И МОДАЛКИ -->
+    <div id="image-lightbox" class="image-lightbox" onclick="closeImage()">
+        <img id="lightbox-img" src="" alt="Zoomed Image">
+    </div>
+
+    <div id="ozon-modal" class="ozon-modal">
+        <div class="ozon-modal-content">
+            <button class="close-ozon" onclick="closeOzonModal()">✕</button>
+            <h2 style="color:var(--accent); margin-bottom:15px;">Мы заботимся о тебе</h2>
+            <p style="color:#ccc; margin-bottom:20px; font-size:0.95rem;">Похоже, ты из отдаленного региона. Доставка туда стоит очень дорого (около 650 ₽). Чтобы ты не переплачивал, закажи наш бокс напрямую на Ozon — там доставка быстрее и дешевле.</p>
+            <a href="https://ozon.ru" target="_blank" class="btn" style="width:100%;">Перейти на Ozon</a>
+            <button class="btn-outline" style="width:100%; margin-top:10px; padding:12px;" onclick="closeOzonModal()">Остаться на сайте</button>
+        </div>
+    </div>
+
+    <div id="video-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column;">
+        <video id="eva-video" src="intro.mp4" playsinline style="max-width:90%; max-height:80vh; border:1px solid var(--border); border-radius:12px; box-shadow:0 0 50px rgba(255,107,26,0.2);"></video>
+        <button class="btn-outline" onclick="endVideo()" style="margin-top:20px; padding:12px 24px; border-radius:8px; cursor:pointer; background:transparent; font-size:1rem; transition:all 0.3s;">Пропустить видео ➔</button>
+    </div>
+
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Твой заказ</h3>
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <p style="color:#777; text-align:center; margin-top:20px;">Пока пусто. Добавь топливо!</p>
+        </div>
+        
+        <div class="checkout-form" id="checkout-form">
+            <h4 style="margin-bottom:15px; color:var(--accent);">Данные для доставки</h4>
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="order-name" placeholder="Как к тебе обращаться?" required>
+            </div>
+            <div class="form-group">
+                <label>Телефон или Telegram</label>
+                <input type="text" id="order-phone" placeholder="+7..." required>
+            </div>
+            <div class="form-group">
+                <label>Город</label>
+                <input type="text" id="order-city" placeholder="Москва" required oninput="checkCity()" onblur="checkCity()">
+            </div>
+            <div class="form-group">
+                <label>Способ доставки</label>
+                <select id="order-delivery">
+                    <option value="Яндекс Доставка (ПВЗ)">Яндекс Доставка (ПВЗ)</option>
+                    <option value="СДЭК (ПВЗ)">СДЭК (ПВЗ)</option>
+                    <option value="Курьер (Москва)">Курьер по Москве</option>
+                </select>
+            </div>
+            <label class="pd-consent">
+                <input type="checkbox" id="agree-pd">
+                <span>Согласен на обработку персональных данных в соответствии с <a href="#">политикой конфиденциальности</a></span>
+            </label>
+            <button class="btn" style="width:100%; margin-top:5px;" onclick="submitOrder()">Подтвердить заказ</button>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cart-total-price">0 ₽</span>
+            </div>
+            <div class="cart-warning" id="cart-warning">Минимальный заказ — 7 батончиков или 1 Бокс. Добавьте еще <span id="cart-warning-count">7</span> шт.</div>
+            <button class="btn" id="btn-go-checkout" style="width:100%;" onclick="showCheckout()">Оформить заказ</button>
+        </div>
+    </div>
+
+    <!-- ШАПКА -->
+    <div id="header-placeholder"></div>
+
+    <!-- ГЛАВНЫЙ ЭКРАН -->
+    <section class="hero container">
+        <div class="hero-text reveal">
+            <h1>Ты архитектор<br>своей жизни.<br><span>Мы — топливо.</span></h1>
+            <p>Собери свой Протокол C37 за 2 минуты. ЭЙВА рассчитает питание и подберет твой идеальный Бокс.</p>
+            <button class="btn" onclick="playIntro()">Собрать протокол</button>
+            <div class="trust-markers">
+                <span>0 г сахара*</span>
+                <span>12+ г белка</span>
+                <span>Aw ≤ 0,65</span>
+            </div>
+        </div>
+        <div class="hero-image reveal">
+            <div class="hero-img-box">
+                <img src="eva_base.jpg" alt="ЭЙВА" onerror="this.src='eva.jpg'" loading="lazy">
+                <div class="hud-overlay">
+                    <div class="hud-corner tl"></div>
+                    <div class="hud-corner tr"></div>
+                    <div class="hud-corner bl"></div>
+                    <div class="hud-corner br"></div>
+                    <div class="hud-text">SYS.ONLINE<br><span>TARGET: ACQUIRED</span></div>
+                    <div class="hud-scanline"></div>
+                    <div class="hud-radar"></div>
+                    <div class="hud-node n1"></div>
+                    <div class="hud-node n2"></div>
+                    <div class="hud-node n3"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- БОКСЫ -->
+    <section class="boxes" id="boxes">
+        <div class="container">
+            <h2 class="reveal">Выбери свой Бокс Протокола</h2>
+            <p class="boxes-sub reveal" style="transition-delay: 0.1s;">Мы не продаем батончики поштучно — мы продаем готовую систему на неделю или месяц.</p>
+            
+            <div class="boxes-grid">
+                <div class="box-card reveal" style="transition-delay: 0.2s;">
+                    <div class="box-title">ПРОТОКОЛ НЕДЕЛИ</div>
+                    <div class="box-desc">Стартовый бокс на 7 дней. Идеально, чтобы протестировать систему и понять вкусы.</div>
+                    <ul class="box-features">
+                        <li>7 батончиков C37 FUEL</li>
+                        <li>Сбалансированный набор (Утро/День/Вечер)</li>
+                        <li>Доступ к ЭЙВА Basic</li>
+                        <li>Доставка Яндекс/СДЭК</li>
+                    </ul>
+                    <div class="box-price">1 190 ₽</div>
+                    <div class="box-price-old">В рознице: 1 390 ₽</div>
+                    <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Собрать бокс</button>
+                </div>
+
+                <div class="box-card popular reveal" style="transition-delay: 0.3s;">
+                    <div class="box-badge">ВЫГОДНО</div>
+                    <div class="box-title">ПРОТОКОЛ МЕСЯЦА</div>
+                    <div class="box-desc">Полноценная система на 30 дней. Максимальная выгода и бесплатная доставка.</div>
+                    <ul class="box-features">
+                        <li>30 батончиков C37 FUEL</li>
+                        <li>Подбор под твой протокол</li>
+                        <li>Доступ к ЭЙВА Plus (Бесплатно)</li>
+                        <li>Бесплатная доставка</li>
+                    </ul>
+                    <div class="box-price">3 990 ₽</div>
+                    <div class="box-price-old">В рознице: 4 490 ₽</div>
+                    <button class="btn" onclick="addToCart('ПРОТОКОЛ МЕСЯЦА (30 шт)', 3990)">Собрать бокс</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ПОДПИСКИ -->
+    <section class="subscriptions">
+        <div class="container">
+            <h2 class="reveal" style="text-align:center; font-size:2.5rem; margin-bottom:10px; font-weight:800;">Клуб C37</h2>
+            <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:50px; font-size:1.1rem; transition-delay: 0.1s;">Ежемесячная система с доступом к закрытому ИИ-нутрициологу.</p>
+            <div class="subs-grid">
+                <div class="sub-card reveal" style="transition-delay: 0.2s;">
+                    <div class="sub-title">С37 КЛУБ</div>
+                    <div class="sub-price">2 990 ₽/мес</div>
+                    <div class="sub-desc">10 батончиков на месяц + безлимитный доступ к ЭЙВА Plus + бесплатная доставка.</div>
+                    <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
+                </div>
+                <div class="sub-card premium reveal" style="transition-delay: 0.3s;">
+                    <div class="sub-title" style="color:var(--accent);">С37 PREMIUM</div>
+                    <div class="sub-price">4 990 ₽/мес</div>
+                    <div class="sub-desc">Полная линейка (батончики, шоты, сиропы) + ЭЙВА Plus + ранний доступ к новинкам.</div>
+                    <button class="btn" style="width:100%; padding:12px;" onclick="alert('Записали тебя в лист ожидания! Мы напишем, когда запустим подписку.')">В лист ожидания</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КОНСТРУКТОР -->
+    <section class="products">
+        <div class="container">
+            <h2 class="reveal">Или собери свой Бокс вручную</h2>
+            <p class="products-sub reveal" style="transition-delay: 0.1s;">Выбери любые 7 батончиков (или больше), чтобы оформить заказ. Цена за штуку при сборке бокса.</p>
+            <div class="products-grid">
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
+                    <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Протеин База</h4>
+                        <p>12.9 г белка, стабильная энергия</p>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Протеин База', 170)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.2s;">
+                    <div class="product-img"><img src="bar_energy.jpg" alt="Энергия Дисциплины" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Энергия Дисциплины</h4>
+                        <p>Матча, L-теанин, фокус</p>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Энергия Дисциплины', 170)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.3s;">
+                    <div class="product-img"><img src="bar_limited.jpg" alt="База Лимитированная" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>База Лимитированная</h4>
+                        <p>12.3 г белка, 0 г сахара</p>
+                        <div class="price">220 ₽ <span>249 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('База Лимитированная', 220)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
+                    <div class="product-img"><img src="bar_recovery.jpg" alt="Восстановление" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Восстановление</h4>
+                        <p>Магний, электролиты</p>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Восстановление', 170)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.2s;">
+                    <div class="product-img"><img src="bar_omega.jpg" alt="Омега Буст" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Омега Буст</h4>
+                        <p>Омега-3, клетчатка</p>
+                        <div class="price">170 ₽ <span>199 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Омега Буст', 170)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.3s;">
+                    <div class="product-img"><img src="bar_collagen.jpg" alt="Коллаген Лайт" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Коллаген Лайт</h4>
+                        <p>5 г коллагена, ягоды</p>
+                        <div class="price">220 ₽ <span>249 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Коллаген Лайт', 220)">Добавить в бокс</button>
+                    </div>
+                </div>
+                <div class="product-card reveal" style="transition-delay: 0.1s;">
+                    <div class="product-img"><img src="bar_extreme.jpg" alt="Экстрим" onclick="openImage(this.src)" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'" loading="lazy"></div>
+                    <div class="product-info">
+                        <h4>Экстрим</h4>
+                        <p>0 сахара, чистый состав</p>
+                        <div class="price">220 ₽ <span>249 ₽</span></div>
+                        <button class="btn-small" onclick="addToCart('Экстрим', 220)">Добавить в бокс</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- АНОНСЫ -->
+    <section class="coming-soon" id="coming-soon">
+        <div class="container">
+            <h2 class="reveal">Расширяем систему</h2>
+            <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem; transition-delay: 0.1s;">Скоро в линейке C37 появятся новые форматы.</p>
+            
+            <div class="shots-grid">
+                <div class="shot-card orange reveal" style="transition-delay: 0.1s;">
+                    <div class="shot-name">РАЗГОН</div>
+                    <div class="shot-sub">Утренний разгон</div>
+                    <div class="shot-actives"><span>Гуарана + Матча</span> (кофеин ~95 мг)<br>L-теанин, имбирь, B6/B12</div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card blue reveal" style="transition-delay: 0.2s;">
+                    <div class="shot-name">ОТБОЙ</div>
+                    <div class="shot-sub">Вечернее восстановление</div>
+                    <div class="shot-actives"><span>Магний</span> (120 мг — 30% РСН)<br>Глицин, L-теанин, мелисса</div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card burgundy reveal" style="transition-delay: 0.3s;">
+                    <div class="shot-name">ДРАЙВ</div>
+                    <div class="shot-sub">Предтренировочный буст</div>
+                    <div class="shot-actives"><span>Свекольный концентрат</span><br>Кофеин (150 мг), электролиты</div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+                <div class="shot-card red reveal" style="transition-delay: 0.4s;">
+                    <div class="shot-name">ИММУНО</div>
+                    <div class="shot-sub">Сезонная защита</div>
+                    <div class="shot-actives"><span>Ацерола + Облепиха</span> (Вит. С)<br>Цинк, имбирь, куркума</div>
+                    <div class="shot-badge">Концепт / Шоты 50 мл</div>
+                </div>
+            </div>
+
+            <div class="other-coming">
+                <div class="coming-card reveal" style="transition-delay: 0.2s;">
+                    <h3>Сиропы C37</h3>
+                    <p>5 вкусов. Натуральные, 0 сахара. Для кофе и воды.</p>
+                    <div class="coming-date">Старт: Январь 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сиропы.')">В лист ожидания</button>
+                </div>
+                <div class="coming-card reveal" style="transition-delay: 0.3s;">
+                    <h3>Сахарозаменитель</h3>
+                    <p>Эритрит + Стевия + Могрозид. Премиум-состав без горечи.</p>
+                    <div class="coming-date">Старт: Март 2027</div>
+                    <button class="btn-outline" style="padding:10px 20px; border-radius:8px; font-size:0.9rem;" onclick="alert('Ты в листе ожидания! Мы напишем, когда запустим сахзам.')">В лист ожидания</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- КВИЗ -->
+    <section id="quiz" class="quiz-section container">
+        <div class="quiz-container">
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <div id="quiz-content"></div>
+            <div class="nav-buttons">
+                <button class="btn btn-outline" id="prevBtn" onclick="prevStep()" style="display:none;">Назад</button>
+                <button class="btn" id="nextBtn" onclick="nextStep()">Далее</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- ЧАТ -->
+    <button id="chat-btn" onclick="toggleChat()" aria-label="Открыть чат с Эйвой">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        Чат с ЭЙВОЙ
+    </button>
+    <div id="chat-window">
+        <div class="chat-header">
+            <img src="eva_avatar.jpg" alt="ЭЙВА" class="chat-avatar" onerror="this.src='https://placehold.co/45x45/2A2F35/FF6B1A?text=Э'">
+            <div>
+                <div class="chat-name">ЭЙВА</div>
+                <div class="chat-status">В сети</div>
+            </div>
+            <button class="close-chat" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message-eva">Привет. Я ЭЙВА. Твой цифровой наставник. ЭЙВА — цифровой ведущий, а не врач. Чем помочь?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input-field" placeholder="Написать..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <!-- ПОДВАЛ -->
+    <div id="footer-placeholder"></div>
+
+    <!-- ПОДКЛЮЧЕНИЕ СКРИПТОВ -->
+    <script src="script.js"></script>
+    <script>
+        // СКРИПТ, КОТОРЫЙ ВСТАВЛЯЕТ ШАПКУ И ПОДВАЛ
+        async function loadComponents() {
+            try {
+                const headerRes = await fetch('header.html');
+                document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+                const footerRes = await fetch('footer.html');
+                document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
+                if (typeof updateCartCount === 'function') updateCartCount();
+                if (typeof renderStep === 'function') renderStep();
+            } catch (error) {
+                console.error('Ошибка загрузки компонентов:', error);
+            }
+        }
+        loadComponents();
+    </script>
+</body>
+</html>
