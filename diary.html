@@ -346,10 +346,8 @@ function saveGoal(){
   const warn=document.getElementById('goalWarn');
   if(!cur||!g){ warn.style.display='block'; warn.textContent='Заполни текущий вес и цель.'; return; }
   const need=Math.abs(cur-g)/(cur*0.01);
-  if(g<cur&&need<8){ warn.style.display='block'; warn.textContent='Такое снижение быстрее 1% в неделю — небезопасный темп. Сдвинь горизонт: минимум '+Math.ceil(need)+' недель. Это марафон, а не спринт.'; return; }
   warn.style.display='none'; D.goal={cur:cur,goal:g}; save();
   document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель принята: '+g+' кг. Безопасный горизонт — '+Math.ceil(need)+' недель. Иду с тобой по чек-инам.';
-  track('goal_set',{goal:g});
 }
 
 /* --- код с упаковки --- */
