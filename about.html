@@ -10,7 +10,6 @@
 
 <div id="header-placeholder"></div>
 
-<!-- КОНТЕНТ СТРАНИЦЫ "О НАС" -->
 <div class="container" style="padding: 100px 20px; max-width: 800px; margin: 0 auto;">
     
     <h1 class="reveal" style="font-size: 3rem; margin-bottom: 20px; color: var(--accent); font-weight: 900;">О БРЕНДЕ</h1>
@@ -55,7 +54,6 @@
       document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
       if (typeof updateCartCount === 'function') updateCartCount();
       
-      // Запуск анимаций появления
       setTimeout(() => {
           const revealElements = document.querySelectorAll('.reveal');
           const revealOnScroll = new IntersectionObserver(function(entries, observer) {

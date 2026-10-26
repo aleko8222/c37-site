@@ -1,5 +1,76 @@
 <footer>
-    <div class="container">
+    <!-- КОРЗИНА -->
+    <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
+    <div class="cart-sidebar" id="cart-sidebar">
+        <div class="cart-header">
+            <h3>Твой заказ</h3>
+            <button class="close-cart" onclick="toggleCart()">✕</button>
+        </div>
+        <div class="cart-items" id="cart-items-container">
+            <p style="color:#777; text-align:center; margin-top:20px;">Пока пусто. Добавь топливо!</p>
+        </div>
+        
+        <div class="checkout-form" id="checkout-form">
+            <h4 style="margin-bottom:15px; color:var(--accent);">Данные для доставки</h4>
+            <div class="form-group">
+                <label>Имя</label>
+                <input type="text" id="order-name" placeholder="Как к тебе обращаться?" required>
+            </div>
+            <div class="form-group">
+                <label>Телефон или Telegram</label>
+                <input type="text" id="order-phone" placeholder="+7..." required>
+            </div>
+            <div class="form-group">
+                <label>Город</label>
+                <input type="text" id="order-city" placeholder="Москва" required oninput="checkCity()" onblur="checkCity()">
+            </div>
+            <div class="form-group">
+                <label>Способ доставки</label>
+                <select id="order-delivery">
+                    <option value="Яндекс Доставка (ПВЗ)">Яндекс Доставка (ПВЗ)</option>
+                    <option value="СДЭК (ПВЗ)">СДЭК (ПВЗ)</option>
+                    <option value="Курьер (Москва)">Курьер по Москве</option>
+                </select>
+            </div>
+            <label class="pd-consent">
+                <input type="checkbox" id="agree-pd">
+                <span>Согласен на обработку персональных данных в соответствии с <a href="#">политикой конфиденциальности</a></span>
+            </label>
+            <button class="btn" style="width:100%; margin-top:5px;" onclick="submitOrder()">Подтвердить заказ</button>
+        </div>
+
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Итого:</span>
+                <span id="cart-total-price">0 ₽</span>
+            </div>
+            <div class="cart-warning" id="cart-warning">Минимальный заказ — 7 батончиков или 1 Бокс. Добавьте еще <span id="cart-warning-count">7</span> шт.</div>
+            <button class="btn" id="btn-go-checkout" style="width:100%;" onclick="showCheckout()">Оформить заказ</button>
+        </div>
+    </div>
+
+    <!-- МОДАЛКИ -->
+    <div id="image-lightbox" class="image-lightbox" onclick="closeImage()">
+        <img id="lightbox-img" src="" alt="Zoomed Image">
+    </div>
+
+    <div id="ozon-modal" class="ozon-modal">
+        <div class="ozon-modal-content">
+            <button class="close-ozon" onclick="closeOzonModal()">✕</button>
+            <h2 style="color:var(--accent); margin-bottom:15px;">Мы заботимся о тебе</h2>
+            <p style="color:#ccc; margin-bottom:20px; font-size:0.95rem;">Похоже, ты из отдаленного региона. Доставка туда стоит очень дорого (около 650 ₽). Чтобы ты не переплачивал, закажи наш бокс напрямую на Ozon — там доставка быстрее и дешевле.</p>
+            <a href="https://ozon.ru" target="_blank" class="btn" style="width:100%;">Перейти на Ozon</a>
+            <button class="btn-outline" style="width:100%; margin-top:10px; padding:12px;" onclick="closeOzonModal()">Остаться на сайте</button>
+        </div>
+    </div>
+
+    <div id="video-overlay" style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); z-index:9999; display:none; justify-content:center; align-items:center; flex-direction:column;">
+        <video id="eva-video" src="intro.mp4" playsinline style="max-width:90%; max-height:80vh; border:1px solid var(--border); border-radius:12px; box-shadow:0 0 50px rgba(255,107,26,0.2);"></video>
+        <button class="btn-outline" onclick="endVideo()" style="margin-top:20px; padding:12px 24px; border-radius:8px; cursor:pointer; background:transparent; font-size:1rem; transition:all 0.3s;">Пропустить видео ➔</button>
+    </div>
+
+    <!-- ПОДВАЛ -->
+    <div class="container" style="border-top: 1px solid var(--border); padding-top: 40px; margin-top: 60px;">
         <p style="margin-bottom: 15px;">
             <a href="#">Политика конфиденциальности</a> | 
             <a href="#">Оферта</a> | 
