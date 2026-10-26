@@ -626,14 +626,15 @@ function renderChart() {
                     fill: true,
                     tension: 0.3 // Плавные линии
                 },
-                {
+                                {
                     label: 'Цель',
                     data: labels.map(() => targetWeight ? parseFloat(targetWeight) : null),
-                    borderColor: '#4CAF50',
-                    borderWidth: 2,
-                    borderDash: [5, 5],
-                    pointRadius: 0,
-                    fill: false
+                    borderColor: '#4CAF50', // Зеленый цвет
+                    borderWidth: 3,         // Делаем линию толще
+                    borderDash: [],         // Убираем пунктир, делаем сплошной полосой
+                    pointRadius: 0,         // Убираем точки на линии цели
+                    fill: false,
+                    tension: 0              // Линия идеально ровная (не изгибается)
                 }
             ]
         },
