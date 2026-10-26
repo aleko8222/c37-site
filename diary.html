@@ -12,71 +12,95 @@
 <div id="header-placeholder"></div>
 
 <div class="container" style="padding: 60px 20px; max-width: 900px; margin: 0 auto;">
-    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 10px; color: var(--accent); font-weight: 900; text-align: center;">ТВОЙ ПРОГРЕСС</h1>
     
-    <!-- ДАШБОРД КБЖУ -->
-    <div class="diary-dashboard reveal">
-        <div class="macro-card">
-            <div class="macro-title">Калории</div>
-            <div class="macro-value"><span id="total-calories">0</span> / 2000</div>
-            <div class="progress-line"><div class="progress-fill" id="calories-bar"></div></div>
+    <!-- ШАПКА ДНЕВНИКА: СТРИК И КОЛЬЦО -->
+    <div class="diary-header reveal">
+        <div class="diary-ring">
+            <div class="ring-text"><span id="day-count">1</span><br><small>ДЕНЬ</small></div>
         </div>
-        <div class="macro-card">
-            <div class="macro-title">Белки</div>
-            <div class="macro-value"><span id="total-protein">0</span> г / 120</div>
-            <div class="progress-line"><div class="progress-fill" id="protein-bar"></div></div>
+        <div class="diary-streak">
+            <div class="fire-icon">🔥</div>
+            <div>
+                <div style="font-size: 1.5rem; font-weight: 900;" id="streak-count">0</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">ДНЕЙ ПОДРЯД</div>
+            </div>
         </div>
-        <div class="macro-card">
-            <div class="macro-title">Жиры</div>
-            <div class="macro-value"><span id="total-fat">0</span> г / 70</div>
-            <div class="progress-line"><div class="progress-fill" id="fat-bar"></div></div>
-        </div>
-        <div class="macro-card">
-            <div class="macro-title">Углеводы</div>
-            <div class="macro-value"><span id="total-carbs">0</span> г / 200</div>
-            <div class="progress-line"><div class="progress-fill" id="carbs-bar"></div></div>
+        <div class="diary-goal-box">
+            <div style="font-size: 0.8rem; color: var(--text-muted);">ЦЕЛЬ НА ДЕНЬ</div>
+            <div style="font-size: 1.2rem; font-weight: bold; color: var(--accent);" id="daily-cal-goal">0 ккал</div>
         </div>
     </div>
 
-    <!-- УМНЫЙ ВВОД ЕДЫ -->
-    <div class="ai-food-input reveal" style="margin-top: 30px;">
-        <h3>Что ты сегодня ел(а)?</h3>
-        <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 10px;">Напиши простыми словами: «Два яйца и кофе с молоком», «Гречка с котлетой».</p>
-        <textarea id="food-input" placeholder="Например: Съел тарелку овсянки с бананом и выпил стакан кефира..."></textarea>
-        <button class="btn" style="width: 100%; margin-top: 10px;" onclick="analyzeFood()" id="btn-analyze">✨ Посчитать через ИИ</button>
+    <!-- СЛОТЫ ПИТАНИЯ -->
+    <h2 class="reveal" style="margin-top: 40px; font-size: 1.5rem;">Приемы пищи на сегодня</h2>
+    <div class="slots-grid reveal">
+        <div class="slot-card" id="slot-breakfast">
+            <div class="slot-title">🌅 Завтрак</div>
+            <div class="slot-desc">Белки + сложные углеводы</div>
+            <div class="slot-actions">
+                <button class="btn-slot eaten" onclick="markSlot('breakfast', 'eaten')">Съел</button>
+                <button class="btn-slot skipped" onclick="markSlot('breakfast', 'skipped')">Пропустил</button>
+            </div>
+        </div>
+        <div class="slot-card" id="slot-lunch">
+            <div class="slot-title">☀️ Обед</div>
+            <div class="slot-desc">Белок + овощи</div>
+            <div class="slot-actions">
+                <button class="btn-slot eaten" onclick="markSlot('lunch', 'eaten')">Съел</button>
+                <button class="btn-slot skipped" onclick="markSlot('lunch', 'skipped')">Пропустил</button>
+            </div>
+        </div>
+        <div class="slot-card" id="slot-dinner">
+            <div class="slot-title">🌙 Ужин</div>
+            <div class="slot-desc">Легкий белок</div>
+            <div class="slot-actions">
+                <button class="btn-slot eaten" onclick="markSlot('dinner', 'eaten')">Съел</button>
+                <button class="btn-slot skipped" onclick="markSlot('dinner', 'skipped')">Пропустил</button>
+            </div>
+        </div>
+        <div class="slot-card" id="slot-snacks">
+            <div class="slot-title">🍎 Перекус</div>
+            <div class="slot-desc">Батончик C37</div>
+            <div class="slot-actions">
+                <button class="btn-slot eaten" onclick="markSlot('snacks', 'eaten')">Съел</button>
+                <button class="btn-slot skipped" onclick="markSlot('snacks', 'skipped')">Пропустил</button>
+            </div>
+        </div>
     </div>
 
-    <!-- СПИСОК СЪЕДЕННОГО -->
-    <div class="food-list-container reveal" style="margin-top: 30px;">
-        <h3>Съедено за сегодня:</h3>
-        <ul id="food-list" class="food-list">
-            <li style="color:#777; text-align:center; padding: 20px;">Пока пусто. Напиши, что съел!</li>
-        </ul>
-        <button class="btn-outline" style="width:100%; margin-top:10px; font-size:0.9rem;" onclick="resetFood()">Очистить дневник еды</button>
+    <!-- БЫСТРОЕ ДОБАВЛЕНИЕ БАТОНЧИКОВ -->
+    <div class="quick-add-c37 reveal" style="margin-top: 30px;">
+        <h3>Съел батончик C37? Отметь:</h3>
+        <div class="quick-buttons">
+            <button onclick="addSnackC37('Протеин База', 170)">Протеин База</button>
+            <button onclick="addSnackC37('Коллаген Лайт', 220)">Коллаген Лайт</button>
+            <button onclick="addSnackC37('Энергия Дисциплины', 170)">Энергия</button>
+            <button onclick="addSnackC37('Восстановление', 170)">Восстановление</button>
+            <button onclick="addSnackC37('Экстрим', 220)">Экстрим</button>
+        </div>
+        <p style="margin-top: 10px; font-size: 0.9rem; color: #aaa;">Съедено батончиков: <strong id="snack-count" style="color:var(--accent);">0</strong></p>
     </div>
 
-    <hr style="border-color: #333; margin: 50px 0;">
+    <hr style="border-color: #333; margin: 40px 0;">
 
-    <!-- ВЕС И ГРАФИК -->
-    <h2 class="reveal" style="font-size: 2rem; margin-bottom: 20px; color: var(--accent); text-align: center;">Трекер веса</h2>
-    
-    <div class="weight-input-card reveal">
+    <!-- ГРАФИК ВЕСА -->
+    <h2 class="reveal" style="font-size: 1.5rem;">Трекер веса</h2>
+    <div class="weight-input-card reveal" style="margin-top: 15px;">
         <div class="weight-input-group">
-            <label>Мой текущий вес (кг):</label>
+            <label>Текущий вес (кг):</label>
             <input type="number" id="current-weight" placeholder="75.5" step="0.1">
             <button class="btn" onclick="saveWeight()">Записать</button>
         </div>
         <div class="weight-input-group" style="margin-top: 15px; border-top: 1px solid #444; padding-top: 15px;">
-            <label>Моя цель (кг):</label>
+            <label>Цель (кг):</label>
             <input type="number" id="target-weight" placeholder="70" step="0.1" onchange="saveTargetWeight()">
         </div>
     </div>
-
-      <div class="chart-container reveal" style="margin-top: 20px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
-        <canvas id="weightChart" style="width: 100%; height: 300px;"></canvas>
+    <div class="chart-container reveal" style="margin-top: 20px; background: var(--bg-card); padding: 20px; border-radius: 16px; border: 1px solid var(--border); height: 300px;">
+        <canvas id="weightChart"></canvas>
     </div>
 
-    <!-- ИИ АНАЛИЗ -->
+    <!-- ЧЕК-ИН И ЭЙВА -->
     <div style="text-align: center; margin: 50px 0;">
         <button class="btn" style="font-size: 1.2rem; padding: 18px 40px;" onclick="askEvaAboutProgress()">✨ Спросить ЭЙВУ о прогрессе</button>
     </div>
