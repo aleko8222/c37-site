@@ -403,6 +403,56 @@ function calculateResult() {
     let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
     let tdee = bmr * mult;
     let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
+    const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
+    const fat = 0.9 * w;
+    const carbs = (kcal - 4*protein - 9*fat) / 4;
+
+    let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
+    if (answers.goal === 'Энергия') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)'; barMorning = 'Энергия Дисциплины'; barEvening = 'Омега Буст'; } 
+    else if (answers.goal === 'Мышцы') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)'; barMorning = 'Протеин База'; barEvening = 'Восстановление'; }
+    if (answers.allergies === 'Да') {
+        if (['База Лимитированная','Протеин База'].includes(barMorning)) barMorning = 'Коллаген Лайт';
+        if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
+    }
+
+    // ==========================================
+    // СОХРАНЕНИЕ ПРОТОКОЛА ДЛЯ ДНЕВНИКА
+    // ==========================================
+    const protocolData = {
+        goal: answers.goal,
+        gender: answers.gender,
+        age: answers.age,
+        height: answers.height,
+        weight: answers.weight,
+        activity: answers.activity,
+        craving: answers.craving,
+        kcal: Math.round(kcal),
+        protein: Math.round(protein),
+        fat: Math.round(fat),
+        carbs: Math.round(carbs),
+        barMorning: barMorning,
+        barEvening: barEvening
+    };
+    localStorage.setItem('c37_protocol', JSON.stringify(protocolData));
+    // ==========================================
+
+    document.getElementById('quiz-content').innerHTML = `
+        <h2 style="color: var(--accent); margin-bottom: 10px;">Твой протокол готов</h2>
+        <div class="result-grid">
+            <div class="result-card"><h3>Калории</h3><div class="value">${Math.round(kcal)}</div></div>
+            <div class="result-card"><h3>Белки</h3><div class="value">${Math.round(protein)} г</div></div>
+            <div class="result-card"><h3>Жиры</h3><div class="value">${Math.round(fat)} г</div></div>
+            <div class="result-card"><h3>Углеводы</h3><div class="value">${Math.round(carbs)} г</div></div>
+        </div>
+        <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--accent);">
+            <p style="margin-bottom: 15px; font-weight: bold; color: #fff;">📦 Твой Бокс на 7 дней:</p>
+            <p style="margin-bottom: 10px;">🌅 Утро: <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
+            <p style="margin-bottom: 15px;">💼 Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
+            <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190);">Заказать Бокс за 1190 ₽</button>
+            <a href="diary.html" class="btn btn-outline" style="width:100%; text-decoration:none;">Перейти в Дневник</a>
+        </div>`;
+    document.querySelector('.nav-buttons').style.display = 'none';
+}: answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
     
     // СОХРАНЯЕМ ЦЕЛЬ В ПАМЯТЬ ДЛЯ ДНЕВНИКА
     localStorage.setItem('c37_target_calories', Math.round(kcal));

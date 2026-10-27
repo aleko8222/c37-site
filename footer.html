@@ -34,7 +34,7 @@
             </div>
             <label class="pd-consent">
                 <input type="checkbox" id="agree-pd">
-                <span>Согласен на обработку персональных данных в соответствии с <a href="#">политикой конфиденциальности</a></span>
+                <span>Согласен на обработку персональных данных в соответствии с <a href="policy.html" target="_blank">политикой конфиденциальности</a></span>
             </label>
             <button class="btn" style="width:100%; margin-top:5px;" onclick="submitOrder()">Подтвердить заказ</button>
         </div>
@@ -72,12 +72,19 @@
     <!-- ПОДВАЛ -->
     <div class="container" style="border-top: 1px solid var(--border); padding-top: 40px; margin-top: 60px;">
         <p style="margin-bottom: 15px;">
-            <a href="#">Политика конфиденциальности</a> | 
-            <a href="#">Оферта</a> | 
-            <a href="#">Реквизиты</a>
+            <a href="policy.html">Политика конфиденциальности</a> | 
+            <a href="offer.html">Оферта</a> | 
+            <a href="contacts.html">Реквизиты</a>
         </p>
         <p>0 г сахара* (*≤0,5 г/100 г, подтверждено лабораторно).</p>
         <p>ЭЙВА — цифровой ведущий, а не врач. Все рекомендации носят информационный характер и не заменяют консультацию специалиста.<br>Продукты C37 FUEL не являются лекарственными средствами.</p>
         <p style="margin-top: 20px;">© 2026 C37 FUEL. Все права защищены.</p>
     </div>
+
+    <!-- COOKIE БАННЕР -->
+    <div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;background:rgba(13,15,18,.97);border-top:1px solid rgba(255,107,26,.3);padding:12px 20px;display:none;align-items:center;justify-content:center;gap:14px;z-index:99999;font-size:.85rem;color:#ccc;">
+        Мы используем cookie и Яндекс.Метрику для работы сайта и обезличенной статистики.
+        <button class="btn" style="padding:8px 18px;" onclick="localStorage.setItem('c37_cookie','1');this.parentNode.style.display='none'">ОК</button>
+    </div>
+    <script>if(!localStorage.getItem('c37_cookie'))document.getElementById('cookie-banner').style.display='flex';</script>
 </footer>
