@@ -3,7 +3,7 @@
 // ==========================================
 function showToast(title, msg, icon = '✅') {
     const container = document.getElementById('toast-container');
-    if (!container) return; // Если контейнера нет на странице, просто игнорируем
+    if (!container) return;
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
@@ -102,8 +102,6 @@ function addToCart(name, price) {
     saveCart();
     updateCartCount();
     renderCart();
-    
-    // Показываем всплывашку, но НЕ открываем корзину принудительно
     showToast('Добавлено в корзину', name, '🛒');
 }
 
@@ -140,7 +138,7 @@ function renderCart() {
     cart.forEach((item, index) => {
         total += item.price * item.qty;
         totalItems += item.qty;
-        if(item.name.includes('ПРОТОКОЛ')) hasBox = true;
+        if(item.name.includes('ПРОТОКОЛ') || item.name.includes('ПОДПИСКА')) hasBox = true;
 
         const div = document.createElement('div');
         div.className = 'cart-item';
@@ -156,7 +154,7 @@ function renderCart() {
 
     if(totalPriceEl) totalPriceEl.innerText = total + ' ₽';
     
-    // Ограничение минимального заказа (7 батончиков или 1 Бокс)
+    // Ограничение минимального заказа (7 батончиков или 1 Бокс/Подписка)
     if (hasBox || totalItems >= 7) {
         if(checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
         if(warningEl) warningEl.style.display = 'none';
@@ -415,9 +413,7 @@ function calculateResult() {
         if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
     }
 
-    // ==========================================
     // СОХРАНЕНИЕ ПРОТОКОЛА ДЛЯ ДНЕВНИКА
-    // ==========================================
     const protocolData = {
         goal: answers.goal,
         gender: answers.gender,
@@ -434,7 +430,6 @@ function calculateResult() {
         barEvening: barEvening
     };
     localStorage.setItem('c37_protocol', JSON.stringify(protocolData));
-    // ==========================================
 
     document.getElementById('quiz-content').innerHTML = `
         <h2 style="color: var(--accent); margin-bottom: 10px;">Твой протокол готов</h2>
@@ -452,39 +447,8 @@ function calculateResult() {
             <a href="diary.html" class="btn btn-outline" style="width:100%; text-decoration:none;">Перейти в Дневник</a>
         </div>`;
     document.querySelector('.nav-buttons').style.display = 'none';
-}: answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
-    
-    // СОХРАНЯЕМ ЦЕЛЬ В ПАМЯТЬ ДЛЯ ДНЕВНИКА
-    localStorage.setItem('c37_target_calories', Math.round(kcal));
-
-    const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
-    const fat = 0.9 * w;
-    const carbs = (kcal - 4*protein - 9*fat) / 4;
-
-    let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
-    if (answers.goal === 'Энергия') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)'; barMorning = 'Энергия Дисциплины'; barEvening = 'Омега Буст'; } 
-    else if (answers.goal === 'Мышцы') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)'; barMorning = 'Протеин База'; barEvening = 'Восстановление'; }
-    if (answers.allergies === 'Да') {
-        if (['База Лимитированная','Протеин База'].includes(barMorning)) barMorning = 'Коллаген Лайт';
-        if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
-    }
-
-    document.getElementById('quiz-content').innerHTML = `
-        <h2 style="color: var(--accent);">Твой протокол готов</h2>
-        <div class="result-grid">
-            <div class="result-card"><h3>Калории</h3><div class="value">${Math.round(kcal)}</div></div>
-            <div class="result-card"><h3>Белки</h3><div class="value">${Math.round(protein)} г</div></div>
-            <div class="result-card"><h3>Жиры</h3><div class="value">${Math.round(fat)} г</div></div>
-            <div class="result-card"><h3>Углеводы</h3><div class="value">${Math.round(carbs)} г</div></div>
-        </div>
-        <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--accent);">
-            <p style="margin-bottom: 15px; font-weight: bold; color: #fff;">📦 Твой Бокс на 7 дней:</p>
-            <p style="margin-bottom: 10px;">🌅 Утро: <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
-            <p style="margin-bottom: 15px;">💼 Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
-            <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190);">Заказать Бокс за 1190 ₽</button>
-        </div>`;
-    document.querySelector('.nav-buttons').style.display = 'none';
 }
+
 function resetQuiz() {
     currentStep = 0; answers = {};
     document.querySelector('.progress-bar').style.display = 'block';
@@ -718,6 +682,24 @@ function askEvaAboutProgress() {
     sendMessage();
 }
 
+// Переопределяем функцию addToCart для новых тарифов (Чтобы выводить предупреждения)
+const originalAddToCart = addToCart;
+addToCart = function(name, price) {
+    originalAddToCart(name, price);
+    
+    if (name.includes('батончик') || name === 'Протеин База' || name === 'Энергия Дисциплины' || name === 'База Лимитированная' || name === 'Восстановление') {
+        setTimeout(() => {
+            alert('Батончик добавлен в корзину.\n\n⚠️ Важно: при поштучной покупке доступ к дневнику и ЭЙВЕ НЕ подключается. Чтобы получить полный протокол, выбери Бокс или Подписку.');
+        }, 500);
+    }
+    
+    if (name.includes('ПОДПИСКА') || name.includes('ПРОТОКОЛ')) {
+        setTimeout(() => {
+            alert('Отличный выбор! Выбранный формат активирует доступ к ЭЙВА и дневнику с автоматическими корректировками.');
+        }, 500);
+    }
+};
+
 // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
@@ -728,21 +710,3 @@ document.addEventListener('DOMContentLoaded', () => {
         renderChart(); 
     }
 });
-// Переопределяем функцию addToCart для новых тарифов
-const originalAddToCart = addToCart;
-addToCart = function(name, price) {
-    originalAddToCart(name, price);
-    
-    // Логика допродаж и предупреждений
-    if (name.includes('батончик') || name === 'Протеин База' || name === 'Энергия Дисциплины' || name === 'База Лимитированная' || name === 'Восстановление') {
-        setTimeout(() => {
-            alert('Батончик добавлен в корзину.\n\n⚠️ Важно: при поштучной покупке доступ к дневнику и ЭЙВЕ (ИИ) НЕ подключается. Чтобы получить полный протокол, выбери Бокс или Подписку.');
-        }, 500);
-    }
-    
-    if (name.includes('ПОДПИСКА')) {
-        setTimeout(() => {
-            alert('Отличный выбор! Подписка активирует полный доступ к ЭЙВА Plus и дневнику с автоматическими корректировками.');
-        }, 500);
-    }
-};
