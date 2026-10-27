@@ -4,6 +4,7 @@
 function showToast(title, msg, icon = '✅') {
     const container = document.getElementById('toast-container');
     if (!container) return;
+    
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
@@ -14,9 +15,12 @@ function showToast(title, msg, icon = '✅') {
         </div>
     `;
     container.appendChild(toast);
+    
+    // Через 3 секунды запускаем анимацию исчезновения
     setTimeout(() => {
         toast.classList.add('hide');
-        toast.addEventListener('animationend', () => toast.remove());
+        // И принудительно удаляем через 0.5 сек, даже если анимация сломалась
+        setTimeout(() => { if(toast.parentNode) toast.remove(); }, 500);
     }, 3000);
 }
 
