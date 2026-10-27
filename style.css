@@ -428,3 +428,15 @@ footer a:hover { color: var(--accent); }
 .teaser-card:hover { border-color: var(--accent); }
 .teaser-info h4 { font-size: 1.1rem; margin-bottom: 8px; color: #fff; }
 .teaser-info p { color: #888; font-size: 0.85rem; line-height: 1.4; flex-grow: 1; }
+/* --- СТИЛИ ДЛЯ СТРАНИЦЫ УРОКОВ --- */
+.lessons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 50px; }
+.lesson-card { background: var(--bg-card); border: 1px solid #333; border-radius: 16px; padding: 25px; display: flex; flex-direction: column; transition: 0.3s; }
+.lesson-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+.lesson-cat { font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+.lesson-name { font-size: 1.2rem; font-weight: 900; margin-bottom: 8px; color: #fff; }
+.lesson-hook { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 15px; flex-grow: 1; }
+.lesson-meta { font-size: 0.75rem; color: #777; margin-bottom: 15px; }
+.lesson-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.lessons-cta { border: 2px solid var(--accent); border-radius: 16px; padding: 40px; text-align: center; background: linear-gradient(135deg, rgba(255,107,26,.1), rgba(20,24,28,.95)); margin-top: 40px; }
+.lessons-cta h2 { font-size: 1.8rem; margin-bottom: 10px; color: #fff; }
+.lessons-cta p { color: var(--text-muted); font-size: 1rem; margin-bottom: 25px; }

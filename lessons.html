@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Уроки ЭЙВЫ — 5 минут о сахаре, энергии и привычках | C37 FUEL</title>
+<meta name="description" content="Бесплатные видеоуроки ЭЙВЫ по 5 минут: сахарные качели, энергия без тряски, правило 80/20. Смотри на VK Video, применяй в своём протоколе C37.">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<div class="container" style="padding: 60px 20px; max-width: 1100px; margin: 0 auto;">
+    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 8px; font-weight: 900;">Уроки <span style="color: var(--accent);">ЭЙВЫ</span></h1>
+    <p class="reveal" style="color: var(--text-muted); font-size: 1.1rem; max-width: 640px; margin-bottom: 15px;">
+        5 минут каждый. Без запугиваний и запретов — только физиология, которую можно применить сегодня. Новый урок — каждую неделю.</p>
+    <p class="reveal" style="font-size: 0.85rem; color: #777; margin-bottom: 40px;">
+        Основной канал — VK Video. Зеркало — Rutube. YouTube — международный архив: в РФ может быть недоступен.</p>
+
+    <div class="lessons-grid reveal">
+        <!-- Урок 1 -->
+        <div class="lesson-card">
+            <div class="lesson-cat">Сахар и качели</div>
+            <div class="lesson-name">Сахарные качели</div>
+            <div class="lesson-hook">Почему усталость через час после сладкого — это не слабость, а физиология.</div>
+            <div class="lesson-meta">5 мин · Урок 1</div>
+            <div class="lesson-btns">
+                <a class="btn-small" style="background:var(--accent); color:#111;" target="_blank" href="https://vkvideo.ru/@c37fuel">VK Video</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://rutube.ru/channel/c37fuel/">Rutube</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://www.youtube.com/@c37fuel">YouTube</a>
+            </div>
+        </div>
+        
+        <!-- Урок 2 -->
+        <div class="lesson-card">
+            <div class="lesson-cat">Энергия и фокус</div>
+            <div class="lesson-name">Дрова и поленья</div>
+            <div class="lesson-hook">Как собрать энергию на 4 часа ровного пламени, а не на 20 минут фейерверка.</div>
+            <div class="lesson-meta">5 мин · Урок 2</div>
+            <div class="lesson-btns">
+                <a class="btn-small" style="background:var(--accent); color:#111;" target="_blank" href="https://vkvideo.ru/@c37fuel">VK Video</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://rutube.ru/channel/c37fuel/">Rutube</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://www.youtube.com/@c37fuel">YouTube</a>
+            </div>
+        </div>
+
+        <!-- Урок 6 -->
+        <div class="lesson-card">
+            <div class="lesson-cat">Сахар и качели</div>
+            <div class="lesson-name">0 г сахара: честно</div>
+            <div class="lesson-hook">Что на самом деле значит надпись и где в «без сахара» спрятан подвох.</div>
+            <div class="lesson-meta">5 мин · Урок 6</div>
+            <div class="lesson-btns">
+                <a class="btn-small" style="background:var(--accent); color:#111;" target="_blank" href="https://vkvideo.ru/@c37fuel">VK Video</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://rutube.ru/channel/c37fuel/">Rutube</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://www.youtube.com/@c37fuel">YouTube</a>
+            </div>
+        </div>
+
+        <!-- Урок 3 -->
+        <div class="lesson-card">
+            <div class="lesson-cat">Сахар и качели</div>
+            <div class="lesson-name">Сахар под 10 именами</div>
+            <div class="lesson-hook">Как читать этикетку и находить сахар, который прячется под другими именами.</div>
+            <div class="lesson-meta">5 мин · Урок 3</div>
+            <div class="lesson-btns">
+                <a class="btn-small" style="background:var(--accent); color:#111;" target="_blank" href="https://vkvideo.ru/@c37fuel">VK Video</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://rutube.ru/channel/c37fuel/">Rutube</a>
+                <a class="btn-small" style="background:transparent; color:#c0c0c0; border-color:#555;" target="_blank" href="https://www.youtube.com/@c37fuel">YouTube</a>
+            </div>
+        </div>
+        <!-- (Остальные уроки можно добавить по аналогии) -->
+    </div>
+
+    <!-- CTA -->
+    <div class="lessons-cta reveal">
+        <h2>Теория без протокола — просто видео</h2>
+        <p>Примени уроки к своему телу: ЭЙВА соберёт персональный протокол за 2 минуты.</p>
+        <a href="index.html#boxes" class="btn">Собрать протокол — 2 минуты</a>
+    </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="script.js"></script>
+<script>
+    async function loadComponents() {
+        try {
+            const headerRes = await fetch('header.html');
+            document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+            const footerRes = await fetch('footer.html');
+            document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
+            if (typeof updateCartCount === 'function') updateCartCount();
+            
+            // Анимация появления
+            const revealElements = document.querySelectorAll('.reveal');
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                });
+            }, { threshold: 0.15 });
+            revealElements.forEach(el => revealOnScroll.observe(el));
+        } catch (error) { console.error('Ошибка загрузки:', error); }
+    }
+    loadComponents();
+</script>
+</body>
+</html>
