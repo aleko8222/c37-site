@@ -681,25 +681,6 @@ function askEvaAboutProgress() {
     document.getElementById('chat-input-field').value = promptText;
     sendMessage();
 }
-
-// Переопределяем функцию addToCart для новых тарифов (Чтобы выводить предупреждения)
-const originalAddToCart = addToCart;
-addToCart = function(name, price) {
-    originalAddToCart(name, price);
-    
-    if (name.includes('батончик') || name === 'Протеин База' || name === 'Энергия Дисциплины' || name === 'База Лимитированная' || name === 'Восстановление') {
-        setTimeout(() => {
-            alert('Батончик добавлен в корзину.\n\n⚠️ Важно: при поштучной покупке доступ к дневнику и ЭЙВЕ НЕ подключается. Чтобы получить полный протокол, выбери Бокс или Подписку.');
-        }, 500);
-    }
-    
-    if (name.includes('ПОДПИСКА') || name.includes('ПРОТОКОЛ')) {
-        setTimeout(() => {
-            alert('Отличный выбор! Выбранный формат активирует доступ к ЭЙВА и дневнику с автоматическими корректировками.');
-        }, 500);
-    }
-};
-
 // --- ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ ---
 document.addEventListener('DOMContentLoaded', () => {
     updateCartCount();
