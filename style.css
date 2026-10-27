@@ -443,7 +443,7 @@ footer a:hover { color: var(--accent); }
 /* --- ВСПЛЫВАЮЩИЕ ПЛАШКИ (TOAST) --- */
 #toast-container {
     position: fixed !important; 
-    bottom: 30px !important; 
+    bottom: 110px !important; 
     right: 30px !important;
     display: flex; 
     flex-direction: column; 
