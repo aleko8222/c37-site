@@ -10,52 +10,57 @@
 
 <div id="header-placeholder"></div>
 
-<div class="container" style="padding: 100px 20px; max-width: 800px; margin: 0 auto;">
+<div class="container" style="padding: 80px 20px 40px; max-width: 1000px; margin: 0 auto;">
     
-    <h1 class="reveal" style="font-size: 3rem; margin-bottom: 20px; color: var(--accent); font-weight: 900;">О БРЕНДЕ</h1>
-    
-    <p class="reveal" style="font-size: 1.2rem; color: #ccc; margin-bottom: 40px; line-height: 1.8; transition-delay: 0.1s;">
-        C37 FUEL — это не просто батончики. Это система, созданная для тех, кто относится к своему телу как к высокоточному механизму. Мы верим, что дисциплина — это не насилие над собой, а правильный выбор топлива.
-    </p>
-
-    <div class="box-card reveal" style="margin-bottom: 30px; transition-delay: 0.2s; padding: 30px;">
-        <div class="box-title" style="color: var(--accent); font-size: 1.5rem;">Наша философия</div>
-        <p style="color: #ddd; line-height: 1.8; margin-top: 15px;">
-            Мы не верим в жесткие диеты и запреты. Мы верим в умный подход. Наш лозунг: «Не запрещает — заменяет». Мы создаем продукты, которые дают стабильную энергию, убирают «сахарные качели» и помогают оставаться в фокусе в течение всего дня.
-        </p>
+    <!-- ЗАГОЛОВОК -->
+    <div style="text-align: center; margin-bottom: 60px;">
+        <h1 class="reveal" style="font-size: 3.5rem; margin-bottom: 10px; color: var(--accent); font-weight: 900;">О БРЕНДЕ</h1>
+        <p class="reveal" style="color: #c0c0c0; font-size: 1.2rem; max-width: 600px; margin: 0 auto;">C37 FUEL — это система для тех, кто относится к телу как к высокоточному механизму.</p>
     </div>
 
-    <div class="box-card reveal" style="margin-bottom: 30px; transition-delay: 0.3s; padding: 30px;">
-        <div class="box-title" style="color: var(--accent); font-size: 1.5rem;">Чистый состав</div>
-        <p style="color: #ddd; line-height: 1.8; margin-top: 15px;">
-            0 г сахара. Высокое содержание белка. Натуральная клетчатка. Мы показываем реальные лабораторные тесты каждой партии по QR-коду на упаковке. Никаких скрытых ингредиентов и маркетинговых уловок.
-        </p>
+    <!-- БЛОК 1: Текст слева, Фото справа -->
+    <div class="about-row reveal">
+        <div class="about-text">
+            <h2 style="color: var(--accent); font-size: 1.8rem; margin-bottom: 15px;">Наша философия</h2>
+            <p style="color: #ccc; font-size: 1.05rem; line-height: 1.7;">
+                Мы не верим в жесткие диеты и запреты. Мы верим в умный подход. Наш лозунг: «Не запрещает — заменяет». Мы создаем продукты, которые дают стабильную энергию, убирают «сахарные качели» и помогают оставаться в фокусе в течение всего дня.
+            </p>
+        </div>
+        <div class="about-image">
+            <img src="eva_morning.jpg" alt="Утро с ЭЙВОЙ">
+        </div>
     </div>
 
-    <div class="box-card reveal" style="margin-bottom: 60px; transition-delay: 0.4s; padding: 30px; background: linear-gradient(135deg, rgba(255,107,26,0.1) 0%, rgba(20,24,28,0.9) 100%); border-color: var(--accent);">
-        <div class="box-title" style="color: #fff; font-size: 1.5rem;">ЭЙВА — твой цифровой наставник</div>
-        <p style="color: #ccc; line-height: 1.8; margin-top: 15px; margin-bottom: 20px;">
-            Мы объединили экспертизу в нутрициологии с искусственным интеллектом. ЭЙВА — это ИИ-ассистент, который рассчитывает твой персональный протокол питания, следит за водным балансом и всегда готов поддержать.
-        </p>
-        <button class="btn" onclick="window.location.href='index.html#boxes'">Выбрать свой Протокол</button>
+    <!-- БЛОК 2: Фото слева, Текст справа (Реверс) -->
+    <div class="about-row reverse reveal">
+        <div class="about-text">
+            <h2 style="color: var(--accent); font-size: 1.8rem; margin-bottom: 15px;">Чистый состав</h2>
+            <p style="color: #ccc; font-size: 1.05rem; line-height: 1.7;">
+                0 г сахара. Высокое содержание белка. Натуральная клетчатка. Мы показываем реальные лабораторные тесты каждой партии по QR-коду на упаковке. Никаких скрытых ингредиентов и маркетинговых уловок. Только честное топливо для твоих тренировок.
+            </p>
+        </div>
+        <div class="about-image">
+            <img src="eva_gym.jpg" alt="ЭЙВА в зале">
+        </div>
+    </div>
+
+    <!-- БЛОК 3: Текст слева, Фото справа -->
+    <div class="about-row reveal">
+        <div class="about-text">
+            <h2 style="color: var(--accent); font-size: 1.8rem; margin-bottom: 15px;">ЭЙВА — твой наставник</h2>
+            <p style="color: #ccc; font-size: 1.05rem; line-height: 1.7;">
+                Мы объединили экспертизу в нутрициологии с искусственным интеллектом. ЭЙВА — это цифровой ассистент, который рассчитывает твой персональный протокол питания, ведёт дневник слотов и корректирует план по еженедельным чек-инам. И всегда поддержит без осуждения.
+            </p>
+            <button class="btn" style="margin-top: 20px;" onclick="window.location.href='index.html#boxes'">Выбрать свой Протокол</button>
+        </div>
+        <div class="about-image">
+            <img src="eva_work.jpg" alt="ЭЙВА за работой">
+        </div>
     </div>
 
 </div>
-<!-- ГАЛЕРЕЯ ЭЙВЫ -->
-<div class="eva-gallery reveal">
-    <div class="eva-photo">
-        <img src="eva_morning.jpg" alt="Утро с ЭЙВОЙ">
-        <div class="eva-photo-text">Здоровое утро</div>
-    </div>
-    <div class="eva-photo">
-        <img src="eva_work.jpg" alt="Работа с ЭЙВОЙ">
-        <div class="eva-photo-text">Фокус на весь день</div>
-    </div>
-    <div class="eva-photo">
-        <img src="eva_gym.jpg" alt="Тренировка с ЭЙВОЙ">
-        <div class="eva-photo-text">Топливо для спорта</div>
-    </div>
-</div><div id="footer-placeholder"></div>
+
+<div id="footer-placeholder"></div>
 
 <script src="script.js"></script>
 <script>
@@ -67,21 +72,17 @@
       document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
       if (typeof updateCartCount === 'function') updateCartCount();
       
-      setTimeout(() => {
-          const revealElements = document.querySelectorAll('.reveal');
-          const revealOnScroll = new IntersectionObserver(function(entries, observer) {
-              entries.forEach(entry => {
-                  if (!entry.isIntersecting) return;
-                  entry.target.classList.add('active');
-                  observer.unobserve(entry.target);
-              });
-          }, { threshold: 0.15 });
-          revealElements.forEach(el => revealOnScroll.observe(el));
-      }, 100);
+      const revealElements = document.querySelectorAll('.reveal');
+      const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+          entries.forEach(entry => {
+              if (!entry.isIntersecting) return;
+              entry.target.classList.add('active');
+              observer.unobserve(entry.target);
+          });
+      }, { threshold: 0.15 });
+      revealElements.forEach(el => revealOnScroll.observe(el));
 
-    } catch (error) {
-      console.error('Ошибка загрузки компонентов:', error);
-    }
+    } catch (error) { console.error('Ошибка загрузки:', error); }
   }
   loadComponents();
 </script>
