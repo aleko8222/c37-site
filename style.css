@@ -495,7 +495,7 @@ footer a:hover { color: var(--accent); }
 .eva-photo-text { position: absolute; bottom: 0; left: 0; right: 0; padding: 20px; background: linear-gradient(to top, rgba(13,15,18,0.95) 0%, rgba(13,15,18,0) 100%); color: #fff; font-weight: 700; font-size: 1.1rem; }
 
 /* --- БОЛЬШОЙ ФОН С ЗАТЕМНЕНИЕМ (для главной) --- */
-.cta-background { position: relative; padding: 120px 20px; text-align: center; border-radius: 24px; margin: 60px auto; max-width: 1100px; overflow: hidden; border: 1px solid var(--border); }
+.cta-background { position: relative; padding: 180px 20px; text-align: center; border-radius: 24px; margin: 60px auto; max-width: 1100px; overflow: hidden; border: 1px solid var(--border); }
 .cta-background img { 
     position: absolute; 
     top: 0; 
