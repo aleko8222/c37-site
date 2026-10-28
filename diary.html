@@ -4,69 +4,71 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Мой Дневник — C37 FUEL</title>
+<!-- ПОДКЛЮЧАЕМ ОБЩИЕ СТИЛИ -->
+<link rel="stylesheet" href="style.css">
 <style>
-:root{--bg:#0d0f12;--card:rgba(20,24,28,.9);--txt:#fff;--muted:#c0c0c0;--acc:#FF6B1A;--border:rgba(255,107,26,.3);--warn:#ffcc00;}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter','Manrope','Segoe UI',Roboto,Arial,sans-serif;}
-body{background:var(--bg);color:var(--txt);line-height:1.5;padding:20px 16px 60px;}
-.wrap{max-width:760px;margin:0 auto;}
-.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
-.top a{color:var(--acc);text-decoration:none;font-weight:700;font-size:.9rem;}
-h1{font-size:1.6rem;margin-bottom:4px;} h1 span{color:var(--acc);}
-.sub{color:var(--muted);font-size:.85rem;margin-bottom:20px;}
-.card{background:var(--card);border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:16px;}
-.card h2{font-size:1.05rem;margin-bottom:12px;color:var(--acc);text-transform:uppercase;letter-spacing:1px;}
+/* Локальные стили для уникальных элементов дневника */
+.diary-wrap { max-width: 760px; margin: 40px auto; padding: 0 20px; }
+.card{background:rgba(20,24,28,.9);border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:16px;}
+.card h2{font-size:1.05rem;margin-bottom:12px;color:#FF6B1A;text-transform:uppercase;letter-spacing:1px;}
 .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
 .ring-box{text-align:center;}
 .ring{width:110px;height:110px;border-radius:50%;border:6px solid #333;position:relative;margin:0 auto 8px;}
-.ring i{position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:var(--acc);border-right-color:var(--acc);transition:transform .5s;}
+.ring i{position:absolute;inset:-6px;border-radius:50%;border:6px solid transparent;border-top-color:#FF6B1A;border-right-color:#FF6B1A;transition:transform .5s;}
 .ring b{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:1.5rem;}
-.ring b small{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.ring b small{font-size:.6rem;color:#c0c0c0;text-transform:uppercase;letter-spacing:1px;}
 .stat{flex:1;min-width:100px;}
-.stat .v{font-size:1.5rem;font-weight:900;color:var(--acc);}
-.stat .l{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
-.eva{background:rgba(255,107,26,.08);border:1px solid var(--border);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:12px;}
-.eva b{color:var(--acc);}
+.stat .v{font-size:1.5rem;font-weight:900;color:#FF6B1A;}
+.stat .l{font-size:.72rem;color:#c0c0c0;text-transform:uppercase;letter-spacing:1px;}
+.eva{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.3);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:12px;}
+.eva b{color:#FF6B1A;}
 .slot{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;}
 .slot .name{font-weight:700;font-size:.95rem;}
-.slot .hint{font-size:.8rem;color:var(--muted);margin:4px 0 8px;}
+.slot .hint{font-size:.8rem;color:#c0c0c0;margin:4px 0 8px;}
 .stbtns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
 .stb{border:1px solid #444;background:rgba(0,0,0,.5);color:#fff;border-radius:20px;padding:7px 12px;font-size:.78rem;cursor:pointer;transition:all .2s;}
-.stb:hover{border-color:var(--acc);}
-.stb.sel{background:var(--acc);color:#111;border-color:var(--acc);font-weight:800;}
+.stb:hover{border-color:#FF6B1A;}
+.stb.sel{background:#FF6B1A;color:#111;border-color:#FF6B1A;font-weight:800;}
 .note{width:100%;background:rgba(0,0,0,.4);border:1px solid #333;color:#ccc;border-radius:8px;padding:7px 10px;font-size:.8rem;outline:none;}
-.note:focus{border-color:var(--acc);}
+.note:focus{border-color:#FF6B1A;}
 .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.btn{background:var(--acc);color:#111;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.85rem;}
-.btn.ghost{background:transparent;border:1px solid var(--acc);color:var(--acc);}
+.btn-diary{background:#FF6B1A;color:#111;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.85rem;}
+.btn-diary.ghost{background:transparent;border:1px solid #FF6B1A;color:#FF6B1A;}
 .tap{display:flex;gap:8px;flex-wrap:wrap;}
-.tap button{width:44px;height:44px;border-radius:10px;border:1px solid #444;background:rgba(0,0,0,.5);color:#fff;font-size:1.1rem;cursor:pointer;}
-.tap button.sel{background:var(--acc);color:#111;border-color:var(--acc);font-weight:900;}
+.tap button{min-width:44px; height:44px; padding:0 15px; border-radius:10px; border:1px solid #444; background:rgba(0,0,0,.5); color:#fff; font-size:0.95rem; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center;}
+.tap button.sel{background:#FF6B1A;color:#111;border-color:#FF6B1A;font-weight:900;}
 input[type=number],input[type=text]{background:rgba(0,0,0,.6);border:1px solid #444;color:#fff;border-radius:10px;padding:10px 12px;width:120px;font-size:1rem;outline:none;}
-input:focus{border-color:var(--acc);}
-label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:4px;}
-.warn{color:var(--warn);font-size:.8rem;margin-top:8px;display:none;}
+input:focus{border-color:#FF6B1A;}
+label{font-size:.8rem;color:#c0c0c0;display:block;margin-bottom:4px;}
+.warn{color:#ffcc00;font-size:.8rem;margin-top:8px;display:none;}
 .badge{display:inline-block;background:#333;border-radius:6px;padding:4px 10px;font-size:.75rem;font-weight:700;margin:0 6px 6px 0;}
-.badge.on{background:var(--acc);color:#111;}
-.upsell{border:2px solid var(--acc);background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(20,24,28,.95));}
+.badge.on{background:#FF6B1A;color:#111;}
+.upsell{border:2px solid #FF6B1A;background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(20,24,28,.95));}
 svg.spark{width:100%;height:60px;}
 .disc{font-size:.75rem;color:#777;margin-top:16px;text-align:center;}
 .hidden{display:none;}
 </style>
 </head>
 <body>
-<div class="wrap">
-  <div class="top"><a href="index.html">← На сайт</a><a href="index.html">Боксы и подписки</a></div>
-  <h1>Мой <span>Дневник</span></h1>
-  <div class="sub">20 секунд в день. Отмечай не «что съел», а <b style="color:var(--acc);">как закрыт слот</b> — реальная еда всегда влезает в один из статусов.</div>
+
+<!-- ГЛОБАЛЬНАЯ ШАПКА -->
+<div id="header-placeholder"></div>
+
+<div class="diary-wrap">
+  <div class="top" style="display:flex; justify-content:space-between; margin-bottom:20px;">
+      <h1 style="font-size:1.6rem; margin:0;">Мой <span style="color:#FF6B1A;">Дневник</span></h1>
+      <a href="index.html" style="color:#c0c0c0; text-decoration:none; font-size:0.9rem;">← На главную</a>
+  </div>
+  <div class="sub" style="color:#c0c0c0; font-size:.85rem; margin-bottom:20px;">20 секунд в день. Отмечай не «что съел», а <b style="color:#FF6B1A;">как закрыт слот</b>.</div>
 
   <!-- ДАШБОРД -->
   <div class="card">
     <div class="row">
-      <div class="ring-box"><div class="ring"><i id="ringArc"></i><b><span id="dayNum">—</span><small>день протокола</small></b></div></div>
+      <div class="ring-box"><div class="ring"><i id="ringArc"></i><b><span id="dayNum">—</span><small>день</small></b></div></div>
       <div class="stat"><div class="v" id="streakV">0</div><div class="l">🔥 стрик</div></div>
       <div class="stat"><div class="v" id="discV">0/0</div><div class="l">слоты сегодня</div></div>
-      <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🎉 радость недели</div></div>
-      <div class="stat"><div class="v" id="adhV">—</div><div class="l">соблюдение 7 дн</div></div>
+      <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🎉 радость</div></div>
+      <div class="stat"><div class="v" id="adhV">—</div><div class="l">соблюдение</div></div>
       <div class="stat"><div class="v" id="weightV">—</div><div class="l">вес, кг</div></div>
     </div>
     <div style="margin-top:12px;"><label>Энергия за 7 дней</label><svg class="spark" id="sparkE"></svg></div>
@@ -79,38 +81,38 @@ svg.spark{width:100%;height:60px;}
     <h2>Батончики закончились?</h2>
     <p style="font-size:.92rem;margin-bottom:12px;">Неделя протокола закрыта. Продолжим без паузы: в подписке батончики приходят сами, а протокол живёт дальше.</p>
     <div class="btns">
-      <button class="btn" onclick="goSub('TRIAL')">TRIAL — 990 ₽/мес</button>
-      <button class="btn ghost" onclick="goSub('КЛУБ')">КЛУБ — 1 790 ₽/мес</button>
+      <button class="btn-diary" onclick="goSub('TRIAL')">TRIAL — 990 ₽/мес</button>
+      <button class="btn-diary ghost" onclick="goSub('КЛУБ')">КЛУБ — 1 790 ₽/мес</button>
     </div>
   </div>
 
   <!-- ЧЕК-ИН -->
   <div class="card hidden" id="checkinCard">
     <h2>Недельный чек-ин</h2>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:12px;">«Цифра на весах — это данные, а не приговор. Скинь — подкорректирую».</p>
+    <p style="font-size:.85rem;color:#c0c0c0;margin-bottom:12px;">«Цифра на весах — это данные, а не приговор».</p>
     <div class="row" style="margin-bottom:12px;">
       <div><label>Вес, кг</label><input type="number" id="ciWeight" step="0.1" min="30" max="250"></div>
-      <div><label>Талия, см (опц.)</label><input type="number" id="ciWaist" min="40" max="200"></div>
+      <div><label>Талия, см</label><input type="number" id="ciWaist" min="40" max="200"></div>
     </div>
     <label>Тяга к сладкому на неделе</label>
     <div class="tap" id="ciCraving" style="margin-bottom:12px;">
       <button data-v="спала">Спала</button><button data-v="как обычно">Как обычно</button><button data-v="усилилась">Усилилась</button>
     </div>
-    <div class="btns"><button class="btn" onclick="submitCheckin()">Отправить ЭЙВЕ</button></div>
+    <div class="btns"><button class="btn-diary" onclick="submitCheckin()">Отправить ЭЙВЕ</button></div>
     <div class="warn" id="ciWarn"></div>
   </div>
 
-  <!-- СЛОТЫ СЕГОДНЯ: СТАТУСНАЯ МОДЕЛЬ -->
+  <!-- СЛОТЫ -->
   <div class="card">
     <h2>Слоты сегодня</h2>
-    <p style="font-size:.8rem;color:var(--muted);margin-bottom:12px;">Любая еда — домашняя, ресторан, «доел за ребёнком» — это один из статусов. Вина не предусмотрена механикой.</p>
+    <p style="font-size:.8rem;color:#c0c0c0;margin-bottom:12px;">Любая еда — это один из статусов. Вина не предусмотрена механикой.</p>
     <div id="slotsBox"></div>
   </div>
 
-  <!-- ДНЕВНЫЕ ТАПЫ -->
+  <!-- ТАПЫ -->
   <div class="card">
     <h2>Как ты сегодня?</h2>
-    <label>Энергия (1 — качели на дне, 5 — ровное пламя)</label>
+    <label>Энергия (1 — качели, 5 — ровное пламя)</label>
     <div class="tap" id="tapEnergy" style="margin:6px 0 12px;">
       <button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button>
     </div>
@@ -123,269 +125,216 @@ svg.spark{width:100%;height:60px;}
   <!-- БАТОНЧИК ПО КОДУ -->
   <div class="card">
     <h2>Батончик с упаковки</h2>
-    <p style="font-size:.85rem;color:var(--muted);margin-bottom:10px;">Введи код под QR — батончик встанет в свой слот как «по протоколу».</p>
     <div class="row">
       <input type="text" id="barCode" placeholder="Код с упаковки">
       <select id="barSku" style="background:rgba(0,0,0,.6);border:1px solid #444;color:#fff;border-radius:10px;padding:10px;">
         <option>Протеин База</option><option>Омега Буст</option><option>Энергия Дисциплины</option>
         <option>Восстановление</option><option>Коллаген Лайт</option><option>Экстрим</option><option>База Лимитированная</option>
       </select>
-      <button class="btn" onclick="scanBar()">Зачесть</button>
+      <button class="btn-diary" onclick="scanBar()">Зачесть</button>
     </div>
   </div>
 
   <!-- ВЕС И ЦЕЛЬ -->
-   <div class="card">
+  <div class="card">
     <h2>Трекер веса</h2>
     <div class="row">
       <div><label>Текущий вес, кг</label><input type="number" id="wNow" step="0.1"></div>
       <div><label>Цель, кг</label><input type="number" id="wGoal" step="0.1"></div>
       <div><label>За сколько недель?</label><input type="number" id="wWeeks" min="1" max="104" placeholder="8"></div>
-      <button class="btn ghost" onclick="saveGoal()">Сохранить цель</button>
+      <button class="btn-diary ghost" onclick="saveGoal()">Сохранить цель</button>
     </div>
     <div class="warn" id="goalWarn"></div>
     <div style="margin-top:12px;"><label>Динамика веса</label><svg class="spark" id="sparkW"></svg></div>
   </div>
 
-  <div class="disc">ЭЙВА — цифровой ведущий, а не врач. Дневник и корректировки носят информационный характер и не являются медицинской консультацией.<br>Данные хранятся на сервере в РФ после синхронизации; удаление — по запросу.</div>
+  <div class="disc">ЭЙВА — цифровой ведущий, а не врач. Дневник и корректировки носят информационный характер.</div>
 </div>
 
+<!-- ГЛОБАЛЬНЫЙ ПОДВАЛ -->
+<div id="footer-placeholder"></div>
+
+<!-- ПОДКЛЮЧАЕМ ОБЩИЙ JS (ДЛЯ ЧАТА И КОРЗИНЫ) -->
+<script src="script.js"></script>
+
+<!-- ЛОКАЛЬНАЯ ЛОГИКА ДНЕВНИКА -->
 <script>
-/* ============================================================
-   ДНЕВНИК v1.1 · C37 FUEL · статусная модель слотов
-   Статусы: protocol | approx | joy | missed | moved
-   Радость: бюджет ≤3 слотов/нед (≈20%); соблюдение = (protocol+0.5*approx)/marked.
-   152-ФЗ: localStorage — кэш до синхронизации.
-   TODO(Р2): POST/GET /api/diary; таблица diary_entries(user_id,date,weight,waist,energy,sleep,slots json,checkin json).
-   События: diary_open, slot_marked{status}, note_saved, checkin_done, protocol_adjusted,
-            code_scanned, goal_set, diary_tap, upsell_day8_shown, upsell_converted.
-   ============================================================ */
-const LS_D='c37_diary', LS_P='c37_protocol';
-const DAY=86400000;
-const today=()=>new Date().toISOString().slice(0,10);
-const dateBack=i=>new Date(Date.now()-i*DAY).toISOString().slice(0,10);
-function track(e,x){ if(window.ym&&window.YM_ID){ym(window.YM_ID,'reachGoal',e,x||{});} console.log('[event]',e,x||''); }
+  async function loadComponents() {
+    try {
+      const headerRes = await fetch('header.html');
+      document.getElementById('header-placeholder').innerHTML = await headerRes.text();
+      const footerRes = await fetch('footer.html');
+      document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
+      if (typeof updateCartCount === 'function') updateCartCount();
+    } catch (error) { console.error('Ошибка загрузки компонентов:', error); }
+  }
+  loadComponents();
 
-let D=JSON.parse(localStorage.getItem(LS_D)||'null')||{start:null,streak:0,lastDay:null,weights:[],energy:[],sleep:[],slots:{},checkins:[],goal:null};
-let P=JSON.parse(localStorage.getItem(LS_P)||'null'); // {goal,kcal,p,f,c,barMorning,barEvening,craving,adj}
-function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
-if(!D.start){ D.start=Date.now(); save(); }
+  // ==== ЛОГИКА ДНЕВНИКА ====
+  const LS_D='c37_diary', LS_P='c37_protocol';
+  const DAY=86400000;
+  const today=()=>new Date().toISOString().slice(0,10);
+  const dateBack=i=>new Date(Date.now()-i*DAY).toISOString().slice(0,10);
 
-/* Подсказки слотов (ориентир, НЕ список для выбора) */
-function slotHint(n){
-  if(n==='Вместо сладкого'&&P)return 'Ориентир: '+(P.barEvening||'База Лимитированная')+' или белок+клетчатка';
-  if(n==='Предтрен'&&P)return 'Ориентир: '+(P.goal==='Энергия'?'Энергия Дисциплины':'Экстрим')+' или углеводы за 60–90 мин';
-  if(n==='Посттрен'&&P)return 'Ориентир: '+(P.barMorning||'Протеин База')+' или 25+ г белка';
-  const H={'Завтрак':'белок + клетчатка','Обед':'«поленья»: белок + крупа + овощи','Ужин':'лёгкий белок + овощи','Перекус утра':'белок или жиры + клетчатка','Перекус вечера':'белок + клетчатка'};
-  return 'Ориентир: '+(H[n]||'белок + клетчатка');
-}
-function slotList(){
-  const s=['Завтрак','Обед','Ужин','Перекус утра'];
-  s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
-  if(P&&P.goal==='Энергия')s.push('Предтрен');
-  if(P&&P.goal==='Мышцы')s.push('Предтрен','Посттрен');
-  return s;
-}
+  let D=JSON.parse(localStorage.getItem(LS_D)||'null')||{start:null,streak:0,lastDay:null,weights:[],energy:[],sleep:[],slots:{},checkins:[],goal:null};
+  let P=JSON.parse(localStorage.getItem(LS_P)||'null');
+  
+  function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
+  if(!D.start){ D.start=Date.now(); save(); }
 
-/* --- метрики недели --- */
-function weekRecords(){
-  const out=[];
-  for(let i=0;i<7;i++){ const d=D.slots[dateBack(i)]; if(d) for(const k in d) out.push(d[k]); }
-  return out;
-}
-function joyCount(){ return weekRecords().filter(r=>r.st==='joy').length; }
-function joyStreak(){ // дней подряд с радостью
-  let s=0;
-  for(let i=0;;i++){ const d=D.slots[dateBack(i)]; if(d&&Object.values(d).some(r=>r.st==='joy')) s++; else break; }
-  return s;
-}
-function adherence7(){
-  const r=weekRecords().filter(x=>['protocol','approx','joy','missed'].includes(x.st));
-  if(!r.length)return null;
-  const score=r.filter(x=>x.st==='protocol').length+0.5*r.filter(x=>x.st==='approx').length;
-  return Math.round(score/r.length*100);
-}
+  function slotHint(n){
+    if(n==='Вместо сладкого'&&P)return 'Ориентир: '+(P.barEvening||'База Лимитированная')+' или белок+клетчатка';
+    if(n==='Предтрен'&&P)return 'Ориентир: '+(P.goal==='Энергия'?'Энергия Дисциплины':'Экстрим')+' или углеводы за 60–90 мин';
+    if(n==='Посттрен'&&P)return 'Ориентир: '+(P.barMorning||'Протеин База')+' или 25+ г белка';
+    const H={'Завтрак':'белок + клетчатка','Обед':'«поленья»: белок + крупа + овощи','Ужин':'лёгкий белок + овощи','Перекус утра':'белок или жиры + клетчатка','Перекус вечера':'белок + клетчатка'};
+    return 'Ориентир: '+(H[n]||'белок + клетчатка');
+  }
+  function slotList(){
+    const s=['Завтрак','Обед','Ужин','Перекус утра'];
+    s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
+    if(P&&P.goal==='Энергия')s.push('Предтрен');
+    if(P&&P.goal==='Мышцы')s.push('Предтрен','Посттрен');
+    return s;
+  }
+  function weekRecords(){ const out=[]; for(let i=0;i<7;i++){ const d=D.slots[dateBack(i)]; if(d) for(const k in d) out.push(d[k]); } return out; }
+  function joyCount(){ return weekRecords().filter(r=>r.st==='joy').length; }
+  function joyStreak(){ let s=0; for(let i=0;;i++){ const d=D.slots[dateBack(i)]; if(d&&Object.values(d).some(r=>r.st==='joy')) s++; else break; } return s; }
+  function adherence7(){ const r=weekRecords().filter(x=>['protocol','approx','joy','missed'].includes(x.st)); if(!r.length)return null; const score=r.filter(x=>x.st==='protocol').length+0.5*r.filter(x=>x.st==='approx').length; return Math.round(score/r.length*100); }
+  function dayNum(){ return Math.floor((Date.now()-D.start)/DAY)+1; }
 
-/* --- дашборд --- */
-function dayNum(){ return Math.floor((Date.now()-D.start)/DAY)+1; }
-function renderDash(){
-  const dn=dayNum();
-  document.getElementById('dayNum').textContent=dn;
-  document.getElementById('ringArc').style.transform='rotate('+(Math.min(dn,30)/30*360)+'deg)';
-  document.getElementById('streakV').textContent=D.streak;
-  const sl=D.slots[today()]||{}; const list=slotList();
-  document.getElementById('discV').textContent=list.filter(n=>sl[n]&&['protocol','approx','joy'].includes(sl[n].st)).length+'/'+list.length;
-  document.getElementById('joyV').textContent=joyCount()+'/3';
-  const a=adherence7(); document.getElementById('adhV').textContent=a===null?'—':a+'%';
-  document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
-  spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
-  spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
-  renderBadges(); renderComment();
-  if(dn>=8){ document.getElementById('upsell8').classList.remove('hidden'); track('upsell_day8_shown'); }
-  const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
-  if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
-}
-function spark(id,arr,min,max){
-  const el=document.getElementById(id);
-  if(!arr||!arr.length){ el.innerHTML='<text x="4" y="30" fill="#777" font-size="11">Пока нет данных — отметь первый день</text>'; return; }
-  const mn=min!==undefined?min:Math.min(...arr), mx=max!==undefined?max:Math.max(...arr);
-  const pts=arr.map((v,i)=>{const x=4+i*(292/Math.max(arr.length-1,1));const y=54-((v-mn)/((mx-mn)||1))*46;return x+','+y;}).join(' ');
-  el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
-}
-function renderBadges(){
-  const defs=[[7,'7 дней'],[14,'14 дней'],[30,'Месяц протокола']];
-  document.getElementById('badges').innerHTML=defs.map(d=>'<span class="badge '+(D.streak>=d[0]?'on':'')+'">'+(D.streak>=d[0]?'🏅 ':'')+d[1]+'</span>').join('')+'<span style="font-size:.72rem;color:#777;">бейдж = −5% на следующий бокс</span>';
-}
-function renderComment(){
-  const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
-  const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
-  if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
-  else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
-  else if(j>=3) t='Бюджет радости закрыт на неделю: 3/3. Дальше — поленья, иначе кривая поедет. Радость вернётся в понедельник по расписанию.';
-  else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🎉 слот на этих выходных.';
-  else if(avg!==null&&avg<3) t='Средняя энергия '+avg.toFixed(1)+' — ниже пламени. Проверь сон и белок в завтрак: это самые частые причины качелей.';
-  else if(a!==null&&a>=70) t='Соблюдение '+a+'% за неделю — протокол работает, а не ты на силе воле. Так и держим.';
-  else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии впервые ровная за месяц. Поленья работают.';
-  else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
-}
+  function spark(id,arr,min,max){
+    const el=document.getElementById(id);
+    if(!arr||!arr.length){ el.innerHTML='<text x="4" y="30" fill="#777" font-size="11">Пока нет данных — отметь первый день</text>'; return; }
+    const mn=min!==undefined?min:Math.min(...arr), mx=max!==undefined?max:Math.max(...arr);
+    const pts=arr.map((v,i)=>{const x=4+i*(292/Math.max(arr.length-1,1));const y=54-((v-mn)/((mx-mn)||1))*46;return x+','+y;}).join(' ');
+    el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
+  }
+  function renderBadges(){
+    const defs=[[7,'7 дней'],[14,'14 дней'],[30,'Месяц протокола']];
+    document.getElementById('badges').innerHTML=defs.map(d=>'<span class="badge '+(D.streak>=d[0]?'on':'')+'">'+(D.streak>=d[0]?'🏅 ':'')+d[1]+'</span>').join('');
+  }
+  function renderComment(){
+    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
+    const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
+    if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
+    else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
+    else if(j>=3) t='Бюджет радости закрыт на неделю: 3/3. Дальше — поленья, иначе кривая поедет. Радость вернётся в понедельник по расписанию.';
+    else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🎉 слот на этих выходных.';
+    else if(avg!==null&&avg<3) t='Средняя энергия '+avg.toFixed(1)+' — ниже пламени. Проверь сон и белок в завтрак: это самые частые причины качелей.';
+    else if(a!==null&&a>=70) t='Соблюдение '+a+'% за неделю — протокол работает, а не ты на силе воле. Так и держим.';
+    else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии впервые ровная за месяц. Поленья работают.';
+    else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
+  }
+  function renderDash(){
+    const dn=dayNum();
+    document.getElementById('dayNum').textContent=dn;
+    document.getElementById('ringArc').style.transform='rotate('+(Math.min(dn,30)/30*360)+'deg)';
+    document.getElementById('streakV').textContent=D.streak;
+    const sl=D.slots[today()]||{}; const list=slotList();
+    document.getElementById('discV').textContent=list.filter(n=>sl[n]&&['protocol','approx','joy'].includes(sl[n].st)).length+'/'+list.length;
+    document.getElementById('joyV').textContent=joyCount()+'/3';
+    const a=adherence7(); document.getElementById('adhV').textContent=a===null?'—':a+'%';
+    document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
+    spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
+    spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
+    renderBadges(); renderComment();
+    if(dn>=8){ document.getElementById('upsell8').classList.remove('hidden'); }
+    const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
+    if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
+  }
 
-/* --- слоты: статусы + заметка --- */
-const ST=[['protocol','✅ По протоколу'],['approx','🟡 Приблизительно'],['joy','🎉 Радость (20%)'],['missed','Пропустил'],['moved','Перенёс']];
-function renderSlots(){
-  const box=document.getElementById('slotsBox');
-  D.slots[today()]=D.slots[today()]||{};
-  const sl=D.slots[today()];
-  box.innerHTML=slotList().map(n=>{
-    const rec=sl[n]||{};
-    return '<div class="slot"><div class="name">'+n+'</div><div class="hint">'+slotHint(n)+'</div>'+
-      '<div class="stbtns">'+ST.map(s=>'<button class="stb '+(rec.st===s[0]?'sel':'')+'" onclick="markSlot(\''+n+'\',\''+s[0]+'\')">'+s[1]+'</button>').join('')+'</div>'+
-      '<input class="note" placeholder="Заметка (опционально): где и что ел — для памяти и чек-ина" value="'+(rec.note||'')+'" onchange="saveNote(\''+n+'\',this.value)">'+
-      '</div>';
-  }).join('');
-}
-function markSlot(name,st){
-  D.slots[today()]=D.slots[today()]||{};
-  D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{st:st});
-  bumpStreak(); save(); renderSlots(); renderDash();
-  track('slot_marked',{slot:name,status:st});
-}
-function saveNote(name,v){
-  D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{note:v});
-  save(); track('note_saved',{slot:name});
-}
+  const ST=[['protocol','✅ По протоколу'],['approx','🟡 Приблизительно'],['joy','🎉 Радость (20%)'],['missed','Пропустил'],['moved','Перенёс']];
+  function renderSlots(){
+    const box=document.getElementById('slotsBox');
+    D.slots[today()]=D.slots[today()]||{};
+    const sl=D.slots[today()];
+    box.innerHTML=slotList().map(n=>{
+      const rec=sl[n]||{};
+      return '<div class="slot"><div class="name">'+n+'</div><div class="hint">'+slotHint(n)+'</div>'+
+        '<div class="stbtns">'+ST.map(s=>'<button class="stb '+(rec.st===s[0]?'sel':'')+'" onclick="markSlot(\''+n+'\',\''+s[0]+'\')">'+s[1]+'</button>').join('')+'</div>'+
+        '<input class="note" placeholder="Заметка (опционально): где и что ел" value="'+(rec.note||'')+'" onchange="saveNote(\''+n+'\',this.value)">'+
+        '</div>';
+    }).join('');
+  }
+  function markSlot(name,st){
+    D.slots[today()]=D.slots[today()]||{};
+    D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{st:st});
+    bumpStreak(); save(); renderSlots(); renderDash();
+  }
+  function saveNote(name,v){ D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{note:v}); save(); }
+  function bumpStreak(){ const t=today(); if(D.lastDay===t)return; const y=dateBack(1); D.streak=(D.lastDay===y)?D.streak+1:1; D.lastDay=t; save(); }
+  
+  function bindTap(id,key){
+    document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
+      document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
+      b.classList.add('sel');
+      const rec=D[key].find(r=>r.date===today());
+      if(rec)rec.v=+b.dataset.v; else D[key].push({date:today(),v:+b.dataset.v});
+      bumpStreak(); save(); renderDash();
+    });
+  }
 
-/* --- стрик --- */
-function bumpStreak(){
-  const t=today(); if(D.lastDay===t)return;
-  const y=dateBack(1);
-  D.streak=(D.lastDay===y)?D.streak+1:1;
-  D.lastDay=t; save();
-}
-
-/* --- дневные тапы --- */
-function bindTap(id,key){
-  document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
-    document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
-    b.classList.add('sel');
-    const rec=D[key].find(r=>r.date===today());
-    if(rec)rec.v=+b.dataset.v; else D[key].push({date:today(),v:+b.dataset.v});
-    bumpStreak(); save(); renderDash(); track('diary_tap',{key:key,v:b.dataset.v});
+  let ciCraving=null;
+  document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
+    b.classList.add('sel'); ciCraving=b.dataset.v;
   });
-}
-
-/* --- чек-ин и корректировки --- */
-let ciCraving=null;
-document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
-  document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
-  b.classList.add('sel'); ciCraving=b.dataset.v;
-});
-function submitCheckin(){
-  const w=parseFloat(document.getElementById('ciWeight').value);
-  const warn=document.getElementById('ciWarn');
-  if(!w||w<30||w>250){ warn.style.display='block'; warn.textContent='Проверь вес: 30–250 кг.'; return; }
-  const waist=document.getElementById('ciWaist').value||null;
-  const prev=D.weights.length?D.weights[D.weights.length-1].kg:null;
-  D.weights.push({date:Date.now(),kg:w,waist:waist});
-  const rec={date:Date.now(),kg:w,waist:waist,craving:ciCraving,delta:null,adj:null,adh:adherence7()};
-  let msg='';
-  if(prev){
-    const delta=(w-prev)/prev*100; rec.delta=+delta.toFixed(2);
-    const goal=P?P.goal:'Похудение';
-    if(goal==='Похудение'){
-      if(delta<=-1){ rec.adj='carbs+10'; msg='Темп быстрее −1% в неделю — это уже не жир, а вода и мышцы. Добавляю +10% углеводов в обед и притормаживаем гонку.'; }
-      else if(delta<=-0.25){ msg='Норма: −'+Math.abs(delta).toFixed(1)+'% за неделю. Ровно то, что горит без мышц. Ничего не трогаем.'; }
-      else{
-        const pc=D.checkins.slice(-1)[0];
-        if(pc&&pc.delta!==null&&pc.delta>-0.25){ rec.adj='carbs-10'; msg='Две недели плато. Выбирай: −10% углеводов или +2 000 шагов в день. Мне нужно одно.'; }
-        else msg='Пока плато, но это одна неделя — не вывод. Держим линию, сверимся через 7 дней.';
-      }
-      if(ciCraving==='усилилась')msg+=' Тяга усилилась — усиливаю слот «вместо сладкого»: Лимитированная в 17–19 ч.';
-    }else if(goal==='Мышцы'){
-      if(delta>=0.2&&delta<=0.5)msg='+0,2–0,5% в неделю — чистый набор без «грязной массы». Держим.';
-      else if(delta>0.5){ rec.adj='carbs-10'; msg='Растёшь быстрее плана — скорее вода. Срезаю 10% углеводов.'; }
-      else{ rec.adj='carbs+10'; msg='Мало роста для профицита. +10% углеводов в обед и проверь посттрен-слот.'; }
-    }else msg='Цель «энергия»: вес не главный маркер. Смотрю на твою кривую энергии — она важнее весов.';
-    const a=adherence7(); if(a!==null)msg+=' Соблюдение за неделю: '+a+'%.';
-  }else msg='Первая точка зафиксирована. Через неделю смогу считать тренд и корректировать протокол.';
-  D.checkins.push(rec); save();
-  document.getElementById('checkinCard').classList.add('hidden');
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА (чек-ин):</b> '+msg+(rec.adj?' <button class="btn" style="margin-left:8px;" onclick="applyAdj(\''+rec.adj+'\')">Применить к протоколу</button>':'');
-  renderDash(); track('checkin_done',{delta:rec.delta,adj:rec.adj});
-}
-function applyAdj(adj){
-  if(!P){ alert('Сначала собери протокол на сайте.'); return; }
-  P.adj=adj; localStorage.setItem(LS_P,JSON.stringify(P));
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Применено. Протокол обновлён — увидишь изменения в слотах и PDF.';
-  track('protocol_adjusted',{adj:adj});
-}
-
-/* --- цель веса с валидацией безопасности --- */
-function saveGoal(){
-  const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
-  const g=parseFloat(document.getElementById('wGoal').value);
-  const weeks=parseInt(document.getElementById('wWeeks').value)||8;
-  const warn=document.getElementById('goalWarn');
-  if(!cur||!g){ warn.style.display='block'; warn.textContent='Заполни текущий вес и цель.'; return; }
-  
-  const diff=Math.abs(cur-g);
-  const safeMinWeeks=Math.ceil(diff/(cur*0.01));
-  
-  if(g<cur&&weeks<safeMinWeeks){ 
-    warn.style.display='block'; 
-    warn.textContent='За '+weeks+' недель это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю. Безопасный темп — до 1% в неделю, то есть минимум '+safeMinWeeks+' недель.'; 
-    return; 
+  function submitCheckin(){
+    const w=parseFloat(document.getElementById('ciWeight').value);
+    const warn=document.getElementById('ciWarn');
+    if(!w||w<30||w>250){ warn.style.display='block'; warn.textContent='Проверь вес: 30–250 кг.'; return; }
+    const waist=document.getElementById('ciWaist').value||null;
+    const prev=D.weights.length?D.weights[D.weights.length-1].kg:null;
+    D.weights.push({date:Date.now(),kg:w,waist:waist});
+    const rec={date:Date.now(),kg:w,waist:waist,craving:ciCraving,delta:null,adj:null,adh:adherence7()};
+    let msg='';
+    if(prev){
+      const delta=(w-prev)/prev*100; rec.delta=+delta.toFixed(2);
+      const goal=P?P.goal:'Похудение';
+      if(goal==='Похудение'){
+        if(delta<=-1){ rec.adj='carbs+10'; msg='Темп быстрее −1% в неделю — это вода и мышцы. Добавляю +10% углеводов в обед.'; }
+        else if(delta<=-0.25){ msg='Норма: −'+Math.abs(delta).toFixed(1)+'% за неделю. Ровно то, что горит без мышц.'; }
+        else{ const pc=D.checkins.slice(-1)[0]; if(pc&&pc.delta!==null&&pc.delta>-0.25){ rec.adj='carbs-10'; msg='Две недели плато. Выбирай: −10% углеводов или +2 000 шагов.'; } else msg='Пока плато, но это одна неделя. Держим линию.'; }
+      }else if(goal==='Мышцы'){
+        if(delta>=0.2&&delta<=0.5)msg='+0,2–0,5% в неделю — чистый набор. Держим.';
+        else if(delta>0.5){ rec.adj='carbs-10'; msg='Растёшь быстрее плана — скорее вода. Срезаю 10% углеводов.'; }
+        else{ rec.adj='carbs+10'; msg='Мало роста. +10% углеводов в обед.'; }
+      }else msg='Цель «энергия»: вес не главный маркер. Смотрю на кривую энергии.';
+    }else msg='Первая точка зафиксирована. Через неделю смогу считать тренд.';
+    D.checkins.push(rec); save();
+    document.getElementById('checkinCard').classList.add('hidden');
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА (чек-ин):</b> '+msg;
+    renderDash();
   }
-  if(g>cur&&weeks<Math.ceil(diff/(cur*0.005))){
-    warn.style.display='block'; 
-    warn.textContent='Для набора безопасный темп — 0.5% в неделю, то есть минимум '+Math.ceil(diff/(cur*0.005))+' недель.'; 
-    return;
+
+  function saveGoal(){
+    const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
+    const g=parseFloat(document.getElementById('wGoal').value);
+    const weeks=parseInt(document.getElementById('wWeeks').value)||8;
+    const warn=document.getElementById('goalWarn');
+    if(!cur||!g){ warn.style.display='block'; warn.textContent='Заполни текущий вес и цель.'; return; }
+    const diff=Math.abs(cur-g);
+    const safeMinWeeks=Math.ceil(diff/(cur*0.01));
+    if(g<cur&&weeks<safeMinWeeks){ warn.style.display='block'; warn.textContent='За '+weeks+' недель это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю. Безопасный темп — до 1% в неделю, то есть минимум '+safeMinWeeks+' недель.'; return; }
+    warn.style.display='none'; D.goal={cur:cur,goal:g,weeks:weeks}; save();
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Безопасно. Иду с тобой по чек-инам.';
   }
-  
-  warn.style.display='none'; 
-  D.goal={cur:cur,goal:g,weeks:weeks}; 
-  save();
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю — безопасно. Иду с тобой по чек-инам.';
-}
 
-/* --- код с упаковки --- */
-function scanBar(){
-  const code=document.getElementById('barCode').value.trim();
-  if(!code){ alert('Введи код с упаковки.'); return; }
-  const sku=document.getElementById('barSku').value;
-  const slot=(sku==='Энергия Дисциплины'||sku==='Экстрим')?'Предтрен':(sku==='Восстановление'?'Посттрен':'Вместо сладкого');
-  D.slots[today()]=D.slots[today()]||{};
-  D.slots[today()][slot]={st:'protocol',dish:sku,code:code};
-  bumpStreak(); save(); renderSlots(); renderDash();
-  document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+sku+' встал в слот «'+slot+'» как «по протоколу». БЖУ зачтены по эталонной калорийности.';
-  track('code_scanned',{sku:sku});
-}
+  function scanBar(){
+    const code=document.getElementById('barCode').value.trim();
+    if(!code){ alert('Введи код с упаковки.'); return; }
+    const sku=document.getElementById('barSku').value;
+    const slot=(sku==='Энергия Дисциплины'||sku==='Экстрим')?'Предтрен':(sku==='Восстановление'?'Посттрен':'Вместо сладкого');
+    D.slots[today()]=D.slots[today()]||{}; D.slots[today()][slot]={st:'protocol',dish:sku,code:code};
+    bumpStreak(); save(); renderSlots(); renderDash();
+    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+sku+' встал в слот «'+slot+'». БЖУ зачтены.';
+  }
+  function goSub(plan){ location.href='index.html'; }
 
-function goSub(plan){ track('upsell_converted',{plan:plan}); location.href='index.html'; }
-
-bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
-if(!P){ document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Протокола пока нет — дневник считает слоты, но цели возьмём из анкеты. Собери протокол за 2 минуты на главной.'; }
-renderSlots(); renderDash(); track('diary_open');
+  bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
+  if(!P){ document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Протокола пока нет — собери его на главной, и я подстрою цели.'; }
+  renderSlots(); renderDash();
 </script>
 </body>
 </html>
