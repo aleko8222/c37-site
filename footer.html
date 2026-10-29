@@ -82,11 +82,19 @@
     </div>
 
     <!-- COOKIE БАННЕР -->
-    <div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;background:rgba(13,15,18,.97);border-top:1px solid rgba(255,107,26,.3);padding:12px 20px;display:none;align-items:center;justify-content:center;gap:14px;z-index:99999;font-size:.85rem;color:#ccc;">
-        Мы используем cookie и Яндекс.Метрику для работы сайта и обезличенной статистики.
-        <button class="btn" style="padding:8px 18px;" onclick="localStorage.setItem('c37_cookie','1');this.parentNode.style.display='none'">ОК</button>
-    </div>
-    <script>if(!localStorage.getItem('c37_cookie'))document.getElementById('cookie-banner').style.display='flex';</script>
+    <div id="cookie-banner" style="position:fixed;bottom:0;left:0;right:0;background:rgba(13,15,18,.97);border-top:1px solid rgba(255,107,26,.3);padding:14px 20px;display:none;align-items:center;justify-content:center;gap:14px;z-index:99999;font-size:.85rem;color:#ccc;flex-wrap:wrap;text-align:center;">
+  Мы используем cookie: необходимые — для работы сайта, аналитические — чтобы становиться лучше.
+  <button class="btn" style="padding:8px 18px;" onclick="setCookieConsent('all')">Принять все</button>
+  <button class="btn btn-outline" style="padding:8px 18px;" onclick="setCookieConsent('necessary')">Только необходимые</button>
+</div>
+<script>
+if(!localStorage.getItem('c37_cookie')) document.getElementById('cookie-banner').style.display='flex';
+function setCookieConsent(mode){
+  localStorage.setItem('c37_cookie', mode);
+  document.getElementById('cookie-banner').style.display='none';
+  window.dispatchEvent(new CustomEvent('c37:cookie-consent', {detail:{mode:mode}}));
+}
+</script>
 <!-- КОНТЕЙНЕР ДЛЯ ВСПЛЫВАЮЩИХ ПЛАШЕК -->
 <div id="toast-container"></div>
 </footer>
