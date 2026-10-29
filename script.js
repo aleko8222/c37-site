@@ -1,7 +1,8 @@
 // ==========================================
-// ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (TOAST)
+// МЕТРИКА И СОГЛАСИЕ НА COOKIE (152-ФЗ)
 // ==========================================
-const YM_ID = 00000000; // ← ЗАМЕНИ на реальный номер счётчика Метрики!
+const YM_ID = 00000000; // ВСТАВЬ СЮДА НОМЕР СЧЕТЧИКА МЕТРИКИ!
+
 function initMetrika(){
   if (window.ym) return;
   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
@@ -9,12 +10,17 @@ function initMetrika(){
   (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
   ym(YM_ID, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true });
 }
+
 window.addEventListener('c37:cookie-consent', e => { if (e.detail.mode === 'all') initMetrika(); });
 if (localStorage.getItem('c37_cookie') === 'all') initMetrika();
-function track(ev, params){ if (window.ym) ym(YM_ID, 'reachGoal', ev, params || {}); }function showToast(title, msg, icon = '✅') {
+function track(ev, params){ if (window.ym) ym(YM_ID, 'reachGoal', ev, params || {}); }
+
+// ==========================================
+// ВСПЛЫВАЮЩИЕ ПЛАШКИ (TOAST)
+// ==========================================
+function showToast(title, msg, icon = '✅') {
     const container = document.getElementById('toast-container');
     if (!container) return;
-    
     const toast = document.createElement('div');
     toast.className = 'toast';
     toast.innerHTML = `
@@ -25,12 +31,9 @@ function track(ev, params){ if (window.ym) ym(YM_ID, 'reachGoal', ev, params || 
         </div>
     `;
     container.appendChild(toast);
-    
-    // Через 3 секунды запускаем анимацию исчезновения
     setTimeout(() => {
         toast.classList.add('hide');
-        // И принудительно удаляем через 0.5 сек, даже если анимация сломалась
-        setTimeout(() => { if(toast.parentNode) toast.remove(); }, 500);
+        toast.addEventListener('animationend', () => toast.remove());
     }, 3000);
 }
 
@@ -77,15 +80,19 @@ document.addEventListener('click', function(e) {
 // ==========================================
 function checkCity() {
     const modal = document.getElementById('ozon-modal');
-    if (modal && modal.style.display === 'flex') return;
+    if (modal && modal.style.display === 'flex') return; // Не спамим, если уже открыто
     const cityInput = document.getElementById('order-city');
     if (!cityInput) return;
     const remoteCities = ['владивосток','хабаровск','новосибирск','красноярск','иркутск','якутск','магадан','петропавловск','южно-сахалинск'];
     const val = cityInput.value.toLowerCase().trim();
-    if (remoteCities.some(city => val.includes(city))) modal.style.display = 'flex';
+    if (remoteCities.some(city => val.includes(city))) {
+        if (modal) modal.style.display = 'flex';
+    }
 }
+function closeOzonModal() { 
+    const modal = document.getElementById('ozon-modal');
+    if (modal) modal.style.display = 'none'; 
 }
-function closeOzonModal() { document.getElementById('ozon-modal').style.display = 'none'; }
 document.addEventListener('DOMContentLoaded', () => {
     const ozon = document.getElementById('ozon-modal');
     if (ozon) ozon.addEventListener('click', function(e) { if (e.target === this) closeOzonModal(); });
@@ -117,7 +124,10 @@ function addToCart(name, price) {
     saveCart();
     updateCartCount();
     renderCart();
+    
+    // Показываем всплывашку, НЕ открываем корзину и НЕ показываем alert
     showToast('Добавлено в корзину', name, '🛒');
+    track('add_to_cart', {name: name});
 }
 
 function saveCart() { localStorage.setItem('c37_cart', JSON.stringify(cart)); }
@@ -153,6 +163,7 @@ function renderCart() {
     cart.forEach((item, index) => {
         total += item.price * item.qty;
         totalItems += item.qty;
+        // Если есть Бокс или Подписка — минималка выполнена
         if(item.name.includes('ПРОТОКОЛ') || item.name.includes('ПОДПИСКА')) hasBox = true;
 
         const div = document.createElement('div');
@@ -211,6 +222,8 @@ function submitOrder() {
     console.log(orderText); 
     
     alert('Заказ принят! Мы свяжемся с тобой для подтверждения.');
+    track('purchase_success', {total: total});
+    
     cart = []; saveCart(); updateCartCount(); renderCart();
     document.getElementById('checkout-form').classList.remove('active');
     document.getElementById('btn-go-checkout').style.display = 'block';
@@ -231,6 +244,7 @@ function playIntro() {
     video.onerror = endVideo;
     video.play().catch(() => endVideo());
     video.onended = endVideo;
+    track('play_intro');
 }
 function endVideo() {
     const overlay = document.getElementById('video-overlay');
@@ -243,6 +257,7 @@ function endVideo() {
         quizSection.style.display = 'block';
         setTimeout(() => { quizSection.scrollIntoView({ behavior: 'smooth' }); }, 100);
     }
+    track('start_quiz');
 }
 
 // ==========================================
@@ -252,6 +267,7 @@ function toggleChat() {
     const chat = document.getElementById('chat-window');
     if (!chat) return;
     chat.style.display = chat.style.display === 'flex' ? 'none' : 'flex';
+    track('open_chat');
 }
 function handleEnter(e) { if (e.key === 'Enter') sendMessage(); }
 
@@ -308,6 +324,7 @@ async function sendMessage() {
         evaMsg.innerText = data.reply || 'Ошибка: пустой ответ.';
         messages.appendChild(evaMsg);
         messages.scrollTop = messages.scrollHeight;
+        track('chat_message');
     } catch (error) {
         isTyping = false;
         clearTimeout(timeoutId);
@@ -321,91 +338,113 @@ async function sendMessage() {
 }
 
 // ==========================================
-// КВИЗ (РАСЧЕТ КБЖУ)
+// КВИЗ (7 ШАГОВ)
 // ==========================================
 const steps = [
-  { id:'goal',         type:'options',           question:'Твоя цель?', options:['Похудение','Энергия','Мышцы'] },
-  { id:'params1',      type:'group_params1',     question:'О тебе' },
-  { id:'params2',      type:'group_params2',     question:'Твои размеры' },
-  { id:'activity',     type:'options',           question:'Уровень активности?', options:['Сидячий','Средний','Высокий'] },
-  { id:'rhythm',       type:'group_rhythm',      question:'Когда сильнее тянет на сладкое?' },
-  { id:'sleep',        type:'group_sleep',       question:'Сколько спишь в среднем?' },
-  { id:'restrictions', type:'group_restrictions',question:'Ограничения' }
+    { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
+    { id: 'params1', type: 'group_params1', question: 'О тебе' },
+    { id: 'params2', type: 'group_params2', question: 'Твои размеры' },
+    { id: 'activity', type: 'options', question: 'Уровень активности?', options: ['Сидячий', 'Средний', 'Высокий'] },
+    { id: 'rhythm', type: 'group_rhythm', question: 'Когда сильнее тянет на сладкое?' },
+    { id: 'sleep', type: 'group_sleep', question: 'Сколько спишь в среднем?' },
+    { id: 'restrictions', type: 'group_restrictions', question: 'Ограничения' }
 ];
 let currentStep = 0;
 let answers = {};
 
-function renderStep(){
-  const container = document.getElementById('quiz-content');
-  if (!container) return;
-  const step = steps[currentStep];
-  let html = `<div style="font-size:0.85rem;color:var(--accent);margin-bottom:10px;font-weight:bold;text-transform:uppercase;">ШАГ ${currentStep+1} ИЗ ${steps.length}</div>`;
-  html += `<p class="question-text">${step.question}</p>`;
-  if (step.type === 'options') {
-    html += `<div class="options">` + step.options.map(opt =>
-      `<button class="option-btn ${answers[step.id]===opt?'selected':''}" onclick="selectOption('${step.id}','${opt}')">${opt}</button>`).join('') + `</div>`;
-  } else if (step.type === 'group_params1') {
-    html += `<div class="quiz-group"><label>Пол</label><div class="row-2">
-        <button class="option-btn ${answers.gender==='Мужской'?'selected':''}" onclick="selectOption('gender','Мужской')">Мужской</button>
-        <button class="option-btn ${answers.gender==='Женский'?'selected':''}" onclick="selectOption('gender','Женский')">Женский</button></div></div>
-      <div class="quiz-group"><label>Возраст</label><input type="number" placeholder="Лет" min="18" max="75" value="${answers.age||''}" oninput="saveNumber('age',this.value)"></div>`;
-  } else if (step.type === 'group_params2') {
-    html += `<div class="row-2">
-        <div class="quiz-group"><label>Рост (см)</label><input type="number" placeholder="См" min="140" max="220" value="${answers.height||''}" oninput="saveNumber('height',this.value)"></div>
-        <div class="quiz-group"><label>Вес (кг)</label><input type="number" placeholder="Кг" min="45" max="180" value="${answers.weight||''}" oninput="saveNumber('weight',this.value)"></div></div>`;
-  } else if (step.type === 'group_rhythm') {
-    html += `<div class="options">` + ['Утро','День','Вечер','Нет тяги'].map(v =>
-      `<button class="option-btn ${answers.craving===v?'selected':''}" onclick="selectOption('craving','${v}')">${v}</button>`).join('') + `</div>`;
-  } else if (step.type === 'group_sleep') {
-    html += `<div class="row-2">
-        <button class="option-btn ${answers.sleep==='Мало'?'selected':''}" onclick="selectOption('sleep','Мало')">Меньше 7 ч</button>
-        <button class="option-btn ${answers.sleep==='Норма'?'selected':''}" onclick="selectOption('sleep','Норма')">7–9 ч</button></div>`;
-  } else if (step.type === 'group_restrictions') {
-    html += `<div class="quiz-group"><label>Аллергия на арахис?</label><div class="row-2">
-        <button class="option-btn ${answers.allergies==='Нет'?'selected':''}" onclick="selectOption('allergies','Нет')">Нет</button>
-        <button class="option-btn ${answers.allergies==='Да'?'selected':''}" onclick="selectOption('allergies','Да')">Да</button></div></div>
-      <div class="quiz-group"><label>Стоп-факторы? (беременность/ГВ, РПП, хронические)</label><div class="row-2">
-        <button class="option-btn ${answers.stop==='Нет'?'selected':''}" onclick="selectOption('stop','Нет')">Нет</button>
-        <button class="option-btn ${answers.stop==='Да'?'selected':''}" onclick="selectOption('stop','Да')">Да</button></div></div>`;
-  }
-  container.innerHTML = html;
-  document.getElementById('progress').style.width = (currentStep / (steps.length - 1)) * 100 + '%';
-  document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'inline-block';
-  document.getElementById('nextBtn').innerText = currentStep === steps.length - 1 ? 'Показать результат' : 'Далее';
+function renderStep() {
+    const container = document.getElementById('quiz-content');
+    if (!container) return;
+    const step = steps[currentStep];
+    let html = `<div style="font-size:0.85rem;color:var(--accent);margin-bottom:10px;font-weight:bold;text-transform:uppercase;">ШАГ ${currentStep + 1} ИЗ ${steps.length}</div>`;
+    html += `<p class="question-text">${step.question}</p>`;
+    
+    if (step.type === 'options') {
+        html += `<div class="options">`;
+        step.options.forEach(opt => {
+            const sel = answers[step.id] === opt ? 'selected' : '';
+            html += `<button class="option-btn ${sel}" onclick="selectOption('${step.id}','${opt}')">${opt}</button>`;
+        });
+        html += `</div>`;
+    } else if (step.type === 'group_params1') {
+        html += `
+            <div class="quiz-group"><label>Пол</label><div class="row-2">
+                <button class="option-btn ${answers.gender === 'Мужской' ? 'selected' : ''}" onclick="selectOption('gender', 'Мужской')">Мужской</button>
+                <button class="option-btn ${answers.gender === 'Женский' ? 'selected' : ''}" onclick="selectOption('gender', 'Женский')">Женский</button>
+            </div></div>
+            <div class="quiz-group"><label>Возраст</label><input type="number" placeholder="Лет" min="18" max="75" value="${answers.age || ''}" oninput="saveNumber('age', this.value)"></div>`;
+    } else if (step.type === 'group_params2') {
+        html += `
+            <div class="row-2">
+                <div class="quiz-group"><label>Рост (см)</label><input type="number" placeholder="См" min="140" max="220" value="${answers.height || ''}" oninput="saveNumber('height', this.value)"></div>
+                <div class="quiz-group"><label>Вес (кг)</label><input type="number" placeholder="Кг" min="45" max="180" value="${answers.weight || ''}" oninput="saveNumber('weight', this.value)"></div>
+            </div>`;
+    } else if (step.type === 'group_rhythm') {
+        html += `<div class="options">`;
+        ['Утро', 'День', 'Вечер', 'Нет тяги'].forEach(v => {
+            const sel = answers.craving === v ? 'selected' : '';
+            html += `<button class="option-btn ${sel}" onclick="selectOption('craving','${v}')">${v}</button>`;
+        });
+        html += `</div>`;
+    } else if (step.type === 'group_sleep') {
+        html += `<div class="row-2">
+            <button class="option-btn ${answers.sleep === 'Мало' ? 'selected' : ''}" onclick="selectOption('sleep', 'Мало')">Меньше 7 ч</button>
+            <button class="option-btn ${answers.sleep === 'Норма' ? 'selected' : ''}" onclick="selectOption('sleep', 'Норма')">7–9 ч</button>
+        </div>`;
+    } else if (step.type === 'group_restrictions') {
+        html += `
+            <div class="quiz-group"><label>Аллергия на арахис?</label><div class="row-2">
+                <button class="option-btn ${answers.allergies === 'Нет' ? 'selected' : ''}" onclick="selectOption('allergies', 'Нет')">Нет</button>
+                <button class="option-btn ${answers.allergies === 'Да' ? 'selected' : ''}" onclick="selectOption('allergies', 'Да')">Да</button>
+            </div></div>
+            <div class="quiz-group"><label>Стоп-факторы? (беременность/ГВ, РПП, хронические)</label><div class="row-2">
+                <button class="option-btn ${answers.stop === 'Нет' ? 'selected' : ''}" onclick="selectOption('stop', 'Нет')">Нет</button>
+                <button class="option-btn ${answers.stop === 'Да' ? 'selected' : ''}" onclick="selectOption('stop', 'Да')">Да</button>
+            </div></div>`;
+    }
+    container.innerHTML = html;
+    document.getElementById('progress').style.width = (currentStep / (steps.length - 1)) * 100 + '%';
+    document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'inline-block';
+    document.getElementById('nextBtn').innerText = currentStep === steps.length - 1 ? 'Показать результат' : 'Далее';
 }
 
 function selectOption(id, value) { answers[id] = value; renderStep(); }
 function saveNumber(id, value) { answers[id] = value; }
 
-function doctorScreen(){
-  document.getElementById('quiz-content').innerHTML =
-    `<div style="text-align:center;padding:20px;"><h2 style="color:var(--accent);">Обратитесь к врачу</h2>
-     <p style="margin:20px 0;">Для твоей безопасности мы не можем собрать протокол автоматически. Уроки ЭЙВЫ останутся открытыми.</p>
-     <button class="btn" onclick="resetQuiz()">Начать заново</button></div>`;
-  document.querySelector('.nav-buttons').style.display = 'none';
+function doctorScreen() {
+    document.getElementById('quiz-content').innerHTML = `
+        <div style="text-align:center;padding:20px;">
+            <h2 style="color:var(--accent);">Обратитесь к врачу</h2>
+            <p style="margin:20px 0;">Для твоей безопасности мы не можем собрать протокол автоматически. Уроки ЭЙВЫ останутся открытыми.</p>
+            <button class="btn" onclick="resetQuiz()">Начать заново</button>
+        </div>`;
+    document.querySelector('.nav-buttons').style.display = 'none';
 }
 
-function nextStep(){
-  const step = steps[currentStep];
-  if (step.type === 'group_params1') {
-    const a = parseInt(answers.age, 10);
-    if (!answers.gender || !a) { alert('Укажи пол и возраст.'); return; }
-    if (a < 18 || a > 75) { doctorScreen(); return; }
-  }
-  if (step.type === 'group_params2') {
-    const h = parseFloat(answers.height), w = parseFloat(answers.weight);
-    if (!h || !w) { alert('Укажи рост и вес.'); return; }
-    if (h < 140 || h > 220 || w < 45 || w > 180) { alert('Проверь данные: рост 140–220 см, вес 45–180 кг.'); return; }
-  }
-  if (step.type === 'group_rhythm' && !answers.craving) { alert('Выбери вариант.'); return; }
-  if (step.type === 'group_sleep' && !answers.sleep) { alert('Выбери вариант.'); return; }
-  if (step.type === 'group_restrictions') {
-    if (!answers.allergies || !answers.stop) { alert('Ответь на оба вопроса.'); return; }
-    if (answers.stop === 'Да') { doctorScreen(); return; }
-  }
-  if (step.type === 'options' && !answers[step.id]) { alert('Выбери вариант.'); return; }
-  if (currentStep < steps.length - 1) { currentStep++; renderStep(); } else { calculateResult(); }
+function nextStep() {
+    const step = steps[currentStep];
+    if (step.type === 'group_params1') {
+        const a = parseInt(answers.age, 10);
+        if (!answers.gender || !a) { alert('Укажи пол и возраст.'); return; }
+        if (a < 18 || a > 75) { doctorScreen(); return; }
+    }
+    if (step.type === 'group_params2') {
+        const h = parseFloat(answers.height), w = parseFloat(answers.weight);
+        if (!h || !w) { alert('Укажи рост и вес.'); return; }
+        if (h < 140 || h > 220 || w < 45 || w > 180) { alert('Проверь данные: рост 140–220 см, вес 45–180 кг.'); return; }
+    }
+    if (step.type === 'group_rhythm' && !answers.craving) { alert('Выбери вариант.'); return; }
+    if (step.type === 'group_sleep' && !answers.sleep) { alert('Выбери вариант.'); return; }
+    if (step.type === 'group_restrictions') {
+        if (!answers.allergies || !answers.stop) { alert('Ответь на оба вопроса.'); return; }
+        if (answers.stop === 'Да') { doctorScreen(); return; }
+    }
+    if (step.type === 'options' && !answers[step.id]) { alert('Выбери вариант.'); return; }
+    
+    if (currentStep < steps.length - 1) { currentStep++; renderStep(); } 
+    else { calculateResult(); }
 }
+
 function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
 function calculateResult() {
@@ -428,23 +467,15 @@ function calculateResult() {
         if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
     }
 
-    // СОХРАНЕНИЕ ПРОТОКОЛА ДЛЯ ДНЕВНИКА
+    // СОХРАНЕНИЕ ДЛЯ ДНЕВНИКА
     const protocolData = {
-        goal: answers.goal,
-        gender: answers.gender,
-        age: answers.age,
-        height: answers.height,
-        weight: answers.weight,
-        activity: answers.activity,
-        craving: answers.craving,
-        kcal: Math.round(kcal),
-        protein: Math.round(protein),
-        fat: Math.round(fat),
-        carbs: Math.round(carbs),
-        barMorning: barMorning,
-        barEvening: barEvening
+        goal: answers.goal, gender: answers.gender, age: answers.age, height: answers.height, weight: answers.weight,
+        activity: answers.activity, craving: answers.craving, kcal: Math.round(kcal), protein: Math.round(protein),
+        fat: Math.round(fat), carbs: Math.round(carbs), barMorning: barMorning, barEvening: barEvening
     };
     localStorage.setItem('c37_protocol', JSON.stringify(protocolData));
+    localStorage.setItem('c37_target_calories', Math.round(kcal));
+    track('protocol_created', {goal: answers.goal});
 
     document.getElementById('quiz-content').innerHTML = `
         <h2 style="color: var(--accent); margin-bottom: 10px;">Твой протокол готов</h2>
@@ -471,4 +502,27 @@ function resetQuiz() {
     renderStep();
 }
 
+// ==========================================
+// ГЛОБАЛЬНЫЙ ESC
+// ==========================================
+document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Escape') return;
+    const ozon = document.getElementById('ozon-modal');
+    if (ozon && ozon.style.display === 'flex') { closeOzonModal(); }
+    const sidebar = document.getElementById('cart-sidebar');
+    if (sidebar && sidebar.classList.contains('active')) { toggleCart(); }
+    const chat = document.getElementById('chat-window');
+    if (chat && chat.style.display === 'flex') { toggleChat(); }
+    const video = document.getElementById('video-overlay');
+    if (video && video.style.display === 'flex') { endVideo(); }
+    const lightbox = document.getElementById('image-lightbox');
+    if (lightbox && lightbox.classList.contains('active')) { closeImage(); }
+});
 
+// ==========================================
+// ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ
+// ==========================================
+document.addEventListener('DOMContentLoaded', () => {
+    updateCartCount();
+    if (document.getElementById('quiz-content')) renderStep();
+});
