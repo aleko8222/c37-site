@@ -66,13 +66,14 @@ document.addEventListener('click', function(e) {
 // ШЛЮЗ OZON (ДЛЯ ДАЛЬНИХ РЕГИОНОВ)
 // ==========================================
 function checkCity() {
+    const modal = document.getElementById('ozon-modal');
+    if (modal && modal.style.display === 'flex') return;
     const cityInput = document.getElementById('order-city');
     if (!cityInput) return;
-    const remoteCities = ['владивосток', 'хабаровск', 'новосибирск', 'красноярск', 'иркутск', 'якутск', 'магадан', 'петропавловск', 'южно-сахалинск'];
+    const remoteCities = ['владивосток','хабаровск','новосибирск','красноярск','иркутск','якутск','магадан','петропавловск','южно-сахалинск'];
     const val = cityInput.value.toLowerCase().trim();
-    if (remoteCities.some(city => val.includes(city))) {
-        document.getElementById('ozon-modal').style.display = 'flex';
-    }
+    if (remoteCities.some(city => val.includes(city))) modal.style.display = 'flex';
+}
 }
 function closeOzonModal() { document.getElementById('ozon-modal').style.display = 'none'; }
 document.addEventListener('DOMContentLoaded', () => {
