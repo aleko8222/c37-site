@@ -1,7 +1,17 @@
 // ==========================================
 // ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ (TOAST)
 // ==========================================
-function showToast(title, msg, icon = '✅') {
+const YM_ID = 00000000; // ← ЗАМЕНИ на реальный номер счётчика Метрики!
+function initMetrika(){
+  if (window.ym) return;
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+  ym(YM_ID, "init", { clickmap:true, trackLinks:true, accurateTrackBounce:true });
+}
+window.addEventListener('c37:cookie-consent', e => { if (e.detail.mode === 'all') initMetrika(); });
+if (localStorage.getItem('c37_cookie') === 'all') initMetrika();
+function track(ev, params){ if (window.ym) ym(YM_ID, 'reachGoal', ev, params || {}); }function showToast(title, msg, icon = '✅') {
     const container = document.getElementById('toast-container');
     if (!container) return;
     
