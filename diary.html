@@ -4,10 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Мой Дневник — C37 FUEL</title>
-<!-- ПОДКЛЮЧАЕМ ОБЩИЕ СТИЛИ -->
 <link rel="stylesheet" href="style.css">
 <style>
-/* Локальные стили для уникальных элементов дневника */
 .diary-wrap { max-width: 760px; margin: 40px auto; padding: 0 20px; }
 .card{background:rgba(20,24,28,.9);border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:16px;}
 .card h2{font-size:1.05rem;margin-bottom:12px;color:#FF6B1A;text-transform:uppercase;letter-spacing:1px;}
@@ -22,6 +20,41 @@
 .stat .l{font-size:.72rem;color:#c0c0c0;text-transform:uppercase;letter-spacing:1px;}
 .eva{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.3);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:12px;}
 .eva b{color:#FF6B1A;}
+
+/* === КАРТОЧКА ЭЙВЫ (новый блок) === */
+.eva-briefing {
+  display: flex; gap: 20px; align-items: center;
+  background: linear-gradient(135deg, rgba(255,107,26,.08), rgba(20,24,28,.95));
+  border: 1px solid rgba(255,107,26,.4); border-radius: 16px;
+  padding: 20px; margin-bottom: 20px;
+  box-shadow: 0 0 30px rgba(255,107,26,.15), inset 0 0 40px rgba(255,107,26,.05);
+}
+.eva-hud-frame {
+  position: relative; width: 90px; height: 90px; flex-shrink: 0;
+  border-radius: 50%; overflow: hidden;
+  border: 2px solid #FF6B1A; box-shadow: 0 0 20px rgba(255,107,26,.4);
+}
+.eva-face { width: 100%; height: 100%; object-fit: cover; }
+.eva-hud-corner {
+  position: absolute; width: 10px; height: 10px; border: 1.5px solid #FF6B1A;
+}
+.eva-hud-corner.tl { top: -2px; left: -2px; border-right: none; border-bottom: none; }
+.eva-hud-corner.tr { top: -2px; right: -2px; border-left: none; border-bottom: none; }
+.eva-hud-corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
+.eva-hud-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
+.eva-briefing-body { flex: 1; }
+.eva-greeting {
+  font-size: .7rem; letter-spacing: 2px; color: #FF6B1A;
+  font-weight: 800; margin-bottom: 6px;
+}
+.eva-line { font-size: .95rem; line-height: 1.5; color: #fff; margin-bottom: 8px; }
+.eva-sign { font-size: .72rem; color: #888; font-style: italic; }
+@media (max-width: 520px) {
+  .eva-briefing { flex-direction: column; text-align: center; }
+  .eva-hud-frame { width: 70px; height: 70px; }
+}
+/* === /КАРТОЧКА ЭЙВЫ === */
+
 .slot{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;}
 .slot .name{font-weight:700;font-size:.95rem;}
 .slot .hint{font-size:.8rem;color:#c0c0c0;margin:4px 0 8px;}
@@ -51,7 +84,6 @@ svg.spark{width:100%;height:60px;}
 </head>
 <body>
 
-<!-- ГЛОБАЛЬНАЯ ШАПКА -->
 <div id="header-placeholder"></div>
 
 <div class="diary-wrap">
@@ -60,6 +92,22 @@ svg.spark{width:100%;height:60px;}
       <a href="index.html" style="color:#c0c0c0; text-decoration:none; font-size:0.9rem;">← На главную</a>
   </div>
   <div class="sub" style="color:#c0c0c0; font-size:.85rem; margin-bottom:20px;">20 секунд в день. Отмечай не «что съел», а <b style="color:#FF6B1A;">как закрыт слот</b>.</div>
+
+  <!-- КАРТОЧКА ЭЙВЫ (новый блок) -->
+  <div class="eva-briefing">
+    <div class="eva-hud-frame">
+      <img src="eva_avatar.jpg" alt="ЭЙВА" class="eva-face">
+      <div class="eva-hud-corner tl"></div>
+      <div class="eva-hud-corner tr"></div>
+      <div class="eva-hud-corner bl"></div>
+      <div class="eva-hud-corner br"></div>
+    </div>
+    <div class="eva-briefing-body">
+      <div class="eva-greeting">ДОБРОЕ УТРО</div>
+      <div class="eva-line" id="evaBriefing">Загружаю твой день…</div>
+      <div class="eva-sign">— ЭЙВА, твой наставник</div>
+    </div>
+  </div>
 
   <!-- ДАШБОРД -->
   <div class="card">
@@ -151,13 +199,9 @@ svg.spark{width:100%;height:60px;}
   <div class="disc">ЭЙВА — цифровой ведущий, а не врач. Дневник и корректировки носят информационный характер.</div>
 </div>
 
-<!-- ГЛОБАЛЬНЫЙ ПОДВАЛ -->
 <div id="footer-placeholder"></div>
-
-<!-- ПОДКЛЮЧАЕМ ОБЩИЙ JS (ДЛЯ ЧАТА И КОРЗИНЫ) -->
 <script src="script.js"></script>
 
-<!-- ЛОКАЛЬНАЯ ЛОГИКА ДНЕВНИКА -->
 <script>
   async function loadComponents() {
     try {
@@ -170,7 +214,6 @@ svg.spark{width:100%;height:60px;}
   }
   loadComponents();
 
-  // ==== ЛОГИКА ДНЕВНИКА ====
   const LS_D='c37_diary', LS_P='c37_protocol';
   const DAY=86400000;
   const today=()=>new Date().toISOString().slice(0,10);
@@ -209,16 +252,43 @@ svg.spark{width:100%;height:60px;}
     const pts=arr.map((v,i)=>{const x=4+i*(292/Math.max(arr.length-1,1));const y=54-((v-mn)/((mx-mn)||1))*46;return x+','+y;}).join(' ');
     el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
   }
+
+  /* === НОВЫЙ renderBadges: эмоциональные вехи === */
   function renderBadges(){
-    const defs=[[7,'7 дней'],[14,'14 дней'],[30,'Месяц протокола']];
-    document.getElementById('badges').innerHTML=defs.map(d=>'<span class="badge '+(D.streak>=d[0]?'on':'')+'">'+(D.streak>=d[0]?'🏅 ':'')+d[1]+'</span>').join('');
+    const dn = dayNum();
+    const milestones = [
+      { at: 7,  title: 'Первая неделя', text: 'Ты прошёл точку, где бросают 60% людей.' },
+      { at: 14, title: 'Две недели подряд', text: 'Кривая энергии впервые ровная.' },
+      { at: 30, title: 'Месяц протокола', text: 'Ты в 1% тех, кто дошёл. Следующая цель — 60 дней.' },
+      { at: 60, title: 'Два месяца', text: 'Протокол стал привычкой. Дальше — тонкая настройка.' }
+    ];
+    const earned = milestones.filter(m => dn >= m.at);
+    const next = milestones.find(m => dn < m.at);
+
+    let html = earned.map(m =>
+      `<span class="badge on">🏅 ${m.title}</span>`
+    ).join('');
+
+    if (next && earned.length > 0) {
+      html += `<span style="display:block;margin-top:10px;font-size:.78rem;color:#888;">Следующая веха: <b style="color:#fff;">${next.title}</b> через ${next.at - dn} дн.</span>`;
+    } else if (next) {
+      html += `<span class="badge">🏅 ${next.title} — через ${next.at - dn} дн.</span>`;
+      html += `<span style="display:block;margin-top:6px;font-size:.72rem;color:#777;">${next.text}</span>`;
+    }
+
+    html += `<span style="display:block;margin-top:10px;font-size:.72rem;color:#777;">Любая веха = −5% на следующий бокс</span>`;
+
+    document.getElementById('badges').innerHTML = html;
   }
+
+  /* === НОВЫЙ renderComment: приветствие для новичков в начале === */
   function renderComment(){
-      if(!P){
-    document.getElementById('evaComment').innerHTML =
-      '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты, и я подстрою цели, слоты и ориентиры под тебя.';
-    return;
-  }    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
+    if(!P){
+      document.getElementById('evaComment').innerHTML =
+        '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты, и я подстрою цели, слоты и ориентиры под тебя.';
+      return;
+    }
+    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
     const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
     if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
     else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
@@ -230,6 +300,59 @@ svg.spark{width:100%;height:60px;}
     else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
   }
+
+  /* === НОВЫЙ renderEvaBriefing: живой утренний брифинг === */
+  function renderEvaBriefing() {
+    const el = document.getElementById('evaBriefing');
+    if (!el) return;
+    
+    if (!P) {
+      el.textContent = 'Протокола пока нет. Собери его на главной за 2 минуты — и я подстрою цели, слоты и ориентиры под тебя.';
+      return;
+    }
+
+    const dn = dayNum();
+    const yesterday = dateBack(1);
+    const yesterdaySlots = D.slots[yesterday] || {};
+    const yesterdayList = slotList();
+    const yesterdayMarked = yesterdayList.filter(n => yesterdaySlots[n] && ['protocol','approx','joy'].includes(yesterdaySlots[n].st));
+    const yesterdayDone = yesterdayMarked.length;
+    const yesterdayTotal = yesterdayList.length;
+    const lastEnergy = D.energy.slice(-1)[0];
+    const lastSleep = D.sleep.slice(-1)[0];
+
+    let text = '';
+
+    if (dn === 7) {
+      text = `День 7. Ты прошёл первую неделю. Закрыл ${Math.round(adherence7() || 0)}% слотов — это выше среднего. 60% людей бросают на 4-й день. Ты — не они. Сегодня — первый чек-ин, я подкручу протокол.`;
+    } else if (dn === 14) {
+      text = `День 14. Стрик ${D.streak}. Твоя кривая энергии впервые ровная за две недели. Поленья работают. Держим темп, первый серьёзный пересмотр — на дне 21.`;
+    } else if (dn === 30) {
+      text = `День 30. Месяц протокола позади. Ты в том 1%, кто дошёл. Сегодня сделаю полный отчёт и предложу следующую цель.`;
+    } else {
+      text = 'День ' + dn + '. ';
+      if (yesterdayDone > 0) {
+        text += `Вчера ты закрыл ${yesterdayDone} из ${yesterdayTotal} слотов. `;
+        if (yesterdayDone === yesterdayTotal) text += 'Чисто. ';
+        else if (yesterdayDone >= yesterdayTotal - 1) text += 'Почти идеально. ';
+        else text += 'Есть над чем работать. ';
+      }
+      if (lastSleep && lastSleep.v <= 6) {
+        text += 'Сон был короткий — сегодня завтрак с белком особенно важен, иначе в 11:00 потянет на сладкое. ';
+      } else if (lastSleep && lastSleep.v >= 8) {
+        text += 'Сон хороший — используй это, день обещает ровное пламя. ';
+      }
+      if (lastEnergy && lastEnergy.v <= 2) {
+        text += 'Вчера энергия просела. Проверь: был ли белок в завтрак и «поленья» в обед?';
+      } else {
+        const slot = P.craving === 'Вечер' ? 'вечерний слот' : 'перекус после обеда';
+        text += `Сегодня ключевой — ${slot}. Не пропусти.`;
+      }
+    }
+
+    el.textContent = text.trim();
+  }
+
   function renderDash(){
     const dn=dayNum();
     document.getElementById('dayNum').textContent=dn;
@@ -242,7 +365,9 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
     spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
     spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
-    renderBadges(); renderComment();
+    renderEvaBriefing();   // ← новый вызов
+    renderBadges();
+    renderComment();
     if(dn>=8){ document.getElementById('upsell8').classList.remove('hidden'); }
     const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
     if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
@@ -336,8 +461,8 @@ svg.spark{width:100%;height:60px;}
   }
   function goSub(plan){ location.href='index.html'; }
 
-    bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
-    renderSlots(); renderDash();
+  bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
+  renderSlots(); renderDash();
 </script>
 </body>
 </html>
