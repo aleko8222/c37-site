@@ -324,11 +324,13 @@ async function sendMessage() {
 // КВИЗ (РАСЧЕТ КБЖУ)
 // ==========================================
 const steps = [
-    { id: 'goal', type: 'options', question: 'Твоя цель?', options: ['Похудение', 'Энергия', 'Мышцы'] },
-    { id: 'params', type: 'group_params', question: 'Твои параметры' },
-    { id: 'activity', type: 'options', question: 'Уровень активности?', options: ['Сидячий', 'Средний', 'Высокий'] },
-    { id: 'rhythm', type: 'group_rhythm', question: 'Твой ритм' },
-    { id: 'restrictions', type: 'group_restrictions', question: 'Ограничения' }
+  { id:'goal',         type:'options',           question:'Твоя цель?', options:['Похудение','Энергия','Мышцы'] },
+  { id:'params1',      type:'group_params1',     question:'О тебе' },
+  { id:'params2',      type:'group_params2',     question:'Твои размеры' },
+  { id:'activity',     type:'options',           question:'Уровень активности?', options:['Сидячий','Средний','Высокий'] },
+  { id:'rhythm',       type:'group_rhythm',      question:'Когда сильнее тянет на сладкое?' },
+  { id:'sleep',        type:'group_sleep',       question:'Сколько спишь в среднем?' },
+  { id:'restrictions', type:'group_restrictions',question:'Ограничения' }
 ];
 let currentStep = 0;
 let answers = {};
