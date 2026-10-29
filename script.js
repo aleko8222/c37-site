@@ -377,21 +377,34 @@ function renderStep(){
 function selectOption(id, value) { answers[id] = value; renderStep(); }
 function saveNumber(id, value) { answers[id] = value; }
 
-function nextStep() {
-    const step = steps[currentStep];
-    if (step.type === 'group_params' && (!answers.gender || !answers.age || !answers.height || !answers.weight)) { alert('Заполни все параметры.'); return; }
-    if (step.type === 'group_rhythm' && (!answers.craving || !answers.sleep)) { alert('Ответь на оба вопроса.'); return; }
-    if (step.type === 'group_restrictions') {
-        if (!answers.allergies || !answers.stop) { alert('Ответь на оба вопроса.'); return; }
-        if (answers.stop === 'Да') {
-            document.getElementById('quiz-content').innerHTML = `<div style="text-align: center; padding: 20px;"><h2 style="color: var(--accent);">Обратитесь к врачу</h2><p style="margin: 20px 0;">Для твоей безопасности мы не можем собрать протокол.</p><button class="btn" onclick="resetQuiz()">Начать заново</button></div>`;
-            document.querySelector('.nav-buttons').style.display = 'none'; return;
-        }
-    }
-    if (step.type === 'options' && !answers[step.id]) { alert('Выбери вариант'); return; }
-    
-    if (currentStep < steps.length - 1) { currentStep++; renderStep(); } 
-    else { calculateResult(); }
+function doctorScreen(){
+  document.getElementById('quiz-content').innerHTML =
+    `<div style="text-align:center;padding:20px;"><h2 style="color:var(--accent);">Обратитесь к врачу</h2>
+     <p style="margin:20px 0;">Для твоей безопасности мы не можем собрать протокол автоматически. Уроки ЭЙВЫ останутся открытыми.</p>
+     <button class="btn" onclick="resetQuiz()">Начать заново</button></div>`;
+  document.querySelector('.nav-buttons').style.display = 'none';
+}
+
+function nextStep(){
+  const step = steps[currentStep];
+  if (step.type === 'group_params1') {
+    const a = parseInt(answers.age, 10);
+    if (!answers.gender || !a) { alert('Укажи пол и возраст.'); return; }
+    if (a < 18 || a > 75) { doctorScreen(); return; }
+  }
+  if (step.type === 'group_params2') {
+    const h = parseFloat(answers.height), w = parseFloat(answers.weight);
+    if (!h || !w) { alert('Укажи рост и вес.'); return; }
+    if (h < 140 || h > 220 || w < 45 || w > 180) { alert('Проверь данные: рост 140–220 см, вес 45–180 кг.'); return; }
+  }
+  if (step.type === 'group_rhythm' && !answers.craving) { alert('Выбери вариант.'); return; }
+  if (step.type === 'group_sleep' && !answers.sleep) { alert('Выбери вариант.'); return; }
+  if (step.type === 'group_restrictions') {
+    if (!answers.allergies || !answers.stop) { alert('Ответь на оба вопроса.'); return; }
+    if (answers.stop === 'Да') { doctorScreen(); return; }
+  }
+  if (step.type === 'options' && !answers[step.id]) { alert('Выбери вариант.'); return; }
+  if (currentStep < steps.length - 1) { currentStep++; renderStep(); } else { calculateResult(); }
 }
 function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
