@@ -214,7 +214,11 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('badges').innerHTML=defs.map(d=>'<span class="badge '+(D.streak>=d[0]?'on':'')+'">'+(D.streak>=d[0]?'🏅 ':'')+d[1]+'</span>').join('');
   }
   function renderComment(){
-    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
+      if(!P){
+    document.getElementById('evaComment').innerHTML =
+      '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты, и я подстрою цели, слоты и ориентиры под тебя.';
+    return;
+  }    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
     const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
     if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
     else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
