@@ -335,58 +335,43 @@ const steps = [
 let currentStep = 0;
 let answers = {};
 
-function renderStep() {
-    const container = document.getElementById('quiz-content');
-    if (!container) return;
-    const step = steps[currentStep];
-    let html = `<div style="font-size: 0.85rem; color: var(--accent); margin-bottom: 10px; font-weight: bold; text-transform: uppercase;">ШАГ ${currentStep + 1} ИЗ ${steps.length}</div>`;
-    html += `<p class="question-text">${step.question}</p>`;
-    
-    if (step.type === 'options') {
-        html += `<div class="options">`;
-        step.options.forEach(opt => {
-            const isSelected = answers[step.id] === opt ? 'selected' : '';
-            html += `<button class="option-btn ${isSelected}" onclick="selectOption('${step.id}', '${opt}')">${opt}</button>`;
-        });
-        html += `</div>`;
-    } else if (step.type === 'group_params') {
-        html += `
-            <div class="quiz-group"><label>Пол</label><div class="row-2">
-                <button class="option-btn ${answers.gender === 'Мужской' ? 'selected' : ''}" onclick="selectOption('gender', 'Мужской')">Мужской</button>
-                <button class="option-btn ${answers.gender === 'Женский' ? 'selected' : ''}" onclick="selectOption('gender', 'Женский')">Женский</button>
-            </div></div>
-            <div class="row-2">
-                <div class="quiz-group"><label>Возраст</label><input type="number" id="input-age" placeholder="Лет" value="${answers.age || ''}" oninput="saveNumber('age', this.value)"></div>
-                <div class="quiz-group"><label>Рост (см)</label><input type="number" id="input-height" placeholder="См" value="${answers.height || ''}" oninput="saveNumber('height', this.value)"></div>
-            </div>
-            <div class="quiz-group"><label>Вес (кг)</label><input type="number" id="input-weight" placeholder="Кг" value="${answers.weight || ''}" oninput="saveNumber('weight', this.value)"></div>`;
-    } else if (step.type === 'group_rhythm') {
-        html += `
-            <div class="quiz-group"><label>Когда тянет на сладкое?</label><div class="row-2">
-                <button class="option-btn ${answers.craving === 'Утро' ? 'selected' : ''}" onclick="selectOption('craving', 'Утро')">Утро</button>
-                <button class="option-btn ${answers.craving === 'День' ? 'selected' : ''}" onclick="selectOption('craving', 'День')">День</button>
-                <button class="option-btn ${answers.craving === 'Вечер' ? 'selected' : ''}" onclick="selectOption('craving', 'Вечер')">Вечер</button>
-            </div></div>
-            <div class="quiz-group"><label>Сон?</label><div class="row-2">
-                <button class="option-btn ${answers.sleep === 'Мало' ? 'selected' : ''}" onclick="selectOption('sleep', 'Мало')">Меньше 7 ч</button>
-                <button class="option-btn ${answers.sleep === 'Норма' ? 'selected' : ''}" onclick="selectOption('sleep', 'Норма')">7-9 ч</button>
-            </div></div>`;
-    } else if (step.type === 'group_restrictions') {
-        html += `
-            <div class="quiz-group"><label>Аллергия на арахис?</label><div class="row-2">
-                <button class="option-btn ${answers.allergies === 'Нет' ? 'selected' : ''}" onclick="selectOption('allergies', 'Нет')">Нет</button>
-                <button class="option-btn ${answers.allergies === 'Да' ? 'selected' : ''}" onclick="selectOption('allergies', 'Да')">Да</button>
-            </div></div>
-            <div class="quiz-group"><label>Стоп-факторы?</label><div class="row-2">
-                <button class="option-btn ${answers.stop === 'Нет' ? 'selected' : ''}" onclick="selectOption('stop', 'Нет')">Нет</button>
-                <button class="option-btn ${answers.stop === 'Да' ? 'selected' : ''}" onclick="selectOption('stop', 'Да')">Да</button>
-            </div></div>`;
-    }
-    container.innerHTML = html;
-    const progress = (currentStep / (steps.length - 1)) * 100;
-    document.getElementById('progress').style.width = progress + '%';
-    document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'inline-block';
-    document.getElementById('nextBtn').innerText = currentStep === steps.length - 1 ? 'Показать результат' : 'Далее';
+function renderStep(){
+  const container = document.getElementById('quiz-content');
+  if (!container) return;
+  const step = steps[currentStep];
+  let html = `<div style="font-size:0.85rem;color:var(--accent);margin-bottom:10px;font-weight:bold;text-transform:uppercase;">ШАГ ${currentStep+1} ИЗ ${steps.length}</div>`;
+  html += `<p class="question-text">${step.question}</p>`;
+  if (step.type === 'options') {
+    html += `<div class="options">` + step.options.map(opt =>
+      `<button class="option-btn ${answers[step.id]===opt?'selected':''}" onclick="selectOption('${step.id}','${opt}')">${opt}</button>`).join('') + `</div>`;
+  } else if (step.type === 'group_params1') {
+    html += `<div class="quiz-group"><label>Пол</label><div class="row-2">
+        <button class="option-btn ${answers.gender==='Мужской'?'selected':''}" onclick="selectOption('gender','Мужской')">Мужской</button>
+        <button class="option-btn ${answers.gender==='Женский'?'selected':''}" onclick="selectOption('gender','Женский')">Женский</button></div></div>
+      <div class="quiz-group"><label>Возраст</label><input type="number" placeholder="Лет" min="18" max="75" value="${answers.age||''}" oninput="saveNumber('age',this.value)"></div>`;
+  } else if (step.type === 'group_params2') {
+    html += `<div class="row-2">
+        <div class="quiz-group"><label>Рост (см)</label><input type="number" placeholder="См" min="140" max="220" value="${answers.height||''}" oninput="saveNumber('height',this.value)"></div>
+        <div class="quiz-group"><label>Вес (кг)</label><input type="number" placeholder="Кг" min="45" max="180" value="${answers.weight||''}" oninput="saveNumber('weight',this.value)"></div></div>`;
+  } else if (step.type === 'group_rhythm') {
+    html += `<div class="options">` + ['Утро','День','Вечер','Нет тяги'].map(v =>
+      `<button class="option-btn ${answers.craving===v?'selected':''}" onclick="selectOption('craving','${v}')">${v}</button>`).join('') + `</div>`;
+  } else if (step.type === 'group_sleep') {
+    html += `<div class="row-2">
+        <button class="option-btn ${answers.sleep==='Мало'?'selected':''}" onclick="selectOption('sleep','Мало')">Меньше 7 ч</button>
+        <button class="option-btn ${answers.sleep==='Норма'?'selected':''}" onclick="selectOption('sleep','Норма')">7–9 ч</button></div>`;
+  } else if (step.type === 'group_restrictions') {
+    html += `<div class="quiz-group"><label>Аллергия на арахис?</label><div class="row-2">
+        <button class="option-btn ${answers.allergies==='Нет'?'selected':''}" onclick="selectOption('allergies','Нет')">Нет</button>
+        <button class="option-btn ${answers.allergies==='Да'?'selected':''}" onclick="selectOption('allergies','Да')">Да</button></div></div>
+      <div class="quiz-group"><label>Стоп-факторы? (беременность/ГВ, РПП, хронические)</label><div class="row-2">
+        <button class="option-btn ${answers.stop==='Нет'?'selected':''}" onclick="selectOption('stop','Нет')">Нет</button>
+        <button class="option-btn ${answers.stop==='Да'?'selected':''}" onclick="selectOption('stop','Да')">Да</button></div></div>`;
+  }
+  container.innerHTML = html;
+  document.getElementById('progress').style.width = (currentStep / (steps.length - 1)) * 100 + '%';
+  document.getElementById('prevBtn').style.display = currentStep === 0 ? 'none' : 'inline-block';
+  document.getElementById('nextBtn').innerText = currentStep === steps.length - 1 ? 'Показать результат' : 'Далее';
 }
 
 function selectOption(id, value) { answers[id] = value; renderStep(); }
