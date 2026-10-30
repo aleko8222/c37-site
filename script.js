@@ -552,24 +552,37 @@ function nextStep() {
 function prevStep() { if (currentStep > 0) { currentStep--; renderStep(); } }
 
 function calculateResult() {
-    document.querySelector('.progress-bar').style.display = 'none';
-    const w = parseFloat(answers.weight), h = parseFloat(answers.height), a = parseFloat(answers.age);
-    const isMale = answers.gender === 'Мужской';
-    let bmr = isMale ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
-    let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
-    let tdee = bmr * mult;
-    let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
-    const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
-    const fat = 0.9 * w;
-    const carbs = (kcal - 4*protein - 9*fat) / 4;
-
-    let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
-    if (answers.goal === 'Энергия') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)'; barMorning = 'Энергия Дисциплины'; barEvening = 'Омега Буст'; } 
-    else if (answers.goal === 'Мышцы') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)'; barMorning = 'Протеин База'; barEvening = 'Восстановление'; }
-    if (answers.allergies === 'Да') {
-        if (['База Лимитированная','Протеин База'].includes(barMorning)) barMorning = 'Коллаген Лайт';
-        if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
-    }
+  document.querySelector('.progress-bar').style.display = 'none';
+  const w = parseFloat(answers.weight), h = parseFloat(answers.height), a = parseInt(answers.age, 10);
+  const isMale = answers.gender === 'Мужской';
+  let bmr = isMale ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
+  let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
+  let tdee = bmr * mult;
+  let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
+  const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
+  const fat = 0.9 * w;
+  const carbs = (kcal - 4*protein - 9*fat) / 4;
+  
+  let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
+  if (answers.goal === 'Энергия') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Энергия)'; barMorning = 'Энергия Дисциплины'; barEvening = 'Омега Буст'; }
+  else if (answers.goal === 'Мышцы') { boxName = 'ПРОТОКОЛ НЕДЕЛИ (Мышцы)'; barMorning = 'Протеин База'; barEvening = 'Восстановление'; }
+  if (answers.allergies === 'Да') {
+    if (['База Лимитированная','Протеин База'].includes(barMorning)) barMorning = 'Коллаген Лайт';
+    if (['Протеин База','База Лимитированная'].includes(barEvening)) barEvening = 'Коллаген Лайт';
+  }
+  
+  const calc = { kcal: Math.round(kcal), protein: Math.round(protein), fat: Math.round(fat), carbs: Math.round(carbs), barMorning, barEvening };
+  localStorage.setItem('c37_protocol', JSON.stringify(Object.assign({}, answers, calc, { boxName })));
+  
+  const proto = buildProtocol(answers, calc);
+  localStorage.setItem('c37_protocol_full', JSON.stringify(proto));
+  
+  document.getElementById('quiz-content').innerHTML =
+    `<h2 style="color:var(--accent);margin-bottom:6px;">Твой персональный протокол</h2>` +
+    renderProtocolInto(proto) +
+    `<div style="margin-top:16px;"><button class="btn btn-outline" style="width:100%;" onclick="addToCart('ПОДПИСКА TRIAL (первый месяц)', 990)">Подписка TRIAL — 990 ₽/мес</button></div>`;
+  document.querySelector('.nav-buttons').style.display = 'none';
+}
 
     // СОХРАНЕНИЕ ДЛЯ ДНЕВНИКА
     const protocolData = {
