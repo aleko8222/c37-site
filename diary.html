@@ -301,12 +301,15 @@ svg.spark{width:100%;height:60px;}
     return 'Ориентир: '+(H[n]||'белок + клетчатка');
   }
 
-  function slotList(){
-    const s=['Завтрак','Обед','Ужин','Перекус утра'];
-    s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
-    if(P&&P.goal==='Энергия')s.push('Предтрен');
-    if(P&&P.goal==='Мышцы')s.push('Предтрен','Посттрен');
-    return s;
+    function slotList(){
+    // Берем названия слотов НАПРЯМУЮ из протокола, чтобы не было рассинхрона
+    const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
+    if(PF && PF.slots && PF.slots.length > 0){
+        return PF.slots.map(s => s.name);
+    }
+    
+    // Запасной вариант, если протокола нет
+    return ['Завтрак', 'Обед', 'Ужин', 'Перекус утра', 'Перекус вечера'];
   }
 
   // === СТАТИСТИКА ===
