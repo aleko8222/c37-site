@@ -346,6 +346,18 @@
         } catch (error) { console.error('Ошибка загрузки:', error); }
     }
     loadComponents();
+<script>
+    // Проверка хэша #quiz при загрузке страницы
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.hash === '#quiz') {
+            const quizSection = document.getElementById('quiz');
+            if (quizSection) {
+                quizSection.style.display = 'block';
+                setTimeout(() => quizSection.scrollIntoView({ behavior: 'smooth' }), 100);
+                if (typeof renderStep === 'function') renderStep();
+            }
+        }
+    });
 </script>
 </body>
 </html>
