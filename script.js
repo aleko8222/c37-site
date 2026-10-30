@@ -374,6 +374,7 @@ function makeDayMenu(PF){
 }
 
 function todaysDish(PF, slotName){
+  if(!PF || !PF.slots) return null; // ЗАЩИТА ОТ СТАРЫХ ДАННЫХ
   const slot=PF.slots.find(s=>s.name===slotName); if(!slot) return null;
   if(!SLOT_MEAL_KEY[slotName]) return slot.bar||null;
   if(!PF.dayMenu||PF.dayMenu.date!==todayStr()){ PF.dayMenu=makeDayMenu(PF); localStorage.setItem('c37_protocol_full',JSON.stringify(PF)); }
