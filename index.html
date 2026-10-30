@@ -9,7 +9,28 @@
 </head>
 <body>
 
-<div id="header-placeholder"></div>
+<!-- ШАПКА ВСТРОЕНА ПРЯМО СЮДА -->
+<header>
+  <div class="header-content container" style="display:flex; justify-content:space-between; align-items:center; padding:15px 20px;">
+    <a href="index.html" class="logo-lockup" style="display:flex; align-items:center; text-decoration:none;">
+      <img src="logo.png" alt="C37 FUEL" style="height: 70px; width: auto; max-width: 280px; object-fit: contain;">
+    </a>
+    <nav class="nav" style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+      <a href="index.html" style="color:var(--text-muted); text-decoration:none; font-size:.95rem; font-weight:600; margin:0 10px;">Главная</a>
+      <a href="about.html" style="color:var(--text-muted); text-decoration:none; font-size:.95rem; font-weight:600; margin:0 10px;">О бренде</a>
+      <a href="lessons.html" style="color:var(--text-muted); text-decoration:none; font-size:.95rem; font-weight:600; margin:0 10px;">Уроки</a>
+      <a href="protocol.html" style="color:var(--text-muted); text-decoration:none; font-size:.95rem; font-weight:600; margin:0 10px;">Протокол</a>
+      <a href="diary.html" style="color:var(--text-muted); text-decoration:none; font-size:.95rem; font-weight:600; margin:0 10px;">Дневник</a>
+    </nav>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button class="cart-icon-btn" onclick="toggleCart()" style="background:transparent; border:none; cursor:pointer; position:relative; color:#fff; display:flex; align-items:center;">
+        <svg viewBox="0 0 24 24" style="width:24px; height:24px; fill:var(--accent);"><path d="M7 18c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zM7.16 6.26l.54 2h12.3c.75 0 1.41-.41 1.75-1.03l3.58-6.49-1.74-1L20.21 6H5.21l-.94-2H1v2h2l3.6 7.59L5.24 16c-.13.28-.24.53-.24.74C5 18.1 6.04 19 7.34 19h12v-2H7.42c-.13 0-.25-.11-.25-.25z"/></svg>
+        <span class="cart-count" id="cart-count" style="display:none; background:var(--accent); color:#111; font-weight:bold; border-radius:50%; width:20px; height:20px; display:flex; align-items:center; justify-content:center; font-size:0.8rem; position:absolute; top:-8px; right:-8px;">0</span>
+      </button>
+      <a href="index.html#quiz" class="btn btn-outline" style="padding:10px 20px; font-size:.9rem; text-decoration:none;" onclick="if(typeof playIntro==='function')playIntro();">Собрать протокол</a>
+    </div>
+  </div>
+</header>
 
 <!-- 1. ГЛАВНЫЙ ЭКРАН -->
 <section class="hero container">
@@ -80,7 +101,6 @@
         <h2 class="reveal" style="text-align:center; font-size:2.5rem; font-weight:800;">Выбери свой формат</h2>
         <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:40px;">Разовые боксы для старта или подписка для максимального результата.</p>
         
-        <!-- Разовые Боксы -->
         <h3 class="reveal" style="color:#fff; margin-bottom:20px; font-size:1.3rem; text-align:center;">Разовые Боксы</h3>
         <div class="pricing-grid reveal">
             <div class="price-card">
@@ -107,7 +127,6 @@
             </div>
         </div>
 
-        <!-- Подписки -->
         <h3 class="reveal" style="color:var(--accent); margin: 50px 0 20px; font-size:1.3rem; text-align:center;">Подписки (Клуб C37)</h3>
         <div class="pricing-grid reveal">
             <div class="price-card">
@@ -147,12 +166,10 @@
             </div>
         </div>
 
-        <!-- СНОСКА ПОСЛЕ ПОДПИСОК -->
         <p class="sub-note" style="text-align:center; max-width:700px; margin:30px auto 0; font-size:.8rem; color:#c0c0c0;">
             Стоимость ЭЙВА Plus включена в тариф. Справедливое использование — до 100 сообщений в день.
             Продление каждые 30 дней, напоминание за 3 дня, отмена в 1 клик — <a href="offer.html" style="color:#FF6B1A;">условия в оферте</a>.
         </p>
-
     </div>
 </section>
 
@@ -162,7 +179,6 @@
         <h2 class="reveal">Или просто купи батончик</h2>
         <p class="products-sub reveal">Без подписки и доступа к ЭЙВЕ. Просто чистое топливо.</p>
         <div class="products-grid">
-            <!-- Батончики (Волна 1) -->
             <div class="product-card reveal">
                 <div class="product-img"><img src="bar_protein.jpg" alt="Протеин База" onerror="this.src='https://placehold.co/250x250/1E2226/FF6B1A?text=Фото'"></div>
                 <div class="product-info">
@@ -203,103 +219,6 @@
     </div>
 </section>
 
-<!-- 4.5. АНОНСЫ НОВОЙ ПРОДУКЦИИ (ТИЗЕРЫ) -->
-<section class="coming-soon" style="padding: 80px 0; background: rgba(13,15,18,0.8); border-bottom: 1px solid var(--border);">
-    <div class="container">
-        <h2 class="reveal" style="text-align:center; font-size:2.5rem; font-weight:800; margin-bottom:10px;">Скоро в протоколе</h2>
-        <p class="reveal" style="text-align:center; color:var(--text-muted); margin-bottom:40px; font-size:1.1rem;">Новые форматы для твоих целей. Уже на финальной стадии разработки.</p>
-        
-        <div class="coming-soon-grid reveal">
-            
-            <!-- ШОТЫ -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="shots.jpg" alt="C37 SHOTS" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=C37+SHOTS'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">В разработке</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>C37 SHOTS (4 вкуса)</h4>
-                    <p>Концентрированные функциональные шоты 50 мл. Батончик в жидкой форме: от утреннего разгона до вечернего восстановления.</p>
-                </div>
-            </div>
-
-            <!-- САХАРОЗАМЕНИТЕЛЬ -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="sweetener.jpg" alt="Сахарозаменитель" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=Сахарозаменитель'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">Готовится к запуску</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>Сахарозаменитель C37</h4>
-                    <p>0 калорий. Стевия Reb-A 98%, эритрит и могрозид. Премиум-состав без горького привкуса.</p>
-                </div>
-            </div>
-
-            <!-- СИРОПЫ -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="syrup.jpg" alt="Сироп без сахара" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=Сироп'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">На дегустации</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>Сиропы без сахара</h4>
-                    <p>5 вкусов для кофе и воды. Натуральный состав, стевия и эритрит. Добавь вкуса, не добавляя сахара.</p>
-                </div>
-            </div>
-
-            <!-- ОМЕГА -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="bar_omega.jpg" alt="Омега Буст" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=Омега+Буст'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">Идет лаборатория</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>Омега Буст</h4>
-                    <p>Финик, грецкий орех, клюква. Источник омега-3 для ясности ума и здоровья сердца.</p>
-                </div>
-            </div>
-
-            <!-- КОЛЛАГЕН -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="bar_collagen.jpg" alt="Коллаген Лайт" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=Коллаген+Лайт'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">Эксклюзив клуба</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>Коллаген Лайт</h4>
-                    <p>Сливочно-ягодный десерт. 5 г коллагена, пребиотик и ягоды для красоты изнутри.</p>
-                </div>
-            </div>
-
-            <!-- ЭКСТРИМ -->
-            <div class="teaser-card">
-                <div class="teaser-img">
-                    <img src="bar_extreme.jpg" alt="Экстрим" onerror="this.src='https://placehold.co/400x200/1E2226/FF6B1A?text=Экстрим'">
-                    <div class="teaser-overlay"><span class="teaser-status-text">Секретная разработка</span></div>
-                </div>
-                <div class="teaser-info">
-                    <h4>C37 FUEL Экстрим</h4>
-                    <p>Шоколадная халва с нибсами. Тактический протокол для высоких физических нагрузок.</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<!-- 5. ЧЕСТНЫЙ СОСТАВ -->
-<section class="trust">
-    <div class="container trust-content reveal">
-        <h2>Чистый состав. Подтверждено.</h2>
-        <p>Мы не пишем «полезно» — мы показываем цифры. Сканируй QR-код на упаковке, чтобы увидеть реальные лабораторные тесты каждой партии.</p>
-        <ul class="trust-list">
-            <li>Реальное содержание белка</li>
-            <li>0 г сахара (подтверждено)</li>
-            <li>Без тяжелых металлов</li>
-        </ul>
-    </div>
-</section>
-
 <!-- БАННЕР ПЕРЕД КВИЗОМ -->
 <section class="cta-background reveal">
     <img src="eva_run.jpg" alt="ЭЙВА">
@@ -308,7 +227,9 @@
         <p style="color: #eee; margin-bottom: 30px; font-size: 1.2rem; text-shadow: 0 2px 5px rgba(0,0,0,0.8);">Ответь на 7 вопросов. ЭЙВА сделает всё остальное.</p>
         <button class="btn" onclick="playIntro()" style="font-size: 1.2rem; padding: 18px 40px;">Собрать протокол</button>
     </div>
-</section><!-- 6. КВИЗ -->
+</section>
+
+<!-- 6. КВИЗ -->
 <section id="quiz" class="quiz-section container">
     <div class="quiz-container">
         <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
@@ -320,15 +241,12 @@
     </div>
 </section>
 
-
 <div id="footer-placeholder"></div>
 
 <script src="script.js"></script>
 <script>
     async function loadComponents() {
         try {
-            const headerRes = await fetch('header.html');
-            document.getElementById('header-placeholder').innerHTML = await headerRes.text();
             const footerRes = await fetch('footer.html');
             document.getElementById('footer-placeholder').innerHTML = await footerRes.text();
             if (typeof updateCartCount === 'function') updateCartCount();
@@ -346,18 +264,6 @@
         } catch (error) { console.error('Ошибка загрузки:', error); }
     }
     loadComponents();
-<script>
-    // Проверка хэша #quiz при загрузке страницы
-    document.addEventListener('DOMContentLoaded', () => {
-        if (window.location.hash === '#quiz') {
-            const quizSection = document.getElementById('quiz');
-            if (quizSection) {
-                quizSection.style.display = 'block';
-                setTimeout(() => quizSection.scrollIntoView({ behavior: 'smooth' }), 100);
-                if (typeof renderStep === 'function') renderStep();
-            }
-        }
-    });
 </script>
 </body>
 </html>
