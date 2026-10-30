@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Твой протокол — C37 FUEL</title>
+<link rel="stylesheet" href="style.css">
+<style>
+.proto-wrap{max-width:760px;margin:40px auto;padding:0 20px;}
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<div class="proto-wrap">
+  <h1 style="margin-bottom:16px;">Твой <span style="color:var(--accent);">протокол</span></h1>
+  <div id="protocol-root"></div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="script.js"></script>
+
+<script>
+(async()=>{
+  try{
+    document.getElementById('header-placeholder').innerHTML=await(await fetch('header.html')).text();
+    document.getElementById('footer-placeholder').innerHTML=await(await fetch('footer.html')).text();
+  }catch(e){}
+})();
+
+const proto=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
+const root=document.getElementById('protocol-root');
+
+if(proto && typeof renderProtocolInto==='function'){
+  root.innerHTML = renderProtocolInto(proto);
+} else {
+  root.innerHTML = `
+    <div style="background:rgba(20,24,28,.9);border:1px solid #333;border-radius:16px;padding:30px;text-align:center;">
+      <h2 style="color:var(--accent);margin-bottom:10px;">Протокола пока нет</h2>
+      <p style="color:#ccc;margin-bottom:20px;">Собери его за 2 минуты — ЭЙВА рассчитает норму, слоты и ориентиры.</p>
+      <a class="btn" href="index.html#quiz" onclick="if(typeof playIntro==='function')playIntro();" style="text-decoration:none;">Собрать протокол</a>
+    </div>`;
+}
+</script>
+</body>
+</html>
