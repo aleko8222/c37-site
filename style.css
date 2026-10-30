@@ -546,3 +546,12 @@ footer a:hover { color: var(--accent); }
         font-size: 1.5rem !important;
     }
 }
+/* === EMERGENCY FIX === */
+* { margin:0; padding:0; box-sizing:border-box; }
+header .nav { display:flex; align-items:center; gap:4px; flex-wrap:wrap; }
+header .nav a:hover { color:var(--accent) !important; }
+@media (max-width:768px){ 
+    .header-content { flex-direction: column; gap: 15px; } 
+    header .nav { justify-content: center; }
+    header .nav a { margin:0 6px;font-size:.85rem; } 
+}
