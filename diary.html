@@ -256,40 +256,57 @@ svg.spark{width:100%;height:60px;}
   }
   loadComponents();
 
-  // === БАЗОВЫЕ ПЕРЕМЕННЫЕ ===
+  // === БАЗОВЫЕ ПЕРЕМЕННЫЕ (ЗАЩИЩЕНО ОТ ОШИБОК СТАРЫХ ДАННЫХ) ===
   const LS_D='c37_diary', LS_P='c37_protocol';
   const DAY=86400000;
   const today=()=>new Date().toISOString().slice(0,10);
   const dateBack=i=>new Date(Date.now()-i*DAY).toISOString().slice(0,10);
 
-  let D=JSON.parse(localStorage.getItem(LS_D)||'null')||{start:null,streak:0,lastDay:null,weights:[],energy:[],sleep:[],slots:{},checkins:[],goal:null};
-  let P=JSON.parse(localStorage.getItem(LS_P)||'null');
+  let D = {};
+  try { D = JSON.parse(localStorage.getItem(LS_D)) || {}; } catch(e) { D = {}; }
   
+  if (!D.start) D.start = Date.now();
+  if (typeof D.streak !== 'number') D.streak = 0;
+  if (!D.lastDay) D.lastDay = null;
+  if (!Array.isArray(D.weights)) D.weights = [];
+  if (!Array.isArray(D.energy)) D.energy = [];
+  if (!Array.isArray(D.sleep)) D.sleep = [];
+  if (!D.slots) D.slots = {};
+  if (!Array.isArray(D.checkins)) D.checkins = [];
+  if (!D.goal) D.goal = null;
+
+  let P = null;
+  try { P = JSON.parse(localStorage.getItem(LS_P)); } catch(e) { P = null; }
+
   function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
-  if(!D.start){ D.start=Date.now(); save(); }
 
   // === ХЕЛПЕРЫ ДЛЯ СЛОТОВ ===
   function slotHint(n){
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     if(PF){
-      // РЕЖИМ "ГОТОВОЕ МЕНЮ"
       if(PF.mode==='ready'){ 
           const d=todaysDish(PF,n); 
           if(d) return '🍽 <b style="color:#4CAF50;">Блюдо дня:</b> <span style="color:#fff; font-weight:bold;">'+d+'</span> <span style="font-size:0.75rem; color:#777;">(заменить в протоколе)</span>'; 
       }
-      // РЕЖИМ "ПО ПРИНЦИПАМ"
       if(typeof FORMULAS!=='undefined' && FORMULAS[n]) {
           return '📐 ' + FORMULAS[n].rule + '<br><span style="color:var(--accent); font-size:0.85rem; font-weight:bold;">Порции: ' + FORMULAS[n].hands + '</span>';
       }
     }
     
-    // ЗАПАСНЫЕ ВАРИАНТЫ
     if(n==='Вместо сладкого'&&P) return 'Ориентир: '+(P.barEvening||'База Лимитированная');
     if(n==='Предтрен'&&P) return 'Ориентир: '+(P.goal==='Энергия'?'Энергия Дисциплины':'Экстрим')+' или углеводы за 60–90 мин';
     if(n==='Посттрен'&&P) return 'Ориентир: '+(P.barMorning||'Протеин База')+' или 25+ г белка';
     
     const H={'Завтрак':'белок + клетчатка','Обед':'«поленья»: белок + крупа + овощи','Ужин':'лёгкий белок + овощи','Перекус утра':'белок или жиры + клетчатка','Перекус вечера':'белок + клетчатка'};
     return 'Ориентир: '+(H[n]||'белок + клетчатка');
+  }
+
+  function slotList(){
+    const s=['Завтрак','Обед','Ужин','Перекус утра'];
+    s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
+    if(P&&P.goal==='Энергия')s.push('Предтрен');
+    if(P&&P.goal==='Мышцы')s.push('Предтрен','Посттрен');
+    return s;
   }
 
   // === СТАТИСТИКА ===
@@ -337,7 +354,8 @@ svg.spark{width:100%;height:60px;}
   let lastPct=null;
 
   function normLeft(){
-    if(!P) return null;
+    if(!P || !P.kcal) return null; // Если нет протокола или калорий — счетчик скрыт
+    
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     const slots=(PF&&PF.slots&&PF.slots.length)?PF.slots:[
         {name:'Завтрак',share:.25},
@@ -368,7 +386,6 @@ svg.spark{width:100%;height:60px;}
     card.style.display='';
     const pct=Math.min(100,Math.round(n.closedK/n.totK*100)); lastPct=pct;
     
-    // ОКРУГЛЯЕМ ДО ЦЕЛЫХ, ЧТОБЫ НЕ БЫЛО 264.30000001
     document.getElementById('normKcal').textContent = Math.max(0, Math.round(n.totK - n.closedK));
     document.getElementById('normP').textContent = Math.max(0, Math.round(n.totP - n.closedP));
     document.getElementById('normClosed').textContent = pct+'%';
@@ -608,3 +625,5 @@ svg.spark{width:100%;height:60px;}
   bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
   renderSlots(); renderDash();
 </script>
+</body>
+</html>
