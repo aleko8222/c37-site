@@ -76,11 +76,11 @@ document.addEventListener('click', function(e) {
 });
 
 // ==========================================
-// ШЛЮЗ OZON (ДЛЯ ДАЛЬНИХ РЕГИОНОВ)
+// ШЛЮЗ OZON
 // ==========================================
 function checkCity() {
     const modal = document.getElementById('ozon-modal');
-    if (modal && modal.style.display === 'flex') return; // Не спамим, если уже открыто
+    if (modal && modal.style.display === 'flex') return;
     const cityInput = document.getElementById('order-city');
     if (!cityInput) return;
     const remoteCities = ['владивосток','хабаровск','новосибирск','красноярск','иркутск','якутск','магадан','петропавловск','южно-сахалинск'];
@@ -125,7 +125,6 @@ function addToCart(name, price) {
     updateCartCount();
     renderCart();
     
-    // Показываем всплывашку, НЕ открываем корзину и НЕ показываем alert
     showToast('Добавлено в корзину', name, '🛒');
     track('add_to_cart', {name: name});
 }
@@ -163,7 +162,6 @@ function renderCart() {
     cart.forEach((item, index) => {
         total += item.price * item.qty;
         totalItems += item.qty;
-        // Если есть Бокс или Подписка — минималка выполнена
         if(item.name.includes('ПРОТОКОЛ') || item.name.includes('ПОДПИСКА')) hasBox = true;
 
         const div = document.createElement('div');
@@ -180,7 +178,6 @@ function renderCart() {
 
     if(totalPriceEl) totalPriceEl.innerText = total + ' ₽';
     
-    // Ограничение минимального заказа (7 батончиков или 1 Бокс/Подписка)
     if (hasBox || totalItems >= 7) {
         if(checkoutBtn) { checkoutBtn.disabled = false; checkoutBtn.style.opacity = '1'; }
         if(warningEl) warningEl.style.display = 'none';
@@ -307,16 +304,7 @@ async function sendMessage() {
         clearTimeout(timeoutId); 
         if(typingMsg.parentNode) messages.removeChild(typingMsg);
         
-        if (!response.ok) {
-            const errText = await response.text().catch(() => '');
-            console.error("Сервер вернул ошибку:", response.status, errText);
-            const errorMsg = document.createElement('div');
-            errorMsg.className = 'message-eva';
-            errorMsg.innerText = `Ошибка сервера (${response.status}). Попробуй позже.`;
-            messages.appendChild(errorMsg);
-            messages.scrollTop = messages.scrollHeight;
-            return;
-        }
+        if (!response.ok) throw new Error("Server error");
         
         const data = await response.json();
         const evaMsg = document.createElement('div');
@@ -336,8 +324,9 @@ async function sendMessage() {
         messages.scrollTop = messages.scrollHeight;
     }
 }
+
 // ==========================================
-// МОДУЛЬ ПРОТОКОЛ: формулы слотов, режимы, рендер
+// МОДУЛЬ ПРОТОКОЛ
 // ==========================================
 const FORMULAS = {
  'Завтрак':      {rule:'Белок + жиры + овощи. Минимум быстрых углеводов — чтобы сахар не качнулся до обеда.', hands:'Белок: ладонь · Овощи: кулак · Жиры: большой палец', ex:'ориентиры: яйца, творог, рыба, курица + овощи'},
@@ -375,6 +364,7 @@ function buildProtocol(a, calc){
     warnings:(a.goal==='Энергия')?['Бар «Энергия Дисциплины» содержит кофеин: не рекомендуется детям, беременным и кормящим.']:[],
     adjustments:'Каждую неделю чек-ин в дневнике: вес + энергия + сон. Темп −0,5…−1%/нед — норма. Быстрее — +10% углеводов в обед. Плато 2 недели — −10% углеводов или +2000 шагов. ЭЙВА предложит — ты применяешь.' };
 }
+
 function makeDayMenu(PF){
   const seed=new Date().getDate()+new Date().getMonth(); const dishes={};
   PF.slots.forEach((s,i)=>{ const key=SLOT_MEAL_KEY[s.name]; if(!key) return;
@@ -382,6 +372,7 @@ function makeDayMenu(PF){
     if(list.length) dishes[s.name]=(seed+i)%list.length; });
   return {date:todayStr(), dishes};
 }
+
 function todaysDish(PF, slotName){
   const slot=PF.slots.find(s=>s.name===slotName); if(!slot) return null;
   if(!SLOT_MEAL_KEY[slotName]) return slot.bar||null;
@@ -389,6 +380,7 @@ function todaysDish(PF, slotName){
   const key=SLOT_MEAL_KEY[slotName]; let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
   const idx=PF.dayMenu.dishes[slotName]; return (list[idx]||{}).n||null;
 }
+
 function swapDish(slotName){
   const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
   if(!PF.dayMenu||PF.dayMenu.date!==todayStr()) PF.dayMenu=makeDayMenu(PF);
@@ -398,12 +390,14 @@ function swapDish(slotName){
   localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
   if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
 }
+
 function setMode(m){
   const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
   PF.mode=m; if(m==='ready'&&(!PF.dayMenu||PF.dayMenu.date!==todayStr())) PF.dayMenu=makeDayMenu(PF);
   localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
   if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
 }
+
 function renderProtocolInto(PF){
   const f=n=>FORMULAS[n]||{rule:'Белок + клетчатка.',hands:'Белок: ладонь · Клетчатка: кулак',ex:''};
   const slotsHtml=PF.slots.map(s=>{
@@ -441,7 +435,9 @@ function renderProtocolInto(PF){
      <a href="diary.html" class="btn btn-outline" style="text-decoration:none;">Открыть дневник — исполнять протокол</a>
    </div>
    <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Протокол — ориентировочный план питания, не медицинская консультация.</p>`;
-}// ==========================================
+}
+
+// ==========================================
 // КВИЗ (7 ШАГОВ)
 // ==========================================
 const steps = [
@@ -555,12 +551,16 @@ function calculateResult() {
   document.querySelector('.progress-bar').style.display = 'none';
   const w = parseFloat(answers.weight), h = parseFloat(answers.height), a = parseInt(answers.age, 10);
   const isMale = answers.gender === 'Мужской';
+  
+  // ИСПРАВЛЕНО: Добавлены знаки умножения
   let bmr = isMale ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
   let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
   let tdee = bmr * mult;
   let kcal = answers.goal === 'Похудение' ? Math.max(bmr, tdee * 0.83) : answers.goal === 'Мышцы' ? tdee * 1.1 : tdee;
   const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
   const fat = 0.9 * w;
+  
+  // ИСПРАВЛЕНО: Добавлены знаки умножения
   const carbs = (kcal - 4*protein - 9*fat) / 4;
   
   let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
@@ -576,40 +576,13 @@ function calculateResult() {
   
   const proto = buildProtocol(answers, calc);
   localStorage.setItem('c37_protocol_full', JSON.stringify(proto));
+  track('protocol_created', {goal: answers.goal});
   
   document.getElementById('quiz-content').innerHTML =
     `<h2 style="color:var(--accent);margin-bottom:6px;">Твой персональный протокол</h2>` +
     renderProtocolInto(proto) +
     `<div style="margin-top:16px;"><button class="btn btn-outline" style="width:100%;" onclick="addToCart('ПОДПИСКА TRIAL (первый месяц)', 990)">Подписка TRIAL — 990 ₽/мес</button></div>`;
   document.querySelector('.nav-buttons').style.display = 'none';
-}
-
-    // СОХРАНЕНИЕ ДЛЯ ДНЕВНИКА
-    const protocolData = {
-        goal: answers.goal, gender: answers.gender, age: answers.age, height: answers.height, weight: answers.weight,
-        activity: answers.activity, craving: answers.craving, kcal: Math.round(kcal), protein: Math.round(protein),
-        fat: Math.round(fat), carbs: Math.round(carbs), barMorning: barMorning, barEvening: barEvening
-    };
-    localStorage.setItem('c37_protocol', JSON.stringify(protocolData));
-    localStorage.setItem('c37_target_calories', Math.round(kcal));
-    track('protocol_created', {goal: answers.goal});
-
-    document.getElementById('quiz-content').innerHTML = `
-        <h2 style="color: var(--accent); margin-bottom: 10px;">Твой протокол готов</h2>
-        <div class="result-grid">
-            <div class="result-card"><h3>Калории</h3><div class="value">${Math.round(kcal)}</div></div>
-            <div class="result-card"><h3>Белки</h3><div class="value">${Math.round(protein)} г</div></div>
-            <div class="result-card"><h3>Жиры</h3><div class="value">${Math.round(fat)} г</div></div>
-            <div class="result-card"><h3>Углеводы</h3><div class="value">${Math.round(carbs)} г</div></div>
-        </div>
-        <div style="margin-top: 20px; background: rgba(0,0,0,0.4); padding: 25px; border-radius: 12px; border: 1px solid var(--accent);">
-            <p style="margin-bottom: 15px; font-weight: bold; color: #fff;">📦 Твой Бокс на 7 дней:</p>
-            <p style="margin-bottom: 10px;">🌅 Утро: <strong style="color: var(--accent);">${barMorning} (x3)</strong></p>
-            <p style="margin-bottom: 15px;">💼 Вечер: <strong style="color: var(--accent);">${barEvening} (x4)</strong></p>
-            <button class="btn" style="width:100%; margin-bottom:10px;" onclick="addToCart('${boxName}', 1190);">Заказать Бокс за 1190 ₽</button>
-            <a href="diary.html" class="btn btn-outline" style="width:100%; text-decoration:none;">Перейти в Дневник</a>
-        </div>`;
-    document.querySelector('.nav-buttons').style.display = 'none';
 }
 
 function resetQuiz() {
