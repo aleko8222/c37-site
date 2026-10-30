@@ -244,6 +244,7 @@ svg.spark{width:100%;height:60px;}
 <script src="script.js"></script>
 
 <script>
+  // === ЗАГРУЗКА ШАПКИ И ПОДВАЛА ===
   async function loadComponents() {
     try {
       const headerRes = await fetch('header.html');
@@ -255,6 +256,7 @@ svg.spark{width:100%;height:60px;}
   }
   loadComponents();
 
+  // === БАЗОВЫЕ ПЕРЕМЕННЫЕ ===
   const LS_D='c37_diary', LS_P='c37_protocol';
   const DAY=86400000;
   const today=()=>new Date().toISOString().slice(0,10);
@@ -266,6 +268,7 @@ svg.spark{width:100%;height:60px;}
   function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
   if(!D.start){ D.start=Date.now(); save(); }
 
+  // === ХЕЛПЕРЫ ДЛЯ СЛОТОВ ===
   function slotHint(n){
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     if(PF){
@@ -278,6 +281,7 @@ svg.spark{width:100%;height:60px;}
     const H={'Завтрак':'белок + клетчатка','Обед':'«поленья»: белок + крупа + овощи','Ужин':'лёгкий белок + овощи','Перекус утра':'белок или жиры + клетчатка','Перекус вечера':'белок + клетчатка'};
     return 'Ориентир: '+(H[n]||'белок + клетчатка');
   }
+
   function slotList(){
     const s=['Завтрак','Обед','Ужин','Перекус утра'];
     s.push(P&&P.craving==='Вечер'?'Вместо сладкого':'Перекус вечера');
@@ -285,6 +289,8 @@ svg.spark{width:100%;height:60px;}
     if(P&&P.goal==='Мышцы')s.push('Предтрен','Посттрен');
     return s;
   }
+
+  // === СТАТИСТИКА ===
   function weekRecords(){ const out=[]; for(let i=0;i<7;i++){ const d=D.slots[dateBack(i)]; if(d) for(const k in d) out.push(d[k]); } return out; }
   function joyCount(){ return weekRecords().filter(r=>r.st==='joy').length; }
   function joyStreak(){ let s=0; for(let i=0;;i++){ const d=D.slots[dateBack(i)]; if(d&&Object.values(d).some(r=>r.st==='joy')) s++; else break; } return s; }
@@ -299,7 +305,7 @@ svg.spark{width:100%;height:60px;}
     el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
   }
 
-  /* === ВЕХИ === */
+  // === ВЕХИ ===
   function renderBadges(){
     const dn = dayNum();
     const milestones = [
@@ -324,31 +330,50 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('badges').innerHTML = html;
   }
 
-  /* === УБЫВАЮЩИЙ СЧЁТЧИК НОРМЫ === */
-  const STATUS_K={protocol:1,approx:0.7,joy:1,missed:0,moved:0};
+  // === СЧЁТЧИК НОРМЫ (БЕЗ ДРОБЕЙ) ===
+  const STATUS_K={protocol:1, approx:0.7, joy:1, missed:0};
   let lastPct=null;
+
   function normLeft(){
     if(!P) return null;
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
-    const slots=(PF&&PF.slots&&PF.slots.length)?PF.slots:[{name:'Завтрак',share:.25},{name:'Обед',share:.35},{name:'Ужин',share:.20},{name:'Перекус утра',share:.10},{name:'Перекус вечера',share:.10}];
-    const st=D.slots[today()]||{}; let totK=0,totP=0,closedK=0,closedP=0;
-    slots.forEach(s=>{ const k=Math.round(P.kcal*(s.share||0)), p=Math.round(P.protein*(s.share||0));
-      totK+=k; totP+=p; const rec=st[s.name];
-      if(rec&&STATUS_K[rec.st]!==undefined){ closedK+=k*STATUS_K[rec.st]; closedP+=p*STATUS_K[rec.st]; } });
-    return {totK,totP,closedK,closedP};
+    const slots=(PF&&PF.slots&&PF.slots.length)?PF.slots:[
+        {name:'Завтрак',share:.25},
+        {name:'Обед',share:.35},
+        {name:'Ужин',share:.20},
+        {name:'Перекус утра',share:.10},
+        {name:'Перекус вечера',share:.10}
+    ];
+    const st=D.slots[today()]||{}; 
+    let totK=0, totP=0, closedK=0, closedP=0;
+    
+    slots.forEach(s=>{ 
+      const k=Math.round(P.kcal*(s.share||0)); 
+      const p=Math.round(P.protein*(s.share||0));
+      totK+=k; totP+=p; 
+      const rec=st[s.name];
+      if(rec&&STATUS_K[rec.st]!==undefined){ 
+        closedK+=k*STATUS_K[rec.st]; 
+        closedP+=p*STATUS_K[rec.st]; 
+      } 
+    });
+    return {totK, totP, closedK, closedP};
   }
+
   function renderNorm(){
     const card=document.getElementById('normCard'); if(!card) return;
     const n=normLeft(); if(!n||!n.totK){ card.style.display='none'; lastPct=null; return; }
     card.style.display='';
     const pct=Math.min(100,Math.round(n.closedK/n.totK*100)); lastPct=pct;
-    document.getElementById('normKcal').textContent=Math.max(0,n.totK-n.closedK);
-    document.getElementById('normP').textContent=Math.max(0,n.totP-n.closedP);
-    document.getElementById('normClosed').textContent=pct+'%';
-    document.getElementById('normFill').style.width=pct+'%';
+    
+    // ОКРУГЛЯЕМ ДО ЦЕЛЫХ, ЧТОБЫ НЕ БЫЛО 264.30000001
+    document.getElementById('normKcal').textContent = Math.max(0, Math.round(n.totK - n.closedK));
+    document.getElementById('normP').textContent = Math.max(0, Math.round(n.totP - n.closedP));
+    document.getElementById('normClosed').textContent = pct+'%';
+    document.getElementById('normFill').style.width = pct+'%';
   }
 
-  /* === БРИФИНГ ЭЙВЫ === */
+  // === БРИФИНГ ЭЙВЫ ===
   function renderEvaBriefing() {
     const el = document.getElementById('evaBriefing');
     if (!el) return;
@@ -357,7 +382,6 @@ svg.spark{width:100%;height:60px;}
       el.textContent = 'Протокола пока нет. Собери его на главной за 2 минуты — и я подстрою цели, слоты и ориентиры под тебя.';
       return;
     }
-
     const dn = dayNum();
     const yesterday = dateBack(1);
     const yesterdaySlots = D.slots[yesterday] || {};
@@ -369,7 +393,6 @@ svg.spark{width:100%;height:60px;}
     const lastSleep = D.sleep.slice(-1)[0];
 
     let text = '';
-
     if (dn === 7) {
       text = `День 7. Ты прошёл первую неделю. Закрыл ${Math.round(adherence7() || 0)}% слотов — это выше среднего. 60% людей бросают на 4-й день. Ты — не они. Сегодня — первый чек-ин, я подкручу протокол.`;
     } else if (dn === 14) {
@@ -401,11 +424,10 @@ svg.spark{width:100%;height:60px;}
     el.textContent = text.trim();
   }
 
-  /* === КОММЕНТАРИЙ ЭЙВЫ === */
+  // === КОММЕНТАРИЙ ЭЙВЫ ===
   function renderComment(){
     if(!P){
-      document.getElementById('evaComment').innerHTML =
-        '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты, и я подстрою цели, слоты и ориентиры под тебя.';
+      document.getElementById('evaComment').innerHTML = '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты.';
       return;
     }
     if(lastPct===100){
@@ -414,17 +436,20 @@ svg.spark{width:100%;height:60px;}
     }
     const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
     const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
+    
     if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
     else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
     else if(j>=3) t='Бюджет радости закрыт на неделю: 3/3. Дальше — поленья, иначе кривая поедет. Радость вернётся в понедельник по расписанию.';
-    else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🎉 слот на этих выходных.';
+    else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🍩 слот на этих выходных.';
     else if(avg!==null&&avg<3) t='Средняя энергия '+avg.toFixed(1)+' — ниже пламени. Проверь сон и белок в завтрак: это самые частые причины качелей.';
     else if(a!==null&&a>=70) t='Соблюдение '+a+'% за неделю — протокол работает, а не ты на силе воле. Так и держим.';
     else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии впервые ровная за месяц. Поленья работают.';
     else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
+    
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
   }
 
+  // === ДАШБОРД ===
   function renderDash(){
     const dn=dayNum();
     document.getElementById('dayNum').textContent=dn;
@@ -435,38 +460,71 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('joyV').textContent=joyCount()+'/3';
     const a=adherence7(); document.getElementById('adhV').textContent=a===null?'—':a+'%';
     document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
+    
     spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
     spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
+    
     renderEvaBriefing();
     renderNorm();
     renderBadges();
     renderComment();
+    
     if(dn>=8){ document.getElementById('upsell8').classList.remove('hidden'); }
     const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
     if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
   }
 
-  const ST=[['protocol','✅ Как надо'],['approx','🟡 Почти попало'],['joy','🎉 Радость (20%)'],['missed','Пропустил'],['moved','Перенёс']];
+  // === СЛОТЫ (4 СТАТУСА) ===
+  const ST=[
+      ['protocol','✅ Как надо'], 
+      ['approx','🟡 Почти'], 
+      ['joy','🍩 Радость'], 
+      ['missed','❌ Пропустил']
+  ];
+
   function renderSlots(){
     const box=document.getElementById('slotsBox');
     D.slots[today()]=D.slots[today()]||{};
     const sl=D.slots[today()];
+    
     box.innerHTML=slotList().map(n=>{
       const rec=sl[n]||{};
-      return '<div class="slot"><div class="name">'+n+'</div><div class="hint">'+slotHint(n)+'</div>'+
-        '<div class="stbtns">'+ST.map(s=>'<button class="stb '+(rec.st===s[0]?'sel':'')+'" onclick="markSlot(\''+n+'\',\''+s[0]+'\')">'+s[1]+'</button>').join('')+'</div>'+
-        '<input class="note" placeholder="Заметка (опционально): где и что ел" value="'+(rec.note||'')+'" onchange="saveNote(\''+n+'\',this.value)">'+
-        '</div>';
+      return `<div class="slot">
+        <div class="name">${n}</div>
+        <div class="hint">${slotHint(n)}</div>
+        <div class="stbtns">
+            ${ST.map(s=>`
+                <button class="stb ${rec.st===s[0]?'sel':''}" onclick="markSlot('${n}','${s[0]}')">
+                    ${s[1]}
+                </button>
+            `).join('')}
+        </div>
+        <input class="note" placeholder="Заметка (опционально): что именно съел" value="${rec.note||''}" onchange="saveNote('${n}',this.value)">
+      </div>`;
     }).join('');
   }
+
   function markSlot(name,st){
     D.slots[today()]=D.slots[today()]||{};
     D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{st:st});
     bumpStreak(); save(); renderSlots(); renderDash();
   }
-  function saveNote(name,v){ D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{note:v}); save(); }
-  function bumpStreak(){ const t=today(); if(D.lastDay===t)return; const y=dateBack(1); D.streak=(D.lastDay===y)?D.streak+1:1; D.lastDay=t; save(); }
+
+  function saveNote(name,v){ 
+      D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{note:v}); 
+      save(); 
+  }
+
+  function bumpStreak(){ 
+      const t=today(); 
+      if(D.lastDay===t)return; 
+      const y=dateBack(1); 
+      D.streak=(D.lastDay===y)?D.streak+1:1; 
+      D.lastDay=t; 
+      save(); 
+  }
   
+  // === ТАПЫ (ЭНЕРГИЯ, СОН) ===
   function bindTap(id,key){
     document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
       document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
@@ -477,11 +535,13 @@ svg.spark{width:100%;height:60px;}
     });
   }
 
+  // === ЧЕК-ИН ===
   let ciCraving=null;
   document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
     b.classList.add('sel'); ciCraving=b.dataset.v;
   });
+
   function submitCheckin(){
     const w=parseFloat(document.getElementById('ciWeight').value);
     const warn=document.getElementById('ciWarn');
@@ -516,6 +576,7 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Применено. Протокол обновлён.';
   }
 
+  // === ЦЕЛЬ ПО ВЕСУ ===
   function saveGoal(){
     const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
     const g=parseFloat(document.getElementById('wGoal').value);
@@ -529,6 +590,7 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Безопасно. Иду с тобой по чек-инам.';
   }
 
+  // === СКАНЕР БАТОНЧИКА ===
   function scanBar(){
     const code=document.getElementById('barCode').value.trim();
     if(!code){ alert('Введи код с упаковки.'); return; }
@@ -540,8 +602,7 @@ svg.spark{width:100%;height:60px;}
   }
   function goSub(plan){ location.href='index.html'; }
 
+  // === ЗАПУСК ===
   bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
   renderSlots(); renderDash();
 </script>
-</body>
-</html>
