@@ -336,8 +336,112 @@ async function sendMessage() {
         messages.scrollTop = messages.scrollHeight;
     }
 }
-
 // ==========================================
+// МОДУЛЬ ПРОТОКОЛ: формулы слотов, режимы, рендер
+// ==========================================
+const FORMULAS = {
+ 'Завтрак':      {rule:'Белок + жиры + овощи. Минимум быстрых углеводов — чтобы сахар не качнулся до обеда.', hands:'Белок: ладонь · Овощи: кулак · Жиры: большой палец', ex:'ориентиры: яйца, творог, рыба, курица + овощи'},
+ 'Обед':         {rule:'«Поленья»: белок + медленные углеводы + овощи = 4 часа ровной энергии.', hands:'Белок: ладонь · Углеводы: пригоршня · Овощи: кулак', ex:'ориентиры: мясо/рыба + крупа/картофель/бобовые + салат'},
+ 'Ужин':         {rule:'Лёгкий белок + овощи. Углеводы — по желанию и немного.', hands:'Белок: ладонь · Овощи: два кулака', ex:'ориентиры: рыба, курица, творог, тофу + овощи'},
+ 'Перекус утра': {rule:'Белок или жиры + клетчатка — мостик до обеда.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: йогурт, орехи, овощи с хумусом'},
+ 'Перекус дня':  {rule:'Белок + клетчатка — мостик между обедом и ужином.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: творог, овощи, батончик C37'},
+ 'Перекус вечера':{rule:'Белок + клетчатка — чтобы вечер не ушёл в сладкое.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: творог, овощи, батончик C37'},
+ 'Вместо сладкого':{rule:'Сладкий вкус без качелей: батончик C37 или фрукт + орехи.', hands:'1 батончик или фрукт + горсть орехов', ex:'ориентир: База Лимитированная'},
+ 'Предтрен':     {rule:'Медленные углеводы за 60–90 минут: топливо, а не тяжесть.', hands:'Углеводы: пригоршня', ex:'ориентиры: овсянка, банан, батончик «Энергия»'},
+ 'Посттрен':     {rule:'Белок + быстрые углеводы в окно восстановления.', hands:'Белок: ладонь · Углеводы: пригоршня', ex:'ориентиры: творог с бананом, батончик «База»'}
+};
+const MEALS = {
+ 'Завтрак':[{n:'Омлет из 3 яиц + овощи',tags:['яйцо']},{n:'Творог 5% 150 г + ягоды',tags:['молоко']},{n:'Овсянка 40 г + скуп протеина',tags:['глютен','молоко']}],
+ 'Обед':[{n:'Куриная грудка 120 г + гречка 150 г + салат',tags:[]},{n:'Рыба 120 г + картофель 150 г + овощи',tags:['рыба']},{n:'Чечевица 200 г + индейка 100 г',tags:[]}],
+ 'Ужин':[{n:'Белая рыба 150 г + брокколи',tags:['рыба']},{n:'Куриные котлеты на пару 120 г + салат',tags:[]},{n:'Творог с зеленью 150 г',tags:['молоко']}],
+ 'Перекус':[{n:'Греческий йогурт 150 г',tags:['молоко']},{n:'Орехи 20 г',tags:['орехи']},{n:'Яблоко + арахисовая паста 15 г',tags:['арахис']}]
+};
+const SLOT_MEAL_KEY = {'Завтрак':'Завтрак','Обед':'Обед','Ужин':'Ужин','Перекус утра':'Перекус','Перекус дня':'Перекус','Перекус вечера':'Перекус'};
+const todayStr = ()=>new Date().toISOString().slice(0,10);
+
+function buildProtocol(a, calc){
+  const slots=[
+    {time:'07:30',name:'Завтрак',share:.25,bar:null,why:'Белок + жиры утром держат кривую сахара ровной до обеда'},
+    {time:'10:30',name:'Перекус утра',share:.10,bar:null,why:'Мостик до обеда: не даём голоду дорасти до срыва'},
+    {time:'13:30',name:'Обед',share:.35,bar:null,why:'«Поленья»: белок + крупа + овощи = 4 часа ровной энергии'},
+    {time:'16:30',name:(a.goal==='Энергия'?'Предтрен':'Перекус дня'),share:.10,bar:(a.goal==='Энергия'?calc.barMorning:null),why:(a.goal==='Энергия'?'Матча + L-теанин: фокус без тряски за 60–90 мин до нагрузки':'Мостик между обедом и ужином')},
+    {time:'19:00',name:'Ужин',share:.20,bar:null,why:'Лёгкий белок + клетчатка: восстановление без профицита'}
+  ];
+  if(a.craving==='Вечер') slots.push({time:'21:00',name:'Вместо сладкого',share:0,bar:calc.barEvening,why:'Сладкий вкус без качелей: закрывает вечернюю тягу'});
+  if(a.goal==='Мышцы') slots.push({time:'после тренировки',name:'Посттрен',share:0,bar:calc.barMorning,why:'Белок + быстрые углеводы в окно восстановления'});
+  return { goal:a.goal, allergies:a.allergies, kcal:calc.kcal, protein:calc.protein, fat:calc.fat, carbs:calc.carbs,
+    slots, mode:'principles', dayMenu:null,
+    rules:['Вода: '+Math.round(+a.weight*30)+' мл/день','Сон 7–9 ч: недосып = +тяга к сладкому','Кофеин — до 16:00','Правило 80/20: до 3 «радостей» в неделю без вины'],
+    warnings:(a.goal==='Энергия')?['Бар «Энергия Дисциплины» содержит кофеин: не рекомендуется детям, беременным и кормящим.']:[],
+    adjustments:'Каждую неделю чек-ин в дневнике: вес + энергия + сон. Темп −0,5…−1%/нед — норма. Быстрее — +10% углеводов в обед. Плато 2 недели — −10% углеводов или +2000 шагов. ЭЙВА предложит — ты применяешь.' };
+}
+function makeDayMenu(PF){
+  const seed=new Date().getDate()+new Date().getMonth(); const dishes={};
+  PF.slots.forEach((s,i)=>{ const key=SLOT_MEAL_KEY[s.name]; if(!key) return;
+    let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
+    if(list.length) dishes[s.name]=(seed+i)%list.length; });
+  return {date:todayStr(), dishes};
+}
+function todaysDish(PF, slotName){
+  const slot=PF.slots.find(s=>s.name===slotName); if(!slot) return null;
+  if(!SLOT_MEAL_KEY[slotName]) return slot.bar||null;
+  if(!PF.dayMenu||PF.dayMenu.date!==todayStr()){ PF.dayMenu=makeDayMenu(PF); localStorage.setItem('c37_protocol_full',JSON.stringify(PF)); }
+  const key=SLOT_MEAL_KEY[slotName]; let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
+  const idx=PF.dayMenu.dishes[slotName]; return (list[idx]||{}).n||null;
+}
+function swapDish(slotName){
+  const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
+  if(!PF.dayMenu||PF.dayMenu.date!==todayStr()) PF.dayMenu=makeDayMenu(PF);
+  const key=SLOT_MEAL_KEY[slotName]; let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
+  if(!list.length) return;
+  PF.dayMenu.dishes[slotName]=((PF.dayMenu.dishes[slotName]||0)+1)%list.length;
+  localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
+  if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
+}
+function setMode(m){
+  const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
+  PF.mode=m; if(m==='ready'&&(!PF.dayMenu||PF.dayMenu.date!==todayStr())) PF.dayMenu=makeDayMenu(PF);
+  localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
+  if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
+}
+function renderProtocolInto(PF){
+  const f=n=>FORMULAS[n]||{rule:'Белок + клетчатка.',hands:'Белок: ладонь · Клетчатка: кулак',ex:''};
+  const slotsHtml=PF.slots.map(s=>{
+    const F=f(s.name); const dish=(PF.mode==='ready')?todaysDish(PF,s.name):null;
+    return `<div style="border:1px solid #333;border-radius:12px;padding:14px;margin-bottom:10px;">
+      <div style="font-weight:800;">${s.time} · ${s.name}${s.bar?` · <span style="color:var(--accent);">бар: ${s.bar}</span>`:''}</div>
+      <div style="font-size:.8rem;color:#999;margin:4px 0;">Цель слота: ${s.share?Math.round(PF.kcal*s.share)+' ккал · Б≈'+Math.round(PF.protein*s.share)+' г':'по ситуации'}</div>
+      <div style="font-size:.95rem;color:#fff;margin:6px 0;">${F.rule}</div>
+      <div style="font-size:.85rem;color:var(--accent);margin-bottom:4px;">${F.hands}</div>
+      ${PF.mode==='ready'&&dish?`<div style="font-size:.85rem;color:#ddd;margin-bottom:4px;">Сегодня по меню: ${dish} <button class="btn-small" style="width:auto;padding:4px 10px;font-size:.72rem;" onclick="swapDish('${s.name}')">заменить</button></div>`:''}
+      <div style="font-size:.75rem;color:#777;">${F.ex}</div>
+      <div style="font-size:.78rem;color:#888;margin-top:6px;">${s.why}</div></div>`;
+  }).join('');
+  return `
+   <div style="border:2px solid var(--accent);border-radius:16px;padding:20px;margin-bottom:16px;background:rgba(255,107,26,.06);">
+     <div style="font-size:.75rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
+     <div style="font-size:2rem;font-weight:900;color:#fff;">${PF.kcal} ккал</div>
+     <div style="font-size:.9rem;color:#ccc;">Б ${PF.protein} г · Ж ${PF.fat} г · У ${PF.carbs} г</div>
+     <div style="font-size:.75rem;color:#888;margin-top:8px;">В дневнике норма станет убывающим счётчиком: каждый закрытый слот снимает свою долю.</div>
+   </div>
+   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+     <button class="btn-small" style="width:auto;" onclick="setMode('principles')">По принципам${PF.mode==='principles'?' ✓':''}</button>
+     <button class="btn-small" style="width:auto;" onclick="setMode('ready')">Готовое меню${PF.mode==='ready'?' ✓':''}</button>
+   </div>
+   ${PF.mode==='ready'?'<p style="font-size:.75rem;color:#888;margin-bottom:12px;">Это ориентиры под твои КБЖУ, а не назначение: меняй блюда свободно, сохраняя принцип слота.</p>':''}
+   ${slotsHtml}
+   <h3 style="margin:18px 0 8px;color:var(--accent);">Правила</h3>
+   <ul style="padding-left:18px;font-size:.9rem;color:#ddd;">${PF.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
+   ${PF.warnings.length?`<p style="font-size:.8rem;color:#ffcc00;margin-top:10px;">${PF.warnings.join(' ')}</p>`:''}
+   <h3 style="margin:18px 0 8px;color:var(--accent);">Как протокол живёт</h3>
+   <p style="font-size:.85rem;color:#ccc;">${PF.adjustments}</p>
+   <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
+     <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Заказать бокс по этому протоколу — 1 190 ₽</button>
+     <button class="btn btn-outline" onclick="window.print()">Сохранить протокол в PDF</button>
+     <a href="diary.html" class="btn btn-outline" style="text-decoration:none;">Открыть дневник — исполнять протокол</a>
+   </div>
+   <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Протокол — ориентировочный план питания, не медицинская консультация.</p>`;
+}// ==========================================
 // КВИЗ (7 ШАГОВ)
 // ==========================================
 const steps = [
