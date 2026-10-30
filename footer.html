@@ -1,5 +1,25 @@
 <footer>
-    <!-- КОРЗИНА -->
+        <!-- ГЛОБАЛЬНЫЙ ЧАТ С ЭЙВОЙ -->
+    <button id="chat-btn" onclick="toggleChat()" aria-label="Открыть чат с Эйвой">
+        <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+        Чат с ЭЙВОЙ
+    </button>
+    <div id="chat-window">
+        <div class="chat-header">
+            <img src="eva_avatar.jpg" alt="ЭЙВА" class="chat-avatar" onerror="this.src='https://placehold.co/45x45/2A2F35/FF6B1A?text=Э'">
+            <div><div class="chat-name">ЭЙВА</div><div class="chat-status">В сети</div></div>
+            <button class="close-chat" onclick="toggleChat()">✕</button>
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <div class="message-eva">Привет. Я ЭЙВА. Твой цифровой наставник. ЭЙВА — цифровой ведущий, а не врач. Чем помочь?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chat-input-field" placeholder="Написать..." onkeypress="handleEnter(event)">
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+     <!-- КОРЗИНА -->
     <div class="cart-overlay" id="cart-overlay" onclick="toggleCart()"></div>
     <div class="cart-sidebar" id="cart-sidebar">
         <div class="cart-header">
