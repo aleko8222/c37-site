@@ -552,7 +552,7 @@ svg.spark{width:100%;height:60px;}
     }).join('');
   }
 
-  // === ГОЛОСОВОЙ ВВОД (Web Speech API) ===
+  // === ГОЛОСОВОЙ ВВОД С АНАЛИЗОМ ЧЕРЕЗ GIGACHAT ===
   let activeRecognition = null;
 
   function startVoice(slotName) {
@@ -563,7 +563,6 @@ svg.spark{width:100%;height:60px;}
           return;
       }
 
-      // Если микрофон уже включен — выключаем его (сохраняем текст)
       if (activeRecognition) {
           activeRecognition.stop();
           activeRecognition = null;
@@ -572,15 +571,14 @@ svg.spark{width:100%;height:60px;}
 
       const recognition = new SpeechRecognition();
       recognition.lang = 'ru-RU';
-      recognition.continuous = true; // Слушаем до тех пор, пока не остановим
-      recognition.interimResults = false; // Берем только финальный текст
+      recognition.continuous = true;
+      recognition.interimResults = false;
       
       activeRecognition = recognition;
       let fullText = '';
 
       if (typeof showToast === 'function') showToast('Слушаю...', 'Перечисли блюда. Нажми 🎙 еще раз, чтобы остановить.', '🎙');
 
-      // Меняем цвет кнопки на красный, пока идет запись
       const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
       if (btn) { btn.style.background = '#ff4444'; btn.innerHTML = '⏹'; }
 
@@ -588,29 +586,84 @@ svg.spark{width:100%;height:60px;}
           let text = event.results[event.resultIndex][0].transcript;
           fullText += text + '. ';
           
-          // Обновляем поле заметки в реальном времени
           const noteInput = document.querySelector(`input[onchange="saveNote('${slotName}',this.value)"]`);
           if (noteInput) noteInput.value = fullText;
       };
 
-      recognition.onend = function() {
+      recognition.onend = async function() {
           activeRecognition = null;
           
-          // Возвращаем кнопке нормальный вид
           const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
           if (btn) { btn.style.background = 'var(--accent)'; btn.innerHTML = '🎙'; }
 
-          if (!fullText.trim()) return;
+          const finalText = fullText.trim();
+          if (!finalText) return;
 
-          // ЗАГЛУШКА: Проверка на вредную еду
-          let status = 'protocol'; 
-          const badWords = /торт|пицц|бургер|конфет|шоколад|печень|сладк|жирн|пирож|фастфуд/i;
-          if (badWords.test(fullText)) status = 'joy';
-
-          D.slots[today()][slotName] = { st: status, note: fullText.trim() };
-          bumpStreak(); save(); renderSlots(); renderDash();
+          const noteInput = document.querySelector(`input[onchange="saveNote('${slotName}',this.value)"]`);
+          if (noteInput) noteInput.value = '⏳ Анализирую через ИИ...';
           
-          if (typeof showToast === 'function') showToast('Записано!', fullText.trim(), '✅');
+          if (typeof showToast === 'function') showToast('Анализ', 'GigaChat считает калории...', '⏳');
+
+          try {
+              // ОТПРАВЛЯЕМ ТЕКСТ НА ТВОЙ PYTHON-СЕРВЕР
+              const response = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ text: finalText })
+              });
+              
+              const data = await response.json();
+              
+              if (data.items && data.items.length > 0) {
+                  let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
+                  let itemsList = [];
+
+                  // Складываем все калории и БЖУ из массива
+                  data.items.forEach(item => {
+                      totalCal += (item.cal || 0);
+                      totalProt += (item.prot || 0);
+                      totalFat += (item.fat || 0);
+                      totalCarb += (item.carb || 0);
+                      itemsList.push(item.name);
+                  });
+
+                  // Определяем статус: если калорий больше, чем в плане на этот слот на 20% — ставим Радость
+                  let status = 'protocol';
+                  const slotCalGoal = P ? Math.round(P.kcal * (P.slots.find(s=>s.name===slotName)?.share || 0)) : 300;
+                  
+                  if (totalCal > slotCalGoal * 1.2) {
+                      status = 'joy';
+                  }
+
+                  // Записываем в память
+                  D.slots[today()][slotName] = { 
+                      st: status, 
+                      note: finalText,
+                      aiCal: totalCal,
+                      aiProt: totalProt,
+                      aiFat: totalFat,
+                      aiCarb: totalCarb
+                  };
+                  
+                  // Красиво выводим в поле заметки (Текст + Сумма ккал)
+                  if (noteInput) noteInput.value = `${finalText} [ИИ: ~${totalCal} ккал]`;
+                  
+                  bumpStreak(); save(); renderSlots(); renderDash();
+                  
+                  if (typeof showToast === 'function') {
+                      showToast('Распознано!', `${itemsList.join(', ')}. Итого: ${totalCal} ккал`, '✅');
+                  }
+              } else {
+                  throw new Error("ИИ не смог распознать еду");
+              }
+
+          } catch (error) {
+              console.error('Ошибка анализа:', error);
+              if (noteInput) noteInput.value = finalText + ' (ошибка ИИ, калории не посчитаны)';
+              D.slots[today()][slotName] = { st: 'protocol', note: finalText };
+              save(); renderSlots(); renderDash();
+              if (typeof showToast === 'function') showToast('Ошибка', 'Не удалось связаться с сервером ИИ', '❌');
+          }
       };
 
       recognition.onerror = function(event) {
