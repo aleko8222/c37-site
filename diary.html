@@ -630,9 +630,19 @@ svg.spark{width:100%;height:60px;}
                   itemsList.push(item.name);
               });
 
-              let status = 'protocol';
-              const slotCalGoal = P ? Math.round(P.kcal * (P.slots.find(s=>s.name===slotName)?.share || 0)) : 300;
+                            let status = 'protocol';
+              let slotCalGoal = 300; // Базовая заглушка, если протокола нет
               
+              // Безопасно проверяем, есть ли протокол и слоты в нем
+              if (P && P.kcal) {
+                  let share = 0;
+                  if (P.slots && Array.isArray(P.slots)) {
+                      const slotData = P.slots.find(s => s.name === slotName);
+                      if (slotData && slotData.share) share = slotData.share;
+                  }
+                  slotCalGoal = Math.round(P.kcal * share);
+              }
+
               if (totalCal > slotCalGoal * 1.2) {
                   status = 'joy';
               }
