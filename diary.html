@@ -553,6 +553,8 @@ svg.spark{width:100%;height:60px;}
   }
 
   // === ГОЛОСОВОЙ ВВОД (Web Speech API) ===
+  let activeRecognition = null;
+
   function startVoice(slotName) {
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
       
@@ -561,34 +563,59 @@ svg.spark{width:100%;height:60px;}
           return;
       }
 
+      // Если микрофон уже включен — выключаем его (сохраняем текст)
+      if (activeRecognition) {
+          activeRecognition.stop();
+          activeRecognition = null;
+          return;
+      }
+
       const recognition = new SpeechRecognition();
       recognition.lang = 'ru-RU';
-      recognition.interimResults = false;
-      recognition.maxAlternatives = 1;
+      recognition.continuous = true; // Слушаем до тех пор, пока не остановим
+      recognition.interimResults = false; // Берем только финальный текст
+      
+      activeRecognition = recognition;
+      let fullText = '';
 
-      if (typeof showToast === 'function') showToast('Слушаю...', 'Скажи, что ты съел', '🎙');
+      if (typeof showToast === 'function') showToast('Слушаю...', 'Перечисли блюда. Нажми 🎙 еще раз, чтобы остановить.', '🎙');
+
+      // Меняем цвет кнопки на красный, пока идет запись
+      const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
+      if (btn) { btn.style.background = '#ff4444'; btn.innerHTML = '⏹'; }
 
       recognition.onresult = function(event) {
-          const text = event.results[0][0].transcript;
+          let text = event.results[event.resultIndex][0].transcript;
+          fullText += text + '. ';
           
-          // ЗАГЛУШКА: Простая проверка на вредную еду
-          let status = 'protocol'; // По умолчанию считаем, что поел по плану
-          const badWords = /торт|пицц|бургер|конфет|шоколад|печень|сладк|жирн|пирож/i;
-          
-          if (badWords.test(text)) {
-              status = 'joy'; // Если сказал про вредное, ставим "Радость"
-          }
+          // Обновляем поле заметки в реальном времени
+          const noteInput = document.querySelector(`input[onchange="saveNote('${slotName}',this.value)"]`);
+          if (noteInput) noteInput.value = fullText;
+      };
 
-          // Записываем текст в заметку и ставим статус
-          D.slots[today()][slotName] = { st: status, note: text };
+      recognition.onend = function() {
+          activeRecognition = null;
+          
+          // Возвращаем кнопке нормальный вид
+          const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
+          if (btn) { btn.style.background = 'var(--accent)'; btn.innerHTML = '🎙'; }
+
+          if (!fullText.trim()) return;
+
+          // ЗАГЛУШКА: Проверка на вредную еду
+          let status = 'protocol'; 
+          const badWords = /торт|пицц|бургер|конфет|шоколад|печень|сладк|жирн|пирож|фастфуд/i;
+          if (badWords.test(fullText)) status = 'joy';
+
+          D.slots[today()][slotName] = { st: status, note: fullText.trim() };
           bumpStreak(); save(); renderSlots(); renderDash();
           
-          if (typeof showToast === 'function') showToast('Записано!', text, '✅');
+          if (typeof showToast === 'function') showToast('Записано!', fullText.trim(), '✅');
       };
 
       recognition.onerror = function(event) {
           console.error('Ошибка распознавания:', event.error);
-          if (typeof showToast === 'function') showToast('Ошибка', 'Не удалось распознать речь', '❌');
+          activeRecognition = null;
       };
 
       recognition.start();
