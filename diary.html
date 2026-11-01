@@ -144,7 +144,7 @@ svg.spark{width:100%;height:60px;}
       <div>
         <h2 style="margin-bottom:5px;">Калории</h2>
         <div style="font-size:2rem; font-weight:900; color:#FF6B1A;" id="normKcal">—</div>
-        <div style="font-size:.8rem;color:#c0c0c0;">ккал осталось</div>
+        <div style="font-size:.8rem;color:#c0c0c0;" id="normKcalLabel">ккал осталось</div>
       </div>
       <div>
         <h2 style="margin-bottom:5px;">Белки</h2>
@@ -402,14 +402,17 @@ svg.spark{width:100%;height:60px;}
     lastPct = pct;
 
     const elKcal = document.getElementById('normKcal');
+    const elKcalLabel = document.getElementById('normKcalLabel');
     const elP = document.getElementById('normP');
 
     if (remainingK < 0) {
         elKcal.textContent = Math.abs(Math.round(remainingK));
         elKcal.style.color = '#ff4444';
+        elKcalLabel.textContent = 'ккал перебор';
     } else {
         elKcal.textContent = Math.round(remainingK);
         elKcal.style.color = '#FF6B1A';
+        elKcalLabel.textContent = 'ккал осталось';
     }
 
     let remainingP = n.totP - n.closedP;
@@ -531,8 +534,11 @@ svg.spark{width:100%;height:60px;}
     
     box.innerHTML=slotList().map(n=>{
       const rec=sl[n]||{};
-      return `<div class="slot">
-        <div class="name">${n}</div>
+      return `<div class="slot" style="position:relative;">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="name">${n}</div>
+            <button onclick="startVoice('${n}')" style="background:var(--accent); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem;" title="Надиктовать, что съел">🎙</button>
+        </div>
         <div class="hint">${slotHint(n)}</div>
         <div class="stbtns">
             ${ST.map(s=>`
@@ -541,9 +547,51 @@ svg.spark{width:100%;height:60px;}
                 </button>
             `).join('')}
         </div>
-        <input class="note" placeholder="Заметка (опционально): что именно съел" value="${rec.note||''}" onchange="saveNote('${n}',this.value)">
+        <input class="note" placeholder="Заметка (нажми на 🎙, чтобы надиктовать)" value="${rec.note||''}" onchange="saveNote('${n}',this.value)">
       </div>`;
     }).join('');
+  }
+
+  // === ГОЛОСОВОЙ ВВОД (Web Speech API) ===
+  function startVoice(slotName) {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+          alert('Твой браузер не поддерживает голосовой ввод. Используй Chrome или Safari.');
+          return;
+      }
+
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'ru-RU';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      if (typeof showToast === 'function') showToast('Слушаю...', 'Скажи, что ты съел', '🎙');
+
+      recognition.onresult = function(event) {
+          const text = event.results[0][0].transcript;
+          
+          // ЗАГЛУШКА: Простая проверка на вредную еду
+          let status = 'protocol'; // По умолчанию считаем, что поел по плану
+          const badWords = /торт|пицц|бургер|конфет|шоколад|печень|сладк|жирн|пирож/i;
+          
+          if (badWords.test(text)) {
+              status = 'joy'; // Если сказал про вредное, ставим "Радость"
+          }
+
+          // Записываем текст в заметку и ставим статус
+          D.slots[today()][slotName] = { st: status, note: text };
+          bumpStreak(); save(); renderSlots(); renderDash();
+          
+          if (typeof showToast === 'function') showToast('Записано!', text, '✅');
+      };
+
+      recognition.onerror = function(event) {
+          console.error('Ошибка распознавания:', event.error);
+          if (typeof showToast === 'function') showToast('Ошибка', 'Не удалось распознать речь', '❌');
+      };
+
+      recognition.start();
   }
 
   function markSlot(name,st){
