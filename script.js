@@ -234,6 +234,7 @@ function playIntro() {
     const overlay = document.getElementById('video-overlay');
     const video = document.getElementById('eva-video');
     const quizSection = document.getElementById('quiz');
+    
     if (!overlay) {
         if (quizSection) {
             quizSection.style.display = 'block';
@@ -333,164 +334,75 @@ async function sendMessage() {
 }
 
 // ==========================================
-// МОДУЛЬ ПРОТОКОЛ
+// МОДУЛЬ ПРОТОКОЛ (ЦЕЛИ И ПРИНЦИПЫ)
 // ==========================================
-const FORMULAS = {
- 'Завтрак': { 
-   rule:'Белок + жиры. Минимум быстрых углеводов, чтобы не было скачка сахара.', 
-   hands:'Белок: 1 пачка творога (200г) или 2-3 яйца · Жиры: 1 ст.л. масла', 
-   ex:'ориентиры: яйца, творог, сыр, рыба'
- },
- 'Обед': { 
-   rule:'«Поленья»: белок + медленные углеводы + овощи = 4 часа ровной энергии.', 
-   hands:'Белок: кусок размером с колоду карт · Углеводы: 1 стакан готовой крупы · Овощи: половина тарелки', 
-   ex:'ориентиры: мясо/рыба + крупа + большой салат'
- },
- 'Ужин': { 
-   rule:'Легкий белок + овощи. Углеводы — по желанию и немного.', 
-   hands:'Белок: кусок размером с колоду карт · Овощи: половина тарелки · Жиры: 1 ст.л.', 
-   ex:'ориентиры: белая рыба, курица, тофу + овощи'
- },
- 'Перекус утра': { 
-   rule:'Мостик до обеда: не даем голоду дорасти до срыва.', 
-   hands:'1 ладонь белка (греческий йогурт) или горсть орехов (30г)', 
-   ex:'ориентиры: йогурт, орехи, батончик C37'
- },
- 'Перекус дня': { 
-   rule:'Мостик между обедом и ужином.', 
-   hands:'1 батончик C37 или пачка творога (200г)', 
-   ex:'ориентиры: творог, овощи, батончик C37'
- },
- 'Перекус вечера': { 
-   rule:'Чтобы вечер не ушел в сладкое.', 
-   hands:'1 батончик C37 или пачка творога (200г)', 
-   ex:'ориентиры: творог, овощи, батончик C37'
- },
- 'Вместо сладкого': { 
-   rule:'Сладкий вкус без качелей.', 
-   hands:'1 батончик C37 или 1 фрукт + горсть орехов (30г)', 
-   ex:'ориентир: База Лимитированная'
- },
- 'Предтрен': { 
-   rule:'Медленные углеводы за 60-90 минут до тренировки.', 
-   hands:'1 стакан овсянки или 1 банан', 
-   ex:'ориентиры: овсянка, банан, батончик «Энергия»'
- },
- 'Посттрен': { 
-   rule:'Белок + быстрые углеводы в окно восстановления.', 
-   hands:'1 порция протеина (или пачка творога) + 1 банан', 
-   ex:'ориентиры: творог с бананом, батончик «База»'
- }
-};
-const MEALS = {
- 'Завтрак':[{n:'Омлет из 3 яиц + овощи',tags:['яйцо']},{n:'Творог 5% 150 г + ягоды',tags:['молоко']},{n:'Овсянка 40 г + скуп протеина',tags:['глютен','молоко']}],
- 'Обед':[{n:'Куриная грудка 120 г + гречка 150 г + салат',tags:[]},{n:'Рыба 120 г + картофель 150 г + овощи',tags:['рыба']},{n:'Чечевица 200 г + индейка 100 г',tags:[]}],
- 'Ужин':[{n:'Белая рыба 150 г + брокколи',tags:['рыба']},{n:'Куриные котлеты на пару 120 г + салат',tags:[]},{n:'Творог с зеленью 150 г',tags:['молоко']}],
- 'Перекус':[{n:'Греческий йогурт 150 г',tags:['молоко']},{n:'Орехи 20 г',tags:['орехи']},{n:'Яблоко + арахисовая паста 15 г',tags:['арахис']}]
-};
-const SLOT_MEAL_KEY = {'Завтрак':'Завтрак','Обед':'Обед','Ужин':'Ужин','Перекус утра':'Перекус','Перекус дня':'Перекус','Перекус вечера':'Перекус'};
-const todayStr = ()=>new Date().toISOString().slice(0,10);
-
 function buildProtocol(a, calc){
   const slots=[
-    {time:'07:30',name:'Завтрак',share:.25,bar:null,why:'Белок + жиры утром держат кривую сахара ровной до обеда'},
-    {time:'10:30',name:'Перекус утра',share:.10,bar:null,why:'Мостик до обеда: не даём голоду дорасти до срыва'},
-    {time:'13:30',name:'Обед',share:.35,bar:null,why:'«Поленья»: белок + крупа + овощи = 4 часа ровной энергии'},
-    {time:'16:30',name:(a.goal==='Энергия'?'Предтрен':'Перекус дня'),share:.10,bar:(a.goal==='Энергия'?calc.barMorning:null),why:(a.goal==='Энергия'?'Матча + L-теанин: фокус без тряски за 60–90 мин до нагрузки':'Мостик между обедом и ужином')},
-    {time:'19:00',name:'Ужин',share:.20,bar:null,why:'Лёгкий белок + клетчатка: восстановление без профицита'}
+    {time:'07:30',name:'Завтрак',share:.25,why:'Белок + жиры утром держат кривую сахара ровной до обеда'},
+    {time:'10:30',name:'Перекус утра',share:.10,why:'Мостик до обеда: не даём голоду дорасти до срыва'},
+    {time:'13:30',name:'Обед',share:.35,why:'«Поленья»: белок + крупа + овощи = 4 часа ровной энергии'},
+    {time:'16:30',name:(a.goal==='Энергия'?'Предтрен':'Перекус дня'),share:.10,why:'Мостик между обедом и ужином'},
+    {time:'19:00',name:'Ужин',share:.20,why:'Лёгкий белок + клетчатка: восстановление без профицита'}
   ];
-  if(a.craving==='Вечер') slots.push({time:'21:00',name:'Вместо сладкого',share:0,bar:calc.barEvening,why:'Сладкий вкус без качелей: закрывает вечернюю тягу'});
-  if(a.goal==='Мышцы') slots.push({time:'после тренировки',name:'Посттрен',share:0,bar:calc.barMorning,why:'Белок + быстрые углеводы в окно восстановления'});
-  return { goal:a.goal, allergies:a.allergies, kcal:calc.kcal, protein:calc.protein, fat:calc.fat, carbs:calc.carbs,
-    slots, mode:'principles', dayMenu:null,
+  
+  if(a.craving==='Вечер') slots.push({time:'21:00',name:'Вместо сладкого',share:0,why:'Сладкий вкус без качелей: закрывает вечернюю тягу'});
+  if(a.goal==='Мышцы') slots.push({time:'после тренировки',name:'Посттрен',share:0,why:'Белок + быстрые углеводы в окно восстановления'});
+  
+  return { 
+    goal:a.goal, allergies:a.allergies, 
+    kcal:calc.kcal, protein:calc.protein, fat:calc.fat, carbs:calc.carbs,
+    slots: slots,
     rules:['Вода: '+Math.round(+a.weight*30)+' мл/день','Сон 7–9 ч: недосып = +тяга к сладкому','Кофеин — до 16:00','Правило 80/20: до 3 «радостей» в неделю без вины'],
     warnings:(a.goal==='Энергия')?['Бар «Энергия Дисциплины» содержит кофеин: не рекомендуется детям, беременным и кормящим.']:[],
-    adjustments:'Каждую неделю чек-ин в дневнике: вес + энергия + сон. Темп −0,5…−1%/нед — норма. Быстрее — +10% углеводов в обед. Плато 2 недели — −10% углеводов или +2000 шагов. ЭЙВА предложит — ты применяешь.' };
-}
-
-function makeDayMenu(PF){
-  const seed=new Date().getDate()+new Date().getMonth(); const dishes={};
-  PF.slots.forEach((s,i)=>{ const key=SLOT_MEAL_KEY[s.name]; if(!key) return;
-    let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
-    if(list.length) dishes[s.name]=(seed+i)%list.length; });
-  return {date:todayStr(), dishes};
-}
-
-function todaysDish(PF, slotName){
-  if(!PF || !PF.slots) return null;
-  const slot=PF.slots.find(s=>s.name===slotName); if(!slot) return null;
-  if(!SLOT_MEAL_KEY[slotName]) return slot.bar||null;
-  if(!PF.dayMenu||PF.dayMenu.date!==todayStr()){ PF.dayMenu=makeDayMenu(PF); localStorage.setItem('c37_protocol_full',JSON.stringify(PF)); }
-  const key=SLOT_MEAL_KEY[slotName]; let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
-  const idx=PF.dayMenu.dishes[slotName]; return (list[idx]||{}).n||null;
-}
-
-function swapDish(slotName){
-  const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
-  if(!PF.dayMenu||PF.dayMenu.date!==todayStr()) PF.dayMenu=makeDayMenu(PF);
-  const key=SLOT_MEAL_KEY[slotName]; let list=MEALS[key]||[]; if(PF.allergies==='Да') list=list.filter(m=>!m.tags.includes('арахис'));
-  if(!list.length) return;
-  PF.dayMenu.dishes[slotName]=((PF.dayMenu.dishes[slotName]||0)+1)%list.length;
-  localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
-  if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
-}
-
-function setMode(m){
-  const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
-  PF.mode=m; if(m==='ready'&&(!PF.dayMenu||PF.dayMenu.date!==todayStr())) PF.dayMenu=makeDayMenu(PF);
-  localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
-  
-  if (document.getElementById('quiz-content')) {
-      document.getElementById('quiz-content').innerHTML = 
-        `<h2 style="color:var(--accent);margin-bottom:6px;">Твой персональный протокол</h2>` +
-        renderProtocolInto(PF) +
-        `<div style="margin-top:16px;"><button class="btn btn-outline" style="width:100%;" onclick="addToCart('ПОДПИСКА TRIAL (первый месяц)', 990)">Подписка TRIAL — 990 ₽/мес</button></div>`;
-  } else if (document.getElementById('protocol-root')) {
-      document.getElementById('protocol-root').innerHTML = renderProtocolInto(PF);
-  } else if (typeof renderSlots === 'function') {
-      renderSlots();
-  }
+    adjustments:'Каждую неделю чек-ин в дневнике: вес + энергия + сон. Темп −0,5…−1%/нед — норма. Быстрее — +10% углеводов в обед. Плато 2 недели — −10% углеводов или +2000 шагов.' 
+  };
 }
 
 function renderProtocolInto(PF){
-  const f=n=>FORMULAS[n]||{rule:'Белок + клетчатка.',hands:'Белок: ладонь · Клетчатка: кулак',ex:''};
   const slotsHtml=PF.slots.map(s=>{
-    const F=f(s.name); const dish=(PF.mode==='ready')?todaysDish(PF,s.name):null;
-    return `<div style="border:1px solid #333;border-radius:12px;padding:14px;margin-bottom:10px;">
-      <div style="font-weight:800; font-size:1.05rem;">${s.time} · ${s.name}${s.bar?` · <span style="color:var(--accent);">бар: ${s.bar}</span>`:''}</div>
-      <div style="font-size:.8rem;color:#999;margin:4px 0;">Цель слота: ${s.share?Math.round(PF.kcal*s.share)+' ккал · Б≈'+Math.round(PF.protein*s.share)+' г':'по ситуации'}</div>
+    let targetKcal = 0, targetProt = 0, targetFat = 0, targetCarb = 0;
+    if (s.share) {
+        targetKcal = Math.round(PF.kcal * s.share);
+        targetProt = Math.round(PF.protein * s.share);
+        targetFat = Math.round(PF.fat * s.share);
+        targetCarb = Math.round(PF.carbs * s.share);
+    }
+
+    let examples = "";
+    if (s.name.includes('Завтрак')) examples = "Белок: яйца, творог, сыр. Жиры: авокадо, орехи, масло.";
+    else if (s.name.includes('Обед')) examples = "Белок: курица, рыба, мясо. Углеводы: гречка, рис, картофель. Овощи: салат.";
+    else if (s.name.includes('Ужин')) examples = "Белок: рыба, курица, тофу. Овощи: брокколи, огурцы, зелень.";
+    else examples = "Белок: греческий йогурт, батончик C37, горсть орехов.";
+
+    return `<div style="border:1px solid #333;border-radius:12px;padding:15px;margin-bottom:12px; background:rgba(0,0,0,0.2);">
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #333; padding-bottom:8px; margin-bottom:10px;">
+          <div style="font-weight:900; font-size:1.1rem; color:#fff;">${s.time} · ${s.name}</div>
+      </div>
       
-      ${PF.mode==='ready' && dish 
-        ? `<div style="background: rgba(76, 175, 80, 0.1); border-left: 3px solid var(--green); padding: 10px; margin: 10px 0; border-radius: 4px;">
-             <div style="font-size:.75rem; color:var(--green); font-weight:bold; text-transform:uppercase; margin-bottom:4px;">Сегодня по меню</div>
-             <div style="font-size:1rem; color:#fff; font-weight:bold;">${dish}</div>
-             <button class="btn-small" style="width:auto;padding:4px 10px;font-size:.72rem; margin-top:8px;" onclick="swapDish('${s.name}')">Заменить блюдо</button>
-           </div>` 
-        : `<div style="font-size:.95rem;color:#fff;margin:6px 0;">${F.rule}</div>
-           <div style="font-size:.85rem;color:var(--accent);margin-bottom:4px;">${F.hands}</div>
-           <div style="font-size:.75rem;color:#777;">${F.ex}</div>`
-      }
+      <div style="display:flex; gap:15px; margin-bottom:12px; flex-wrap:wrap;">
+          <div><span style="color:var(--accent); font-weight:bold; font-size:1.2rem;">${targetKcal}</span> <span style="color:#888; font-size:0.8rem;">ккал</span></div>
+          <div><span style="color:#fff; font-weight:bold;">${targetProt}</span> <span style="color:#888; font-size:0.8rem;">Белки</span></div>
+          <div><span style="color:#fff; font-weight:bold;">${targetFat}</span> <span style="color:#888; font-size:0.8rem;">Жиры</span></div>
+          <div><span style="color:#fff; font-weight:bold;">${targetCarb}</span> <span style="color:#888; font-size:0.8rem;">Углеводы</span></div>
+      </div>
+
+      <div style="font-size:0.85rem; color:#ccc; background:rgba(255,107,26,0.05); padding:10px; border-radius:6px; border-left:2px solid var(--accent);">
+          <b style="color:#fff;">Что положить на тарелку:</b><br>${examples}
+      </div>
       
-      <div style="font-size:.78rem;color:#888;margin-top:10px; font-style:italic;">${s.why}</div></div>`;
+      <div style="font-size:0.75rem; color:#777; margin-top:10px; font-style:italic;">${s.why}</div>
+    </div>`;
   }).join('');
   
   return `
    <div style="border:2px solid var(--accent);border-radius:16px;padding:20px;margin-bottom:16px;background:rgba(255,107,26,.06);">
      <div style="font-size:.75rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
      <div style="font-size:2.5rem;font-weight:900;color:#fff;">${PF.kcal} ккал</div>
-     <div style="font-size:1rem;color:#ccc;">Б ${PF.protein} г · Ж ${PF.fat} г · У ${PF.carbs} г</div>
+     <div style="font-size:1rem;color:#ccc;">Белки: ${PF.protein} г · Жиры: ${PF.fat} г · Углеводы: ${PF.carbs} г</div>
+     <div style="font-size:.8rem;color:#888;margin-top:10px;">Это твои рамки. Собирай приемы пищи из любых продуктов, главное — попадай в эти цифры. В дневнике ты просто надиктуешь, что съел, а я проверю.</div>
    </div>
-   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-     <button class="btn-small" style="width:auto; padding: 10px 20px; ${PF.mode==='principles' ? 'background:var(--accent); color:#111;' : ''}" onclick="setMode('principles')">📐 По принципам</button>
-     <button class="btn-small" style="width:auto; padding: 10px 20px; ${PF.mode==='ready' ? 'background:var(--accent); color:#111;' : ''}" onclick="setMode('ready')">🍽 Готовое меню</button>
-   </div>
-   
-   ${PF.mode==='ready'?'<p style="font-size:.8rem;color:#888;margin-bottom:12px; border-left: 2px solid var(--accent); padding-left: 10px;">Это ориентиры под твои КБЖУ. Если блюдо не нравится — жми «Заменить».</p>':''}
    
    ${slotsHtml}
-   <h3 style="margin:18px 0 8px;color:var(--accent);">Правила</h3>
-   <ul style="padding-left:18px;font-size:.9rem;color:#ddd;">${PF.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
-   ${PF.warnings.length?`<p style="font-size:.8rem;color:#ffcc00;margin-top:10px;">${PF.warnings.join(' ')}</p>`:''}
    
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
      <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Заказать бокс по этому протоколу — 1 190 ₽</button>
