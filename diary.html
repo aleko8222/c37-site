@@ -138,16 +138,33 @@ svg.spark{width:100%;height:60px;}
     </div>
   </div>
 
-  <!-- УБЫВАЮЩИЙ СЧЁТЧИК НОРМЫ -->
+  <!-- УБЫВАЮЩИЙ СЧЁТЧИК НОРМЫ И ВОДЫ -->
   <div class="card" id="normCard">
-    <h2>Норма сегодня · по протоколу</h2>
-    <div class="row">
-      <div class="stat"><div class="v" id="normKcal">—</div><div class="l">ккал осталось</div></div>
-      <div class="stat"><div class="v" id="normP">—</div><div class="l">белка осталось, г</div></div>
-      <div class="stat"><div class="v" id="normClosed">0%</div><div class="l">нормы закрыто</div></div>
+    <div class="row" style="justify-content:space-between;">
+      <div>
+        <h2 style="margin-bottom:5px;">Калории</h2>
+        <div style="font-size:2rem; font-weight:900; color:#FF6B1A;" id="normKcal">—</div>
+        <div style="font-size:.8rem;color:#c0c0c0;">ккал осталось</div>
+      </div>
+      <div>
+        <h2 style="margin-bottom:5px;">Белки</h2>
+        <div style="font-size:2rem; font-weight:900; color:#FF6B1A;" id="normP">—</div>
+        <div style="font-size:.8rem;color:#c0c0c0;">г осталось</div>
+      </div>
+      <div>
+        <h2 style="margin-bottom:5px;">Вода</h2>
+        <div style="font-size:2rem; font-weight:900; color:#4CAF50;" id="normWater">—</div>
+        <div style="font-size:.8rem;color:#c0c0c0;">мл осталось</div>
+      </div>
     </div>
-    <div class="progress-line" style="margin-top:12px;"><div class="progress-fill" id="normFill"></div></div>
-    <div style="font-size:.72rem;color:#777;margin-top:8px;">Счётчик убывает по целям слотов твоего протокола — это план исполнения, а не подсчёт калорий из еды.</div>
+    <div class="progress-line" style="margin-top:15px;"><div class="progress-fill" id="normFill"></div></div>
+    <div style="font-size:.72rem;color:#777;margin-top:8px;">Счётчик убывает по целям твоего протокола.</div>
+    
+    <!-- Кнопки добавления воды -->
+    <div style="display:flex; gap:8px; margin-top:15px;">
+      <button class="btn-diary" onclick="addWater(250)" style="flex:1; background:#4CAF50; color:#fff;">+ 250 мл</button>
+      <button class="btn-diary" onclick="addWater(500)" style="flex:1; background:#4CAF50; color:#fff;">+ 500 мл</button>
+    </div>
   </div>
 
   <!-- ДАШБОРД -->
@@ -156,8 +173,7 @@ svg.spark{width:100%;height:60px;}
       <div class="ring-box"><div class="ring"><i id="ringArc"></i><b><span id="dayNum">—</span><small>день</small></b></div></div>
       <div class="stat"><div class="v" id="streakV">0</div><div class="l">🔥 стрик</div></div>
       <div class="stat"><div class="v" id="discV">0/0</div><div class="l">слоты сегодня</div></div>
-      <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🎉 радость</div></div>
-      <div class="stat"><div class="v" id="adhV">—</div><div class="l">соблюдение</div></div>
+      <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🍩 радость</div></div>
       <div class="stat"><div class="v" id="weightV">—</div><div class="l">вес, кг</div></div>
     </div>
     <div style="margin-top:12px;"><label>Энергия за 7 дней</label><svg class="spark" id="sparkE"></svg></div>
@@ -168,7 +184,7 @@ svg.spark{width:100%;height:60px;}
   <!-- АПСЕЙЛ ДЕНЬ 8 -->
   <div class="card upsell hidden" id="upsell8">
     <h2>Батончики закончились?</h2>
-    <p style="font-size:.92rem;margin-bottom:12px;">Неделя протокола закрыта. Продолжим без паузы: в подписке батончики приходят сами, а протокол живёт дальше.</p>
+    <p style="font-size:.92rem;margin-bottom:12px;">Неделя протокола закрыта. Если ты еще не в подписке, самое время продолжить без паузы.</p>
     <div class="btns">
       <button class="btn-diary" onclick="goSub('TRIAL')">TRIAL — 990 ₽/мес</button>
       <button class="btn-diary ghost" onclick="goSub('КЛУБ')">КЛУБ — 1 790 ₽/мес</button>
@@ -211,19 +227,6 @@ svg.spark{width:100%;height:60px;}
     </div>
   </div>
 
-  <!-- БАТОНЧИК ПО КОДУ -->
-  <div class="card">
-    <h2>Батончик с упаковки</h2>
-    <div class="row">
-      <input type="text" id="barCode" placeholder="Код с упаковки">
-      <select id="barSku" style="background:rgba(0,0,0,.6);border:1px solid #444;color:#fff;border-radius:10px;padding:10px;">
-        <option>Протеин База</option><option>Омега Буст</option><option>Энергия Дисциплины</option>
-        <option>Восстановление</option><option>Коллаген Лайт</option><option>Экстрим</option><option>База Лимитированная</option>
-      </select>
-      <button class="btn-diary" onclick="scanBar()">Зачесть</button>
-    </div>
-  </div>
-
   <!-- ВЕС И ЦЕЛЬ -->
   <div class="card">
     <h2>Трекер веса</h2>
@@ -244,7 +247,6 @@ svg.spark{width:100%;height:60px;}
 <script src="script.js"></script>
 
 <script>
-  // === ЗАГРУЗКА ШАПКИ И ПОДВАЛА ===
   async function loadComponents() {
     try {
       const headerRes = await fetch('header.html');
@@ -256,7 +258,6 @@ svg.spark{width:100%;height:60px;}
   }
   loadComponents();
 
-  // === БАЗОВЫЕ ПЕРЕМЕННЫЕ (ЗАЩИЩЕНО ОТ ОШИБОК СТАРЫХ ДАННЫХ) ===
   const LS_D='c37_diary', LS_P='c37_protocol';
   const DAY=86400000;
   const today=()=>new Date().toISOString().slice(0,10);
@@ -274,13 +275,19 @@ svg.spark{width:100%;height:60px;}
   if (!D.slots) D.slots = {};
   if (!Array.isArray(D.checkins)) D.checkins = [];
   if (!D.goal) D.goal = null;
+  if (!D.water) D.water = { date: today(), amount: 0 };
 
   let P = null;
   try { P = JSON.parse(localStorage.getItem(LS_P)); } catch(e) { P = null; }
+  
+  // Сброс воды на новый день
+  if (D.water.date !== today()) {
+    D.water = { date: today(), amount: 0 };
+    save();
+  }
 
   function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
 
-  // === ХЕЛПЕРЫ ДЛЯ СЛОТОВ ===
   function slotHint(n){
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     if(PF){
@@ -292,27 +299,17 @@ svg.spark{width:100%;height:60px;}
           return '📐 ' + FORMULAS[n].rule + '<br><span style="color:var(--accent); font-size:0.85rem; font-weight:bold;">Порции: ' + FORMULAS[n].hands + '</span>';
       }
     }
-    
-    if(n==='Вместо сладкого'&&P) return 'Ориентир: '+(P.barEvening||'База Лимитированная');
-    if(n==='Предтрен'&&P) return 'Ориентир: '+(P.goal==='Энергия'?'Энергия Дисциплины':'Экстрим')+' или углеводы за 60–90 мин';
-    if(n==='Посттрен'&&P) return 'Ориентир: '+(P.barMorning||'Протеин База')+' или 25+ г белка';
-    
-    const H={'Завтрак':'белок + клетчатка','Обед':'«поленья»: белок + крупа + овощи','Ужин':'лёгкий белок + овощи','Перекус утра':'белок или жиры + клетчатка','Перекус вечера':'белок + клетчатка'};
-    return 'Ориентир: '+(H[n]||'белок + клетчатка');
+    return 'Ориентир: белок + клетчатка';
   }
 
-    function slotList(){
-    // Берем названия слотов НАПРЯМУЮ из протокола, чтобы не было рассинхрона
+  function slotList(){
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     if(PF && PF.slots && PF.slots.length > 0){
         return PF.slots.map(s => s.name);
     }
-    
-    // Запасной вариант, если протокола нет
     return ['Завтрак', 'Обед', 'Ужин', 'Перекус утра', 'Перекус вечера'];
   }
 
-  // === СТАТИСТИКА ===
   function weekRecords(){ const out=[]; for(let i=0;i<7;i++){ const d=D.slots[dateBack(i)]; if(d) for(const k in d) out.push(d[k]); } return out; }
   function joyCount(){ return weekRecords().filter(r=>r.st==='joy').length; }
   function joyStreak(){ let s=0; for(let i=0;;i++){ const d=D.slots[dateBack(i)]; if(d&&Object.values(d).some(r=>r.st==='joy')) s++; else break; } return s; }
@@ -327,7 +324,6 @@ svg.spark{width:100%;height:60px;}
     el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
   }
 
-  // === ВЕХИ ===
   function renderBadges(){
     const dn = dayNum();
     const milestones = [
@@ -352,20 +348,22 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('badges').innerHTML = html;
   }
 
-  // === СЧЁТЧИК НОРМЫ (БЕЗ ДРОБЕЙ) ===
-  const STATUS_K={protocol:1, approx:0.7, joy:1, missed:0};
+  // Новая логика: 1.0 = по плану, 1.0 = почти (поел же!), 1.2 = радость (перебор), 0 = пропустил
+  const STATUS_K = {
+      protocol: 1.0, 
+      approx: 1.0,    
+      joy: 1.2,       
+      missed: 0       
+  };
+  
   let lastPct=null;
 
   function normLeft(){
-    if(!P || !P.kcal) return null; // Если нет протокола или калорий — счетчик скрыт
+    if(!P || !P.kcal) return null; 
     
     const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
     const slots=(PF&&PF.slots&&PF.slots.length)?PF.slots:[
-        {name:'Завтрак',share:.25},
-        {name:'Обед',share:.35},
-        {name:'Ужин',share:.20},
-        {name:'Перекус утра',share:.10},
-        {name:'Перекус вечера',share:.10}
+        {name:'Завтрак',share:.25}, {name:'Обед',share:.35}, {name:'Ужин',share:.20}, {name:'Перекус утра',share:.10}, {name:'Перекус вечера',share:.10}
     ];
     const st=D.slots[today()]||{}; 
     let totK=0, totP=0, closedK=0, closedP=0;
@@ -385,17 +383,47 @@ svg.spark{width:100%;height:60px;}
 
   function renderNorm(){
     const card=document.getElementById('normCard'); if(!card) return;
-    const n=normLeft(); if(!n||!n.totK){ card.style.display='none'; lastPct=null; return; }
-    card.style.display='';
-    const pct=Math.min(100,Math.round(n.closedK/n.totK*100)); lastPct=pct;
     
-    document.getElementById('normKcal').textContent = Math.max(0, Math.round(n.totK - n.closedK));
-    document.getElementById('normP').textContent = Math.max(0, Math.round(n.totP - n.closedP));
-    document.getElementById('normClosed').textContent = pct+'%';
+    // Вода (Отрицательный счетчик)
+    if (P && P.weight) {
+        const targetWater = Math.round(parseFloat(P.weight) * 30); // 30 мл на кг
+        const waterLeft = Math.max(0, targetWater - D.water.amount);
+        document.getElementById('normWater').textContent = waterLeft;
+    } else {
+        document.getElementById('normWater').textContent = '2000';
+    }
+
+    const n=normLeft(); 
+    if(!n||!n.totK){ card.style.display='none'; lastPct=null; return; }
+    card.style.display='';
+    
+    let remainingK = n.totK - n.closedK;
+    let pct = Math.min(100, Math.round((n.closedK / n.totK) * 100));
+    lastPct = pct;
+
+    const elKcal = document.getElementById('normKcal');
+    const elP = document.getElementById('normP');
+
+    if (remainingK < 0) {
+        elKcal.textContent = Math.abs(Math.round(remainingK));
+        elKcal.style.color = '#ff4444';
+    } else {
+        elKcal.textContent = Math.round(remainingK);
+        elKcal.style.color = '#FF6B1A';
+    }
+
+    let remainingP = n.totP - n.closedP;
+    if (remainingP < 0) {
+        elP.textContent = Math.abs(Math.round(remainingP));
+        elP.style.color = '#ff4444';
+    } else {
+        elP.textContent = Math.round(remainingP);
+        elP.style.color = '#FF6B1A';
+    }
+
     document.getElementById('normFill').style.width = pct+'%';
   }
 
-  // === БРИФИНГ ЭЙВЫ ===
   function renderEvaBriefing() {
     const el = document.getElementById('evaBriefing');
     if (!el) return;
@@ -418,7 +446,7 @@ svg.spark{width:100%;height:60px;}
     if (dn === 7) {
       text = `День 7. Ты прошёл первую неделю. Закрыл ${Math.round(adherence7() || 0)}% слотов — это выше среднего. 60% людей бросают на 4-й день. Ты — не они. Сегодня — первый чек-ин, я подкручу протокол.`;
     } else if (dn === 14) {
-      text = `День 14. Стрик ${D.streak}. Твоя кривая энергии впервые ровная за две недели. Поленья работают. Держим темп, первый серьёзный пересмотр — на дне 21.`;
+      text = `День 14. Стрик ${D.streak}. Твоя кривая энергии впервые ровная за две недели. Поленья работают. Держим темп.`;
     } else if (dn === 30) {
       text = `День 30. Месяц протокола позади. Ты в том 1%, кто дошёл. Сегодня сделаю полный отчёт и предложу следующую цель.`;
     } else {
@@ -427,51 +455,44 @@ svg.spark{width:100%;height:60px;}
         text += `Вчера ты закрыл ${yesterdayDone} из ${yesterdayTotal} слотов. `;
         if (yesterdayDone === yesterdayTotal) text += 'Чисто. ';
         else if (yesterdayDone >= yesterdayTotal - 1) text += 'Почти идеально. ';
-        else text += 'Есть над чем работать. ';
       }
-      if (lastSleep && lastSleep.v <= 6) {
-        text += 'Сон был короткий — сегодня завтрак с белком особенно важен, иначе в 11:00 потянет на сладкое. ';
-      } else if (lastSleep && lastSleep.v >= 8) {
-        text += 'Сон хороший — используй это, день обещает ровное пламя. ';
-      }
-      if (lastEnergy && lastEnergy.v <= 2) {
-        text += 'Вчера энергия просела. Проверь: был ли белок в завтрак и «поленья» в обед?';
-      } else {
-        const slot = P.craving === 'Вечер' ? 'вечерний слот' : 'перекус после обеда';
-        text += `Сегодня ключевой — ${slot}. Не пропусти.`;
-      }
+      if (lastSleep && lastSleep.v <= 6) text += 'Сон был короткий — сегодня завтрак с белком особенно важен.';
     }
 
     if (el.dataset.last !== text) { el.dataset.last = text; const f = document.querySelector('.eva-hud-frame'); if (f) { f.classList.remove('pulse'); void f.offsetWidth; f.classList.add('pulse'); } }
     el.textContent = text.trim();
   }
 
-  // === КОММЕНТАРИЙ ЭЙВЫ ===
   function renderComment(){
     if(!P){
       document.getElementById('evaComment').innerHTML = '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты.';
       return;
     }
+    
+    let isOver = false;
+    const n = normLeft();
+    if (n && (n.closedK > n.totK)) isOver = true;
+
+    if(isOver){
+        document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Счетчик в минусе. Это перебор. Завтра вернем поленья и все выровняется. Без вины.';
+        return;
+    }
+
     if(lastPct===100){
       document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Норма закрыта слотами на 100% — день исполнен по протоколу. 🏁 Завтра держим то же пламя.';
       return;
     }
-    const e=D.energy.slice(-3).map(r=>r.v); const avg=e.length?e.reduce((a,b)=>a+b,0)/e.length:null;
-    const j=joyCount(), js=joyStreak(), a=adherence7(); let t;
-    
-    if(!D.checkins.length&&dayNum()>=7) t='Неделя позади. Время чек-ина: вес, талия, пара вопросов — и я подкручу протокол.';
-    else if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
+
+    const j=joyCount(), js=joyStreak(); let t;
+    if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
     else if(j>=3) t='Бюджет радости закрыт на неделю: 3/3. Дальше — поленья, иначе кривая поедет. Радость вернётся в понедельник по расписанию.';
     else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🍩 слот на этих выходных.';
-    else if(avg!==null&&avg<3) t='Средняя энергия '+avg.toFixed(1)+' — ниже пламени. Проверь сон и белок в завтрак: это самые частые причины качелей.';
-    else if(a!==null&&a>=70) t='Соблюдение '+a+'% за неделю — протокол работает, а не ты на силе воле. Так и держим.';
-    else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии впервые ровная за месяц. Поленья работают.';
+    else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии ровная. Поленья работают.';
     else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
     
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
   }
 
-  // === ДАШБОРД ===
   function renderDash(){
     const dn=dayNum();
     document.getElementById('dayNum').textContent=dn;
@@ -480,7 +501,6 @@ svg.spark{width:100%;height:60px;}
     const sl=D.slots[today()]||{}; const list=slotList();
     document.getElementById('discV').textContent=list.filter(n=>sl[n]&&['protocol','approx','joy'].includes(sl[n].st)).length+'/'+list.length;
     document.getElementById('joyV').textContent=joyCount()+'/3';
-    const a=adherence7(); document.getElementById('adhV').textContent=a===null?'—':a+'%';
     document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
     
     spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
@@ -496,9 +516,9 @@ svg.spark{width:100%;height:60px;}
     if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
   }
 
-  // === СЛОТЫ (4 СТАТУСА) ===
+  // НОВЫЕ СТАТУСЫ
   const ST=[
-      ['protocol','✅ Как надо'], 
+      ['protocol','✅ По плану'], 
       ['approx','🟡 Почти'], 
       ['joy','🍩 Радость'], 
       ['missed','❌ Пропустил']
@@ -541,12 +561,19 @@ svg.spark{width:100%;height:60px;}
       const t=today(); 
       if(D.lastDay===t)return; 
       const y=dateBack(1); 
-      D.streak=(D.lastDay===y)?D.streak+1:1; 
+      
+      // Стрик обрывается, если вчера были только пропуски или ничего
+      const ySlots = D.slots[y] || {};
+      const hasRealAction = Object.values(ySlots).some(r => ['protocol','approx','joy'].includes(r.st));
+
+      if(D.lastDay===y && hasRealAction) D.streak += 1;
+      else if (D.lastDay===y && !hasRealAction) D.streak = 1; // Обрыв, начинаем заново
+      else D.streak = 1; // Новый стрик
+      
       D.lastDay=t; 
       save(); 
   }
   
-  // === ТАПЫ (ЭНЕРГИЯ, СОН) ===
   function bindTap(id,key){
     document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
       document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
@@ -557,7 +584,6 @@ svg.spark{width:100%;height:60px;}
     });
   }
 
-  // === ЧЕК-ИН ===
   let ciCraving=null;
   document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
     document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
@@ -598,7 +624,13 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Применено. Протокол обновлён.';
   }
 
-  // === ЦЕЛЬ ПО ВЕСУ ===
+  function addWater(amount) {
+    D.water.amount += amount;
+    save();
+    renderNorm(); // Обновляем счетчик
+    if (typeof showToast === 'function') showToast('Вода', `Записано +${amount} мл`, '💧');
+  }
+
   function saveGoal(){
     const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
     const g=parseFloat(document.getElementById('wGoal').value);
@@ -612,19 +644,8 @@ svg.spark{width:100%;height:60px;}
     document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Безопасно. Иду с тобой по чек-инам.';
   }
 
-  // === СКАНЕР БАТОНЧИКА ===
-  function scanBar(){
-    const code=document.getElementById('barCode').value.trim();
-    if(!code){ alert('Введи код с упаковки.'); return; }
-    const sku=document.getElementById('barSku').value;
-    const slot=(sku==='Энергия Дисциплины'||sku==='Экстрим')?'Предтрен':(sku==='Восстановление'?'Посттрен':'Вместо сладкого');
-    D.slots[today()]=D.slots[today()]||{}; D.slots[today()][slot]={st:'protocol',dish:sku,code:code};
-    bumpStreak(); save(); renderSlots(); renderDash();
-    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+sku+' встал в слот «'+slot+'». БЖУ зачтены.';
-  }
   function goSub(plan){ location.href='index.html'; }
 
-  // === ЗАПУСК ===
   bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
   renderSlots(); renderDash();
 </script>
