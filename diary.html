@@ -21,7 +21,7 @@
 .eva{background:rgba(255,107,26,.08);border:1px solid rgba(255,107,26,.3);border-radius:12px;padding:12px 14px;font-size:.92rem;margin-top:12px;}
 .eva b{color:#FF6B1A;}
 
-/* === КАРТОЧКА ЭЙВЫ === */
+/* === КАРТОЧКА ЭЙВЫ (БРИФИНГ) === */
 .eva-briefing {
   display: flex; gap: 20px; align-items: center; position: relative; overflow: hidden;
   background: linear-gradient(135deg, rgba(255,107,26,.08), rgba(20,24,28,.95));
@@ -51,7 +51,7 @@
 .eva-line { font-size: .95rem; line-height: 1.5; color: #fff; margin-bottom: 8px; }
 .eva-sign { font-size: .72rem; color: #888; font-style: italic; }
 
-/* === НОВЫЙ ДИЗАЙН СЛОТОВ (ПЛАН vs ФАКТ) === */
+/* === СЛОТЫ === */
 .slot{
     border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px;
     display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2);
@@ -68,7 +68,6 @@
 .voice-btn { background: var(--accent); color: #111; border: none; border-radius: 50%; width: 32px; height: 32px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: 0.2s; }
 .voice-btn:hover { transform: scale(1.1); }
 
-/* СПИСОК СЪЕДЕННОГО */
 .food-list { list-style: none; padding: 0; margin: 0; font-size: 0.85rem;}
 .food-list li { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 .food-list li:last-child { border-bottom: none; }
@@ -103,7 +102,7 @@
       </a>
   </div>
 
-  <!-- КАРТОЧКА ЭЙВЫ -->
+  <!-- КАРТОЧКА ЭЙВЫ (БРИФИНГ) -->
   <div class="eva-briefing">
     <div class="eva-scanline"></div>
     <div class="eva-hud-frame">
@@ -139,11 +138,21 @@
     </div>
     <div class="progress-line" style="margin-top:15px;"><div class="progress-fill" id="normFill"></div></div>
     
-    <!-- Кнопки добавления воды -->
     <div style="display:flex; gap:8px; margin-top:15px;">
       <button class="btn-diary" onclick="addWater(250)" style="flex:1; background:#4CAF50; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold;">+ 250 мл</button>
       <button class="btn-diary" onclick="addWater(500)" style="flex:1; background:#4CAF50; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold;">+ 500 мл</button>
     </div>
+  </div>
+
+  <!-- СОВЕТ ЭЙВЫ (УМНЫЙ АНАЛИЗ) -->
+  <div class="card" id="evaAdviceCard" style="border-left: 4px solid var(--accent); background: linear-gradient(135deg, rgba(255,107,26,0.1), rgba(20,24,28,0.95)); display: none;">
+      <div style="display: flex; align-items: flex-start; gap: 15px;">
+          <img src="eva_avatar.jpg" style="width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover;" onerror="this.src='https://placehold.co/50x50/2A2F35/FF6B1A?text=Э'">
+          <div>
+              <div style="font-size: 0.75rem; color: var(--accent); font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Анализ дня от ЭЙВЫ</div>
+              <div id="evaAdviceText" style="font-size: 0.95rem; color: #fff; line-height: 1.4;"></div>
+          </div>
+      </div>
   </div>
 
   <!-- ДАШБОРД -->
@@ -155,7 +164,6 @@
       <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🍩 радость</div></div>
       <div class="stat"><div class="v" id="weightV">—</div><div class="l">вес, кг</div></div>
     </div>
-    <div class="eva" id="evaComment"><b>ЭЙВА:</b> Загружаюсь…</div>
   </div>
 
   <!-- СЛОТЫ -->
@@ -214,6 +222,7 @@
     if (!P || !P.kcal) {
         document.getElementById('normKcal').textContent = '—';
         document.getElementById('normP').textContent = '—';
+        document.getElementById('normWater').textContent = '—';
         return;
     }
     
@@ -231,7 +240,7 @@
         PF.slots.forEach(s => {
             const rec = sl[s.name];
             if (rec) {
-                if (rec.aiCal) {
+                if (rec.aiCal !== undefined) {
                     spentK += rec.aiCal;
                     spentP += (rec.aiProt || 0);
                 } else if (rec.st) {
@@ -262,6 +271,78 @@
 
     let pct = Math.min(100, Math.round((spentK / totK) * 100));
     document.getElementById('normFill').style.width = pct + '%';
+    
+    renderEvaAdvice();
+  }
+
+  function renderEvaAdvice() {
+      const card = document.getElementById('evaAdviceCard');
+      const el = document.getElementById('evaAdviceText');
+      if (!card || !el) return;
+
+      if (!P || !P.kcal) { card.style.display = 'none'; return; }
+
+      let spentK = 0, spentP = 0, spentF = 0, spentC = 0;
+      const sl = D.slots[today()] || {};
+      let loggedCount = 0;
+
+      slotList().forEach(n => {
+          const rec = sl[n];
+          if (rec) {
+              if (rec.aiCal !== undefined) {
+                  spentK += rec.aiCal || 0;
+                  spentP += rec.aiProt || 0;
+                  spentF += rec.aiFat || 0;
+                  spentC += rec.aiCarb || 0;
+                  loggedCount++;
+              } else if (rec.st) {
+                  const s = PF.slots.find(x => x.name === n);
+                  const share = s ? s.share : 0.25;
+                  let mult = 1.0;
+                  if (rec.st === 'joy') mult = 1.2;
+                  if (rec.st === 'missed') mult = 0;
+                  
+                  spentK += Math.round(P.kcal * share) * mult;
+                  spentP += Math.round(P.protein * share) * mult;
+                  spentF += Math.round(P.fat * share) * mult;
+                  spentC += Math.round(P.carbs * share) * mult;
+                  if (rec.st !== 'missed') loggedCount++;
+              }
+          }
+      });
+
+      if (loggedCount === 0) { card.style.display = 'none'; return; }
+      card.style.display = 'block';
+
+      const remK = P.kcal - spentK;
+      const remP = P.protein - spentP;
+      const remF = P.fat - spentF;
+      const remC = P.carbs - spentC;
+
+      let text = '';
+
+      if (remK < -100) {
+          text = `Ты уже перебрал на <b>${Math.abs(Math.round(remK))} ккал</b>. Без паники. Завтра вернемся в норму. На следующий прием выбери легкий белок и овощи.`;
+      } else if (remK < 150 && remK >= -100) {
+          text = `Почти у цели! Осталось <b>${Math.round(remK)} ккал</b>. Сделай легкий ужин: рыба/курица с овощами или пачка творога.`;
+      } else {
+          const pctP = spentP / P.protein;
+          const pctF = spentF / P.fat;
+          const pctC = spentC / P.carbs;
+
+          text = `Осталось <b>${Math.round(remK)} ккал</b>. `;
+
+          if (pctF <= pctP && pctF <= pctC && remF > 10) {
+              text += `Главный дефицит — <b>жиры</b> (нужно еще ${Math.round(remF)} г). Добавь в следующий прием рыбу (лосось, скумбрию), оливковое масло в салат или горсть орехов.`;
+          } else if (pctP <= pctF && pctP <= pctC && remP > 10) {
+              text += `Не хватает <b>белка</b> (нужно еще ${Math.round(remP)} г). Съешь курицу, индейку, творог или батончик C37.`;
+          } else if (pctC <= pctP && pctC <= pctF && remC > 10) {
+              text += `Мало <b>углеводов</b> (нужно еще ${Math.round(remC)} г). Добавь порцию гречки, риса или фрукт.`;
+          } else {
+              text += `Ты идешь ровно по плану. Все макросы в балансе. Продолжай в том же духе!`;
+          }
+      }
+      el.innerHTML = text;
   }
 
   function renderSlots(){
@@ -272,7 +353,6 @@
     box.innerHTML = slotList().map(n => {
         const rec = sl[n] || {};
         
-        // ЛЕВАЯ КОЛОНКА (План)
         let planKcal = 300, planB = 20, planF = 10, planC = 30;
         if (PF && PF.slots) {
             const s = PF.slots.find(x => x.name === n);
@@ -284,14 +364,16 @@
             }
         }
 
-        // ПРАВАЯ КОЛОНКА (Факт)
         let factHtml = '';
+        let showStatusButtons = true;
+
         if (rec.items && rec.items.length > 0) {
-            // Рендерим список продуктов
+            // Если есть данные от ИИ
+            showStatusButtons = false; 
             let listHtml = rec.items.map(item => `
                 <li>
                     <div>
-                        <div class="food-name">${item.name}</div>
+                        <div class="food-name">${item.name} (${item.grams}г)</div>
                         <div class="food-macros">Б: ${item.prot} · Ж: ${item.fat} · У: ${item.carb}</div>
                     </div>
                     <div class="food-cal">${item.cal} ккал</div>
@@ -301,13 +383,15 @@
             factHtml = `
                 <ul class="food-list">${listHtml}</ul>
                 <div class="fact-total">Итого: ${rec.aiCal} ккал</div>
-                <button onclick="resetSlot('${n}')" style="background:none; border:none; color:#777; font-size:0.75rem; cursor:pointer; margin-top:5px; text-decoration:underline;">Сбросить</button>
+                <button onclick="resetSlot('${n}')" style="background:none; border:none; color:#777; font-size:0.75rem; cursor:pointer; margin-top:5px; text-decoration:underline; text-align:left;">Сбросить</button>
             `;
+        } else if (rec.st) {
+             // Если нажата кнопка вручную
+             factHtml = `<div style="color:#4CAF50; font-weight:bold; margin-top:15px; text-align:center;">✅ ${rec.st === 'protocol' ? 'По плану' : rec.st === 'joy' ? 'Радость' : 'Пропущено'}</div>
+                         <button onclick="resetSlot('${n}')" style="background:none; border:none; color:#777; font-size:0.75rem; cursor:pointer; margin-top:5px; text-decoration:underline; width:100%;">Отменить</button>`;
         } else {
-            // Если пусто — предлагаем надиктовать
-            factHtml = `
-                <div style="color:#666; font-size:0.85rem; margin-bottom:10px;">Нажми 🎙 и скажи, что съел. Или выбери статус ниже.</div>
-            `;
+            // Пусто
+            factHtml = `<div style="color:#666; font-size:0.85rem; margin-bottom:10px;">Нажми 🎙 и скажи, что съел.</div>`;
         }
 
         return `<div class="slot">
@@ -318,9 +402,9 @@
                 <div class="plan-box">
                     <div class="plan-kcal">${planKcal} ккал</div>
                     <div class="plan-macros">
-                        <span>Белки: ${planB} г</span>
-                        <span>Жиры: ${planF} г</span>
-                        <span>Углеводы: ${planC} г</span>
+                        <span>Б: ${planB} г</span>
+                        <span>Ж: ${planF} г</span>
+                        <span>У: ${planC} г</span>
                     </div>
                 </div>
             </div>
@@ -335,11 +419,12 @@
                     ${factHtml}
                 </div>
                 
+                ${showStatusButtons ? `
                 <div class="stbtns">
-                    <button class="stb ${rec.st==='protocol' && !rec.items?'sel':''}" onclick="markSlot('${n}','protocol')">✅ По плану</button>
-                    <button class="stb ${rec.st==='joy' && !rec.items?'sel':''}" onclick="markSlot('${n}','joy')">🍩 Радость</button>
-                    <button class="stb ${rec.st==='missed' && !rec.items?'sel':''}" onclick="markSlot('${n}','missed')">❌ Пропустил</button>
-                </div>
+                    <button class="stb" onclick="markSlot('${n}','protocol')">✅ По плану</button>
+                    <button class="stb" onclick="markSlot('${n}','joy')">🍩 Радость</button>
+                    <button class="stb" onclick="markSlot('${n}','missed')">❌ Пропустил</button>
+                </div>` : ''}
             </div>
         </div>`;
     }).join('');
@@ -347,13 +432,12 @@
 
   function markSlot(name, st){
     D.slots[today()] = D.slots[today()] || {};
-    // Если есть распознанные items, ручной статус их сбрасывает (человек передумал)
     D.slots[today()][name] = { st: st }; 
     save(); renderSlots(); renderNorm();
   }
 
   function resetSlot(name) {
-      if(confirm('Удалить распознанную еду из этого слота?')) {
+      if(confirm('Очистить этот слот?')) {
           D.slots[today()][name] = {};
           save(); renderSlots(); renderNorm();
       }
@@ -377,18 +461,14 @@
 
       rec.onresult = (e) => {
           fullText += e.results[e.resultIndex][0].transcript + '. ';
-          // Показываем процесс распознавания в плашке (опционально)
-          const title = btn ? btn.parentElement.querySelector('.slot-title') : null;
-          if(title) title.innerHTML = `Слушаю... <button class="voice-btn" onclick="startVoice('${slotName}')" style="background:#ff4444;">⏹</button>`;
       };
 
       rec.onend = async () => {
           activeRecognition = null;
           if (btn) { btn.style.background = 'var(--accent)'; btn.innerHTML = '🎙'; }
-          if (!fullText.trim()) { renderSlots(); return; }
+          if (!fullText.trim()) return;
 
-          // Временно пишем "Анализ..."
-          D.slots[today()][slotName] = { note: 'Анализ...', items: [] };
+          D.slots[today()][slotName] = { note: 'Анализ...' };
           renderSlots();
           
           try {
@@ -403,10 +483,9 @@
               let cals=0, pr=0, ft=0, cb=0;
               data.items.forEach(i => { cals+=i.cal; pr+=i.prot; ft+=i.fat; cb+=i.carb; });
 
-              // Сохраняем массив items для списка!
               D.slots[today()][slotName] = { 
                   note: fullText, 
-                  items: data.items, // <--- ВОТ ГЛАВНОЕ НОВОВВЕДЕНИЕ
+                  items: data.items, 
                   aiCal: cals, aiProt: pr, aiFat: ft, aiCarb: cb,
                   st: 'protocol'
               };
@@ -416,7 +495,7 @@
 
           } catch (err) {
               D.slots[today()][slotName] = { note: fullText, error: err.message };
-              save(); renderSlots();
+              save(); renderSlots(); renderNorm();
               if (typeof showToast === 'function') showToast('Ошибка', err.message, '❌');
           }
       };
