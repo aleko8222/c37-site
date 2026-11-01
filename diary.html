@@ -552,7 +552,7 @@ svg.spark{width:100%;height:60px;}
     }).join('');
   }
 
-  // === ГОЛОСОВОЙ ВВОД С АНАЛИЗОМ ЧЕРЕЗ GIGACHAT ===
+  // === ГОЛОСОВОЙ ВВОД (Web Speech API) ===
   let activeRecognition = null;
 
   function startVoice(slotName) {
@@ -605,7 +605,7 @@ svg.spark{width:100%;height:60px;}
           if (typeof showToast === 'function') showToast('Анализ', 'GigaChat считает калории...', '⏳');
 
           try {
-              // ОТПРАВЛЯЕМ ТЕКСТ НА ТВОЙ PYTHON-СЕРВЕР
+              // ОТПРАВЛЯЕМ ТЕКСТ НА PYTHON-СЕРВЕР
               const response = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
                   method: 'POST',
                   headers: { 'Content-Type': 'application/json' },
@@ -614,55 +614,56 @@ svg.spark{width:100%;height:60px;}
               
               const data = await response.json();
               
-              if (data.items && data.items.length > 0) {
-                  let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
-                  let itemsList = [];
+              // Если сервер вернул ошибку или пустой массив
+              if (!data.items || data.items.length === 0) {
+                  throw new Error(data.error || "ИИ не нашел еду в тексте");
+              }
 
-                  // Складываем все калории и БЖУ из массива
-                  data.items.forEach(item => {
-                      totalCal += (item.cal || 0);
-                      totalProt += (item.prot || 0);
-                      totalFat += (item.fat || 0);
-                      totalCarb += (item.carb || 0);
-                      itemsList.push(item.name);
-                  });
+              let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
+              let itemsList = [];
 
-                  // Определяем статус: если калорий больше, чем в плане на этот слот на 20% — ставим Радость
-                  let status = 'protocol';
-                  const slotCalGoal = P ? Math.round(P.kcal * (P.slots.find(s=>s.name===slotName)?.share || 0)) : 300;
-                  
-                  if (totalCal > slotCalGoal * 1.2) {
-                      status = 'joy';
-                  }
+              data.items.forEach(item => {
+                  totalCal += (item.cal || 0);
+                  totalProt += (item.prot || 0);
+                  totalFat += (item.fat || 0);
+                  totalCarb += (item.carb || 0);
+                  itemsList.push(item.name);
+              });
 
-                  // Записываем в память
-                  D.slots[today()][slotName] = { 
-                      st: status, 
-                      note: finalText,
-                      aiCal: totalCal,
-                      aiProt: totalProt,
-                      aiFat: totalFat,
-                      aiCarb: totalCarb
-                  };
-                  
-                  // Красиво выводим в поле заметки (Текст + Сумма ккал)
-                  if (noteInput) noteInput.value = `${finalText} [ИИ: ~${totalCal} ккал]`;
-                  
-                  bumpStreak(); save(); renderSlots(); renderDash();
-                  
-                  if (typeof showToast === 'function') {
-                      showToast('Распознано!', `${itemsList.join(', ')}. Итого: ${totalCal} ккал`, '✅');
-                  }
-              } else {
-                  throw new Error("ИИ не смог распознать еду");
+              let status = 'protocol';
+              const slotCalGoal = P ? Math.round(P.kcal * (P.slots.find(s=>s.name===slotName)?.share || 0)) : 300;
+              
+              if (totalCal > slotCalGoal * 1.2) {
+                  status = 'joy';
+              }
+
+              D.slots[today()][slotName] = { 
+                  st: status, 
+                  note: finalText,
+                  aiCal: totalCal,
+                  aiProt: totalProt,
+                  aiFat: totalFat,
+                  aiCarb: totalCarb
+              };
+              
+              if (noteInput) noteInput.value = `${finalText} [ИИ: ~${totalCal} ккал]`;
+              
+              bumpStreak(); save(); renderSlots(); renderDash();
+              
+              if (typeof showToast === 'function') {
+                  showToast('Распознано!', `${itemsList.join(', ')}. Итого: ${totalCal} ккал`, '✅');
               }
 
           } catch (error) {
               console.error('Ошибка анализа:', error);
-              if (noteInput) noteInput.value = finalText + ' (ошибка ИИ, калории не посчитаны)';
+              if (noteInput) noteInput.value = finalText + ' (ошибка ИИ)';
               D.slots[today()][slotName] = { st: 'protocol', note: finalText };
               save(); renderSlots(); renderDash();
-              if (typeof showToast === 'function') showToast('Ошибка', 'Не удалось связаться с сервером ИИ', '❌');
+              
+              // Показываем реальную ошибку, которую вернул сервер
+              if (typeof showToast === 'function') {
+                  showToast('Ошибка ИИ', error.message, '❌');
+              }
           }
       };
 
