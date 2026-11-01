@@ -234,7 +234,14 @@ function playIntro() {
     const overlay = document.getElementById('video-overlay');
     const video = document.getElementById('eva-video');
     const quizSection = document.getElementById('quiz');
-    if (!overlay) return;
+    if (!overlay) {
+        if (quizSection) {
+            quizSection.style.display = 'block';
+            quizSection.scrollIntoView({ behavior: 'smooth' });
+            if (typeof renderStep === 'function' && !document.getElementById('quiz-content').innerHTML) renderStep();
+        }
+        return;
+    }
     if (quizSection) quizSection.style.display = 'none';
     overlay.style.display = 'flex';
     video.currentTime = 0; 
@@ -247,12 +254,12 @@ function endVideo() {
     const overlay = document.getElementById('video-overlay');
     const video = document.getElementById('eva-video');
     const quizSection = document.getElementById('quiz');
-    if (!overlay) return;
-    overlay.style.display = 'none';
-    video.pause();
+    if (overlay) overlay.style.display = 'none';
+    if (video) video.pause();
     if (quizSection) {
         quizSection.style.display = 'block';
         setTimeout(() => { quizSection.scrollIntoView({ behavior: 'smooth' }); }, 100);
+        if (typeof renderStep === 'function' && !document.getElementById('quiz-content').innerHTML) renderStep();
     }
     track('start_quiz');
 }
@@ -329,15 +336,51 @@ async function sendMessage() {
 // МОДУЛЬ ПРОТОКОЛ
 // ==========================================
 const FORMULAS = {
- 'Завтрак':      {rule:'Белок + жиры + овощи. Минимум быстрых углеводов — чтобы сахар не качнулся до обеда.', hands:'Белок: ладонь · Овощи: кулак · Жиры: большой палец', ex:'ориентиры: яйца, творог, рыба, курица + овощи'},
- 'Обед':         {rule:'«Поленья»: белок + медленные углеводы + овощи = 4 часа ровной энергии.', hands:'Белок: ладонь · Углеводы: пригоршня · Овощи: кулак', ex:'ориентиры: мясо/рыба + крупа/картофель/бобовые + салат'},
- 'Ужин':         {rule:'Лёгкий белок + овощи. Углеводы — по желанию и немного.', hands:'Белок: ладонь · Овощи: два кулака', ex:'ориентиры: рыба, курица, творог, тофу + овощи'},
- 'Перекус утра': {rule:'Белок или жиры + клетчатка — мостик до обеда.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: йогурт, орехи, овощи с хумусом'},
- 'Перекус дня':  {rule:'Белок + клетчатка — мостик между обедом и ужином.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: творог, овощи, батончик C37'},
- 'Перекус вечера':{rule:'Белок + клетчатка — чтобы вечер не ушёл в сладкое.', hands:'Белок: пол-ладони · Клетчатка: кулак', ex:'ориентиры: творог, овощи, батончик C37'},
- 'Вместо сладкого':{rule:'Сладкий вкус без качелей: батончик C37 или фрукт + орехи.', hands:'1 батончик или фрукт + горсть орехов', ex:'ориентир: База Лимитированная'},
- 'Предтрен':     {rule:'Медленные углеводы за 60–90 минут: топливо, а не тяжесть.', hands:'Углеводы: пригоршня', ex:'ориентиры: овсянка, банан, батончик «Энергия»'},
- 'Посттрен':     {rule:'Белок + быстрые углеводы в окно восстановления.', hands:'Белок: ладонь · Углеводы: пригоршня', ex:'ориентиры: творог с бананом, батончик «База»'}
+ 'Завтрак': { 
+   rule:'Белок + жиры. Минимум быстрых углеводов, чтобы не было скачка сахара.', 
+   hands:'Белок: 1 пачка творога (200г) или 2-3 яйца · Жиры: 1 ст.л. масла', 
+   ex:'ориентиры: яйца, творог, сыр, рыба'
+ },
+ 'Обед': { 
+   rule:'«Поленья»: белок + медленные углеводы + овощи = 4 часа ровной энергии.', 
+   hands:'Белок: кусок размером с колоду карт · Углеводы: 1 стакан готовой крупы · Овощи: половина тарелки', 
+   ex:'ориентиры: мясо/рыба + крупа + большой салат'
+ },
+ 'Ужин': { 
+   rule:'Легкий белок + овощи. Углеводы — по желанию и немного.', 
+   hands:'Белок: кусок размером с колоду карт · Овощи: половина тарелки · Жиры: 1 ст.л.', 
+   ex:'ориентиры: белая рыба, курица, тофу + овощи'
+ },
+ 'Перекус утра': { 
+   rule:'Мостик до обеда: не даем голоду дорасти до срыва.', 
+   hands:'1 ладонь белка (греческий йогурт) или горсть орехов (30г)', 
+   ex:'ориентиры: йогурт, орехи, батончик C37'
+ },
+ 'Перекус дня': { 
+   rule:'Мостик между обедом и ужином.', 
+   hands:'1 батончик C37 или пачка творога (200г)', 
+   ex:'ориентиры: творог, овощи, батончик C37'
+ },
+ 'Перекус вечера': { 
+   rule:'Чтобы вечер не ушел в сладкое.', 
+   hands:'1 батончик C37 или пачка творога (200г)', 
+   ex:'ориентиры: творог, овощи, батончик C37'
+ },
+ 'Вместо сладкого': { 
+   rule:'Сладкий вкус без качелей.', 
+   hands:'1 батончик C37 или 1 фрукт + горсть орехов (30г)', 
+   ex:'ориентир: База Лимитированная'
+ },
+ 'Предтрен': { 
+   rule:'Медленные углеводы за 60-90 минут до тренировки.', 
+   hands:'1 стакан овсянки или 1 банан', 
+   ex:'ориентиры: овсянка, банан, батончик «Энергия»'
+ },
+ 'Посттрен': { 
+   rule:'Белок + быстрые углеводы в окно восстановления.', 
+   hands:'1 порция протеина (или пачка творога) + 1 банан', 
+   ex:'ориентиры: творог с бананом, батончик «База»'
+ }
 };
 const MEALS = {
  'Завтрак':[{n:'Омлет из 3 яиц + овощи',tags:['яйцо']},{n:'Творог 5% 150 г + ягоды',tags:['молоко']},{n:'Овсянка 40 г + скуп протеина',tags:['глютен','молоко']}],
@@ -374,7 +417,7 @@ function makeDayMenu(PF){
 }
 
 function todaysDish(PF, slotName){
-  if(!PF || !PF.slots) return null; // ЗАЩИТА ОТ СТАРЫХ ДАННЫХ
+  if(!PF || !PF.slots) return null;
   const slot=PF.slots.find(s=>s.name===slotName); if(!slot) return null;
   if(!SLOT_MEAL_KEY[slotName]) return slot.bar||null;
   if(!PF.dayMenu||PF.dayMenu.date!==todayStr()){ PF.dayMenu=makeDayMenu(PF); localStorage.setItem('c37_protocol_full',JSON.stringify(PF)); }
@@ -396,7 +439,17 @@ function setMode(m){
   const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null'); if(!PF) return;
   PF.mode=m; if(m==='ready'&&(!PF.dayMenu||PF.dayMenu.date!==todayStr())) PF.dayMenu=makeDayMenu(PF);
   localStorage.setItem('c37_protocol_full',JSON.stringify(PF));
-  if(document.getElementById('protocol-root')) location.reload(); else if(typeof renderSlots==='function') renderSlots();
+  
+  if (document.getElementById('quiz-content')) {
+      document.getElementById('quiz-content').innerHTML = 
+        `<h2 style="color:var(--accent);margin-bottom:6px;">Твой персональный протокол</h2>` +
+        renderProtocolInto(PF) +
+        `<div style="margin-top:16px;"><button class="btn btn-outline" style="width:100%;" onclick="addToCart('ПОДПИСКА TRIAL (первый месяц)', 990)">Подписка TRIAL — 990 ₽/мес</button></div>`;
+  } else if (document.getElementById('protocol-root')) {
+      document.getElementById('protocol-root').innerHTML = renderProtocolInto(PF);
+  } else if (typeof renderSlots === 'function') {
+      renderSlots();
+  }
 }
 
 function renderProtocolInto(PF){
@@ -404,38 +457,46 @@ function renderProtocolInto(PF){
   const slotsHtml=PF.slots.map(s=>{
     const F=f(s.name); const dish=(PF.mode==='ready')?todaysDish(PF,s.name):null;
     return `<div style="border:1px solid #333;border-radius:12px;padding:14px;margin-bottom:10px;">
-      <div style="font-weight:800;">${s.time} · ${s.name}${s.bar?` · <span style="color:var(--accent);">бар: ${s.bar}</span>`:''}</div>
+      <div style="font-weight:800; font-size:1.05rem;">${s.time} · ${s.name}${s.bar?` · <span style="color:var(--accent);">бар: ${s.bar}</span>`:''}</div>
       <div style="font-size:.8rem;color:#999;margin:4px 0;">Цель слота: ${s.share?Math.round(PF.kcal*s.share)+' ккал · Б≈'+Math.round(PF.protein*s.share)+' г':'по ситуации'}</div>
-      <div style="font-size:.95rem;color:#fff;margin:6px 0;">${F.rule}</div>
-      <div style="font-size:.85rem;color:var(--accent);margin-bottom:4px;">${F.hands}</div>
-      ${PF.mode==='ready'&&dish?`<div style="font-size:.85rem;color:#ddd;margin-bottom:4px;">Сегодня по меню: ${dish} <button class="btn-small" style="width:auto;padding:4px 10px;font-size:.72rem;" onclick="swapDish('${s.name}')">заменить</button></div>`:''}
-      <div style="font-size:.75rem;color:#777;">${F.ex}</div>
-      <div style="font-size:.78rem;color:#888;margin-top:6px;">${s.why}</div></div>`;
+      
+      ${PF.mode==='ready' && dish 
+        ? `<div style="background: rgba(76, 175, 80, 0.1); border-left: 3px solid var(--green); padding: 10px; margin: 10px 0; border-radius: 4px;">
+             <div style="font-size:.75rem; color:var(--green); font-weight:bold; text-transform:uppercase; margin-bottom:4px;">Сегодня по меню</div>
+             <div style="font-size:1rem; color:#fff; font-weight:bold;">${dish}</div>
+             <button class="btn-small" style="width:auto;padding:4px 10px;font-size:.72rem; margin-top:8px;" onclick="swapDish('${s.name}')">Заменить блюдо</button>
+           </div>` 
+        : `<div style="font-size:.95rem;color:#fff;margin:6px 0;">${F.rule}</div>
+           <div style="font-size:.85rem;color:var(--accent);margin-bottom:4px;">${F.hands}</div>
+           <div style="font-size:.75rem;color:#777;">${F.ex}</div>`
+      }
+      
+      <div style="font-size:.78rem;color:#888;margin-top:10px; font-style:italic;">${s.why}</div></div>`;
   }).join('');
+  
   return `
    <div style="border:2px solid var(--accent);border-radius:16px;padding:20px;margin-bottom:16px;background:rgba(255,107,26,.06);">
      <div style="font-size:.75rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
-     <div style="font-size:2rem;font-weight:900;color:#fff;">${PF.kcal} ккал</div>
-     <div style="font-size:.9rem;color:#ccc;">Б ${PF.protein} г · Ж ${PF.fat} г · У ${PF.carbs} г</div>
-     <div style="font-size:.75rem;color:#888;margin-top:8px;">В дневнике норма станет убывающим счётчиком: каждый закрытый слот снимает свою долю.</div>
+     <div style="font-size:2.5rem;font-weight:900;color:#fff;">${PF.kcal} ккал</div>
+     <div style="font-size:1rem;color:#ccc;">Б ${PF.protein} г · Ж ${PF.fat} г · У ${PF.carbs} г</div>
    </div>
    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-     <button class="btn-small" style="width:auto;" onclick="setMode('principles')">По принципам${PF.mode==='principles'?' ✓':''}</button>
-     <button class="btn-small" style="width:auto;" onclick="setMode('ready')">Готовое меню${PF.mode==='ready'?' ✓':''}</button>
+     <button class="btn-small" style="width:auto; padding: 10px 20px; ${PF.mode==='principles' ? 'background:var(--accent); color:#111;' : ''}" onclick="setMode('principles')">📐 По принципам</button>
+     <button class="btn-small" style="width:auto; padding: 10px 20px; ${PF.mode==='ready' ? 'background:var(--accent); color:#111;' : ''}" onclick="setMode('ready')">🍽 Готовое меню</button>
    </div>
-   ${PF.mode==='ready'?'<p style="font-size:.75rem;color:#888;margin-bottom:12px;">Это ориентиры под твои КБЖУ, а не назначение: меняй блюда свободно, сохраняя принцип слота.</p>':''}
+   
+   ${PF.mode==='ready'?'<p style="font-size:.8rem;color:#888;margin-bottom:12px; border-left: 2px solid var(--accent); padding-left: 10px;">Это ориентиры под твои КБЖУ. Если блюдо не нравится — жми «Заменить».</p>':''}
+   
    ${slotsHtml}
    <h3 style="margin:18px 0 8px;color:var(--accent);">Правила</h3>
    <ul style="padding-left:18px;font-size:.9rem;color:#ddd;">${PF.rules.map(r=>`<li>${r}</li>`).join('')}</ul>
    ${PF.warnings.length?`<p style="font-size:.8rem;color:#ffcc00;margin-top:10px;">${PF.warnings.join(' ')}</p>`:''}
-   <h3 style="margin:18px 0 8px;color:var(--accent);">Как протокол живёт</h3>
-   <p style="font-size:.85rem;color:#ccc;">${PF.adjustments}</p>
+   
    <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px;">
      <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Заказать бокс по этому протоколу — 1 190 ₽</button>
-     <button class="btn btn-outline" onclick="window.print()">Сохранить протокол в PDF</button>
      <a href="diary.html" class="btn btn-outline" style="text-decoration:none;">Открыть дневник — исполнять протокол</a>
    </div>
-   <p class="disclaimer">ЭЙВА — цифровой ведущий, а не врач. Протокол — ориентировочный план питания, не медицинская консультация.</p>`;
+   <p class="disclaimer" style="margin-top:20px;">ЭЙВА — цифровой ведущий, а не врач. Протокол — ориентировочный план питания.</p>`;
 }
 
 // ==========================================
@@ -553,7 +614,6 @@ function calculateResult() {
   const w = parseFloat(answers.weight), h = parseFloat(answers.height), a = parseInt(answers.age, 10);
   const isMale = answers.gender === 'Мужской';
   
-  // ИСПРАВЛЕНО: Добавлены знаки умножения
   let bmr = isMale ? (10*w + 6.25*h - 5*a + 5) : (10*w + 6.25*h - 5*a - 161);
   let mult = answers.activity === 'Сидячий' ? 1.2 : answers.activity === 'Высокий' ? 1.55 : 1.375;
   let tdee = bmr * mult;
@@ -561,7 +621,6 @@ function calculateResult() {
   const protein = (answers.goal === 'Похудение' ? 2.0 : answers.goal === 'Мышцы' ? 1.9 : 1.7) * w;
   const fat = 0.9 * w;
   
-  // ИСПРАВЛЕНО: Добавлены знаки умножения
   const carbs = (kcal - 4*protein - 9*fat) / 4;
   
   let boxName = 'ПРОТОКОЛ НЕДЕЛИ (Похудение)', barMorning = 'База Лимитированная', barEvening = 'Коллаген Лайт';
