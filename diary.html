@@ -6,7 +6,7 @@
 <title>Мой Дневник — C37 FUEL</title>
 <link rel="stylesheet" href="style.css">
 <style>
-.diary-wrap { max-width: 760px; margin: 40px auto; padding: 0 20px; }
+.diary-wrap { max-width: 800px; margin: 40px auto; padding: 0 20px; }
 .card{background:rgba(20,24,28,.9);border:1px solid #333;border-radius:16px;padding:20px;margin-bottom:16px;}
 .card h2{font-size:1.05rem;margin-bottom:12px;color:#FF6B1A;text-transform:uppercase;letter-spacing:1px;}
 .row{display:flex;gap:16px;flex-wrap:wrap;align-items:center;}
@@ -46,12 +46,6 @@
   border-radius: 50%; overflow: hidden;
   border: 2px solid #FF6B1A; box-shadow: 0 0 20px rgba(255,107,26,.4);
 }
-.eva-hud-frame.pulse { animation: evaPulse .9s ease; }
-@keyframes evaPulse {
-  0%   { box-shadow: 0 0 20px rgba(255,107,26,.4); }
-  50%  { box-shadow: 0 0 45px rgba(255,107,26,.9); }
-  100% { box-shadow: 0 0 20px rgba(255,107,26,.4); }
-}
 .eva-face { width: 100%; height: 100%; object-fit: cover; }
 .eva-hud-corner {
   position: absolute; width: 10px; height: 10px; border: 1.5px solid #FF6B1A;
@@ -61,46 +55,35 @@
 .eva-hud-corner.bl { bottom: -2px; left: -2px; border-right: none; border-top: none; }
 .eva-hud-corner.br { bottom: -2px; right: -2px; border-left: none; border-top: none; }
 .eva-briefing-body { flex: 1; }
-.eva-greeting {
-  font-size: .7rem; letter-spacing: 2px; color: #FF6B1A;
-  font-weight: 800; margin-bottom: 6px;
-}
+.eva-greeting { font-size: .7rem; letter-spacing: 2px; color: #FF6B1A; font-weight: 800; margin-bottom: 6px; }
 .eva-line { font-size: .95rem; line-height: 1.5; color: #fff; margin-bottom: 8px; }
 .eva-sign { font-size: .72rem; color: #888; font-style: italic; }
-@media (max-width: 520px) {
-  .eva-briefing { flex-direction: column; text-align: center; }
-  .eva-hud-frame { width: 70px; height: 70px; }
-}
-@media (prefers-reduced-motion: reduce) { .eva-scanline { display: none; } }
-/* === /КАРТОЧКА ЭЙВЫ === */
 
-.slot{border:1px solid #333;border-radius:12px;padding:12px;margin-bottom:10px;}
-.slot .name{font-weight:700;font-size:.95rem;}
-.slot .hint{font-size:.8rem;color:#c0c0c0;margin:4px 0 8px;}
-.stbtns{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px;}
-.stb{border:1px solid #444;background:rgba(0,0,0,.5);color:#fff;border-radius:20px;padding:7px 12px;font-size:.78rem;cursor:pointer;transition:all .2s;}
-.stb:hover{border-color:#FF6B1A;}
-.stb.sel{background:#FF6B1A;color:#111;border-color:#FF6B1A;font-weight:800;}
-.note{width:100%;background:rgba(0,0,0,.4);border:1px solid #333;color:#ccc;border-radius:8px;padding:7px 10px;font-size:.8rem;outline:none;}
-.note:focus{border-color:#FF6B1A;}
-.btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
-.btn-diary{background:#FF6B1A;color:#111;border:none;border-radius:10px;padding:10px 16px;font-weight:700;cursor:pointer;font-size:.85rem;text-decoration:none;display:inline-block;}
-.btn-diary.ghost{background:transparent;border:1px solid #FF6B1A;color:#FF6B1A;}
-.tap{display:flex;gap:8px;flex-wrap:wrap;}
-.tap button{min-width:44px; height:44px; padding:0 15px; border-radius:10px; border:1px solid #444; background:rgba(0,0,0,.5); color:#fff; font-size:0.95rem; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; justify-content:center;}
-.tap button.sel{background:#FF6B1A;color:#111;border-color:#FF6B1A;font-weight:900;}
-input[type=number],input[type=text]{background:rgba(0,0,0,.6);border:1px solid #444;color:#fff;border-radius:10px;padding:10px 12px;width:120px;font-size:1rem;outline:none;}
-input:focus{border-color:#FF6B1A;}
-label{font-size:.8rem;color:#c0c0c0;display:block;margin-bottom:4px;}
-.warn{color:#ffcc00;font-size:.8rem;margin-top:8px;display:none;}
-.badge{display:inline-block;background:#333;border-radius:6px;padding:4px 10px;font-size:.75rem;font-weight:700;margin:0 6px 6px 0;}
-.badge.on{background:#FF6B1A;color:#111;}
-.upsell{border:2px solid #FF6B1A;background:linear-gradient(135deg,rgba(255,107,26,.12),rgba(20,24,28,.95));}
-svg.spark{width:100%;height:60px;}
-.disc{font-size:.75rem;color:#777;margin-top:16px;text-align:center;}
-.hidden{display:none;}
+/* === НОВЫЙ ДИЗАЙН СЛОТОВ (ПЛАН vs ФАКТ) === */
+.slot{
+    border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px;
+    display: flex; gap: 15px; flex-wrap: wrap; background: rgba(0,0,0,0.2);
+}
+.slot-col { flex: 1; min-width: 250px; }
+.slot-title { font-size: .85rem; color: var(--accent); text-transform: uppercase; font-weight: bold; margin-bottom: 8px; letter-spacing: 1px; }
+.slot-name { font-weight: 900; font-size: 1.1rem; color: #fff; margin-bottom: 5px; }
+.plan-box { background: rgba(255,107,26,0.1); border-left: 3px solid var(--accent); padding: 10px; border-radius: 4px; }
+.plan-kcal { font-size: 1.5rem; font-weight: 900; color: var(--accent); line-height: 1; }
+.plan-macros { font-size: 0.8rem; color: #ccc; margin-top: 5px; }
+
+.fact-box { background: rgba(0,0,0,0.5); border: 1px dashed #444; padding: 10px; border-radius: 4px; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; }
+.voice-btn { background: var(--accent); color: #111; border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; float: right; }
+.note { width: 100%; background: transparent; border: none; color: #fff; font-size: 0.9rem; outline: none; resize: none; margin-top: 5px; border-bottom: 1px solid #333; padding-bottom: 5px; }
+.note:focus { border-color: var(--accent); }
+.fact-kcal { font-weight: bold; color: #4CAF50; font-size: 0.9rem; margin-top: 10px; }
+
+.stbtns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;}
+.stb{border:1px solid #444;background:transparent;color:#aaa;border-radius:4px;padding:4px 8px;font-size:.7rem;cursor:pointer;transition:all .2s;}
+.stb.sel{background:#444;color:#fff;border-color:#666;font-weight:bold;}
+
 .progress-line{height:6px;background:#333;border-radius:3px;overflow:hidden;}
 .progress-line .progress-fill{height:100%;background:#FF6B1A;width:0%;transition:width .4s;box-shadow:0 0 10px rgba(255,107,26,.6);}
+@media (max-width: 600px) { .slot { flex-direction: column; } }
 </style>
 </head>
 <body>
@@ -112,11 +95,11 @@ svg.spark{width:100%;height:60px;}
       <h1 style="font-size:1.6rem; margin:0;">Мой <span style="color:#FF6B1A;">Дневник</span></h1>
       <a href="index.html" style="color:#c0c0c0; text-decoration:none; font-size:0.9rem;">← На главную</a>
   </div>
-  <div class="sub" style="color:#c0c0c0; font-size:.85rem; margin-bottom:20px;">20 секунд в день. Отмечай не «что съел», а <b style="color:#FF6B1A;">как закрыт слот</b>.</div>
+  <div class="sub" style="color:#c0c0c0; font-size:.85rem; margin-bottom:20px;">План слева, факт справа. Никакой каши.</div>
 
    <!-- ЕДИНАЯ ПЛАШКА ПРОТОКОЛА -->
   <div style="margin-bottom: 20px;">
-      <a href="protocol.html" class="btn-diary" style="width:100%; display:flex; justify-content:center; align-items:center; gap:10px; text-decoration:none; padding:15px; font-size:1.05rem; font-weight:900; border-radius:12px; text-transform:uppercase;">
+      <a href="protocol.html" class="btn-diary" style="width:100%; display:flex; justify-content:center; align-items:center; gap:10px; text-decoration:none; padding:15px; font-size:1.05rem; font-weight:900; border-radius:12px; text-transform:uppercase; background:var(--accent); color:#111;">
           📋 Открыть мой протокол
       </a>
   </div>
@@ -126,10 +109,8 @@ svg.spark{width:100%;height:60px;}
     <div class="eva-scanline"></div>
     <div class="eva-hud-frame">
       <img src="eva_avatar.jpg" alt="ЭЙВА" class="eva-face" onerror="this.src='https://placehold.co/90x90/2A2F35/FF6B1A?text=Э'">
-      <div class="eva-hud-corner tl"></div>
-      <div class="eva-hud-corner tr"></div>
-      <div class="eva-hud-corner bl"></div>
-      <div class="eva-hud-corner br"></div>
+      <div class="eva-hud-corner tl"></div><div class="eva-hud-corner tr"></div>
+      <div class="eva-hud-corner bl"></div><div class="eva-hud-corner br"></div>
     </div>
     <div class="eva-briefing-body">
       <div class="eva-greeting">ДОБРОЕ УТРО</div>
@@ -158,12 +139,11 @@ svg.spark{width:100%;height:60px;}
       </div>
     </div>
     <div class="progress-line" style="margin-top:15px;"><div class="progress-fill" id="normFill"></div></div>
-    <div style="font-size:.72rem;color:#777;margin-top:8px;">Счётчик убывает по целям твоего протокола.</div>
     
     <!-- Кнопки добавления воды -->
     <div style="display:flex; gap:8px; margin-top:15px;">
-      <button class="btn-diary" onclick="addWater(250)" style="flex:1; background:#4CAF50; color:#fff;">+ 250 мл</button>
-      <button class="btn-diary" onclick="addWater(500)" style="flex:1; background:#4CAF50; color:#fff;">+ 500 мл</button>
+      <button class="btn-diary" onclick="addWater(250)" style="flex:1; background:#4CAF50; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold;">+ 250 мл</button>
+      <button class="btn-diary" onclick="addWater(500)" style="flex:1; background:#4CAF50; color:#fff; border:none; padding:10px; border-radius:8px; cursor:pointer; font-weight:bold;">+ 500 мл</button>
     </div>
   </div>
 
@@ -176,71 +156,26 @@ svg.spark{width:100%;height:60px;}
       <div class="stat"><div class="v" id="joyV">0/3</div><div class="l">🍩 радость</div></div>
       <div class="stat"><div class="v" id="weightV">—</div><div class="l">вес, кг</div></div>
     </div>
-    <div style="margin-top:12px;"><label>Энергия за 7 дней</label><svg class="spark" id="sparkE"></svg></div>
     <div class="eva" id="evaComment"><b>ЭЙВА:</b> Загружаюсь…</div>
-    <div style="margin-top:10px;" id="badges"></div>
-  </div>
-
-  <!-- АПСЕЙЛ ДЕНЬ 8 -->
-  <div class="card upsell hidden" id="upsell8">
-    <h2>Батончики закончились?</h2>
-    <p style="font-size:.92rem;margin-bottom:12px;">Неделя протокола закрыта. Если ты еще не в подписке, самое время продолжить без паузы.</p>
-    <div class="btns">
-      <button class="btn-diary" onclick="goSub('TRIAL')">TRIAL — 990 ₽/мес</button>
-      <button class="btn-diary ghost" onclick="goSub('КЛУБ')">КЛУБ — 1 790 ₽/мес</button>
-    </div>
-  </div>
-
-  <!-- ЧЕК-ИН -->
-  <div class="card hidden" id="checkinCard">
-    <h2>Недельный чек-ин</h2>
-    <p style="font-size:.85rem;color:#c0c0c0;margin-bottom:12px;">«Цифра на весах — это данные, а не приговор».</p>
-    <div class="row" style="margin-bottom:12px;">
-      <div><label>Вес, кг</label><input type="number" id="ciWeight" step="0.1" min="30" max="250"></div>
-      <div><label>Талия, см</label><input type="number" id="ciWaist" min="40" max="200"></div>
-    </div>
-    <label>Тяга к сладкому на неделе</label>
-    <div class="tap" id="ciCraving" style="margin-bottom:12px;">
-      <button data-v="спала">Спала</button><button data-v="как обычно">Как обычно</button><button data-v="усилилась">Усилилась</button>
-    </div>
-    <div class="btns"><button class="btn-diary" onclick="submitCheckin()">Отправить ЭЙВЕ</button></div>
-    <div class="warn" id="ciWarn"></div>
   </div>
 
   <!-- СЛОТЫ -->
   <div class="card">
-    <h2>Слоты сегодня</h2>
-    <p style="font-size:.8rem;color:#c0c0c0;margin-bottom:12px;">Любая еда — это один из статусов. Вина не предусмотрена механикой.</p>
+    <h2>План vs Факт</h2>
+    <p style="font-size:.8rem;color:#c0c0c0;margin-bottom:15px;">Слева — что я советую. Справа — что ты надиктовал.</p>
     <div id="slotsBox"></div>
-  </div>
-
-  <!-- ТАПЫ -->
-  <div class="card">
-    <h2>Как ты сегодня?</h2>
-    <label>Энергия (1 — качели, 5 — ровное пламя)</label>
-    <div class="tap" id="tapEnergy" style="margin:6px 0 12px;">
-      <button data-v="1">1</button><button data-v="2">2</button><button data-v="3">3</button><button data-v="4">4</button><button data-v="5">5</button>
-    </div>
-    <label>Сон, часов</label>
-    <div class="tap" id="tapSleep">
-      <button data-v="5">&lt;6</button><button data-v="6">6–7</button><button data-v="7">7–9</button><button data-v="9">&gt;9</button>
-    </div>
   </div>
 
   <!-- ВЕС И ЦЕЛЬ -->
   <div class="card">
     <h2>Трекер веса</h2>
     <div class="row">
-      <div><label>Текущий вес, кг</label><input type="number" id="wNow" step="0.1"></div>
-      <div><label>Цель, кг</label><input type="number" id="wGoal" step="0.1"></div>
-      <div><label>За сколько недель?</label><input type="number" id="wWeeks" min="1" max="104" placeholder="8"></div>
-      <button class="btn-diary ghost" onclick="saveGoal()">Сохранить цель</button>
+      <div><label>Текущий вес, кг</label><input type="number" id="wNow" step="0.1" style="width:100%; background:rgba(0,0,0,.6); border:1px solid #444; color:#fff; padding:8px; border-radius:8px;"></div>
+      <div><label>Цель, кг</label><input type="number" id="wGoal" step="0.1" style="width:100%; background:rgba(0,0,0,.6); border:1px solid #444; color:#fff; padding:8px; border-radius:8px;"></div>
+      <button class="btn-diary ghost" onclick="saveGoal()" style="margin-top:20px; padding:8px 15px; border:1px solid #FF6B1A; background:transparent; color:#FF6B1A; border-radius:8px; cursor:pointer;">Сохранить</button>
     </div>
-    <div class="warn" id="goalWarn"></div>
-    <div style="margin-top:12px;"><label>Динамика веса</label><svg class="spark" id="sparkW"></svg></div>
   </div>
 
-  <div class="disc">ЭЙВА — цифровой ведущий, а не врач. Дневник и корректировки носят информационный характер.</div>
 </div>
 
 <div id="footer-placeholder"></div>
@@ -259,534 +194,215 @@ svg.spark{width:100%;height:60px;}
   loadComponents();
 
   const LS_D='c37_diary', LS_P='c37_protocol';
-  const DAY=86400000;
   const today=()=>new Date().toISOString().slice(0,10);
-  const dateBack=i=>new Date(Date.now()-i*DAY).toISOString().slice(0,10);
 
-  let D = {};
-  try { D = JSON.parse(localStorage.getItem(LS_D)) || {}; } catch(e) { D = {}; }
-  
-  if (!D.start) D.start = Date.now();
-  if (typeof D.streak !== 'number') D.streak = 0;
-  if (!D.lastDay) D.lastDay = null;
-  if (!Array.isArray(D.weights)) D.weights = [];
-  if (!Array.isArray(D.energy)) D.energy = [];
-  if (!Array.isArray(D.sleep)) D.sleep = [];
+  let D = JSON.parse(localStorage.getItem(LS_D)) || {};
   if (!D.slots) D.slots = {};
-  if (!Array.isArray(D.checkins)) D.checkins = [];
-  if (!D.goal) D.goal = null;
   if (!D.water) D.water = { date: today(), amount: 0 };
+  if (D.water.date !== today()) { D.water = { date: today(), amount: 0 }; }
 
-  let P = null;
-  try { P = JSON.parse(localStorage.getItem(LS_P)); } catch(e) { P = null; }
-  
-  // Сброс воды на новый день
-  if (D.water.date !== today()) {
-    D.water = { date: today(), amount: 0 };
-    save();
-  }
+  let P = JSON.parse(localStorage.getItem(LS_P)) || null;
+  let PF = JSON.parse(localStorage.getItem('c37_protocol_full')) || null;
 
   function save(){ localStorage.setItem(LS_D,JSON.stringify(D)); }
 
-  function slotHint(n){
-    const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
-    if(PF){
-      if(PF.mode==='ready'){ 
-          const d=todaysDish(PF,n); 
-          if(d) return '🍽 <b style="color:#4CAF50;">Блюдо дня:</b> <span style="color:#fff; font-weight:bold;">'+d+'</span> <span style="font-size:0.75rem; color:#777;">(заменить в протоколе)</span>'; 
-      }
-      if(typeof FORMULAS!=='undefined' && FORMULAS[n]) {
-          return '📐 ' + FORMULAS[n].rule + '<br><span style="color:var(--accent); font-size:0.85rem; font-weight:bold;">Порции: ' + FORMULAS[n].hands + '</span>';
-      }
-    }
-    return 'Ориентир: белок + клетчатка';
-  }
-
   function slotList(){
-    const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
-    if(PF && PF.slots && PF.slots.length > 0){
-        return PF.slots.map(s => s.name);
-    }
-    return ['Завтрак', 'Обед', 'Ужин', 'Перекус утра', 'Перекус вечера'];
-  }
-
-  function weekRecords(){ const out=[]; for(let i=0;i<7;i++){ const d=D.slots[dateBack(i)]; if(d) for(const k in d) out.push(d[k]); } return out; }
-  function joyCount(){ return weekRecords().filter(r=>r.st==='joy').length; }
-  function joyStreak(){ let s=0; for(let i=0;;i++){ const d=D.slots[dateBack(i)]; if(d&&Object.values(d).some(r=>r.st==='joy')) s++; else break; } return s; }
-  function adherence7(){ const r=weekRecords().filter(x=>['protocol','approx','joy','missed'].includes(x.st)); if(!r.length)return null; const score=r.filter(x=>x.st==='protocol').length+0.5*r.filter(x=>x.st==='approx').length; return Math.round(score/r.length*100); }
-  function dayNum(){ return Math.floor((Date.now()-D.start)/DAY)+1; }
-
-  function spark(id,arr,min,max){
-    const el=document.getElementById(id);
-    if(!arr||!arr.length){ el.innerHTML='<text x="4" y="30" fill="#777" font-size="11">Пока нет данных — отметь первый день</text>'; return; }
-    const mn=min!==undefined?min:Math.min(...arr), mx=max!==undefined?max:Math.max(...arr);
-    const pts=arr.map((v,i)=>{const x=4+i*(292/Math.max(arr.length-1,1));const y=54-((v-mn)/((mx-mn)||1))*46;return x+','+y;}).join(' ');
-    el.innerHTML='<polyline points="'+pts+'" fill="none" stroke="#FF6B1A" stroke-width="2.5"/>';
-  }
-
-  function renderBadges(){
-    const dn = dayNum();
-    const milestones = [
-      { at: 7,  title: 'Первая неделя', text: 'Ты прошёл точку, где бросают 60% людей.' },
-      { at: 14, title: 'Две недели подряд', text: 'Кривая энергии впервые ровная.' },
-      { at: 30, title: 'Месяц протокола', text: 'Ты в 1% тех, кто дошёл. Следующая цель — 60 дней.' },
-      { at: 60, title: 'Два месяца', text: 'Протокол стал привычкой. Дальше — тонкая настройка.' }
-    ];
-    const earned = milestones.filter(m => dn >= m.at);
-    const next = milestones.find(m => dn < m.at);
-
-    let html = earned.map(m => `<span class="badge on">🏅 ${m.title}</span>`).join('');
-
-    if (next && earned.length > 0) {
-      html += `<span style="display:block;margin-top:10px;font-size:.78rem;color:#888;">Следующая веха: <b style="color:#fff;">${next.title}</b> через ${next.at - dn} дн.</span>`;
-    } else if (next) {
-      html += `<span class="badge">🏅 ${next.title} — через ${next.at - dn} дн.</span>`;
-      html += `<span style="display:block;margin-top:6px;font-size:.72rem;color:#777;">${next.text}</span>`;
-    }
-
-    html += `<span style="display:block;margin-top:10px;font-size:.72rem;color:#777;">Любая веха = −5% на следующий бокс</span>`;
-    document.getElementById('badges').innerHTML = html;
-  }
-
-  // Новая логика: 1.0 = по плану, 1.0 = почти (поел же!), 1.2 = радость (перебор), 0 = пропустил
-  const STATUS_K = {
-      protocol: 1.0, 
-      approx: 1.0,    
-      joy: 1.2,       
-      missed: 0       
-  };
-  
-  let lastPct=null;
-
-  function normLeft(){
-    if(!P || !P.kcal) return null; 
-    
-    const PF=JSON.parse(localStorage.getItem('c37_protocol_full')||'null');
-    const slots=(PF&&PF.slots&&PF.slots.length)?PF.slots:[
-        {name:'Завтрак',share:.25}, {name:'Обед',share:.35}, {name:'Ужин',share:.20}, {name:'Перекус утра',share:.10}, {name:'Перекус вечера',share:.10}
-    ];
-    const st=D.slots[today()]||{}; 
-    let totK=0, totP=0, closedK=0, closedP=0;
-    
-    slots.forEach(s=>{ 
-      const k=Math.round(P.kcal*(s.share||0)); 
-      const p=Math.round(P.protein*(s.share||0));
-      totK+=k; totP+=p; 
-      const rec=st[s.name];
-      if(rec&&STATUS_K[rec.st]!==undefined){ 
-        closedK+=k*STATUS_K[rec.st]; 
-        closedP+=p*STATUS_K[rec.st]; 
-      } 
-    });
-    return {totK, totP, closedK, closedP};
+    if(PF && PF.slots && PF.slots.length > 0) return PF.slots.map(s => s.name);
+    return ['Завтрак', 'Обед', 'Ужин', 'Перекус'];
   }
 
   function renderNorm(){
-    const card=document.getElementById('normCard'); if(!card) return;
-    
-    // Вода (Отрицательный счетчик)
-    if (P && P.weight) {
-        const targetWater = Math.round(parseFloat(P.weight) * 30); // 30 мл на кг
-        const waterLeft = Math.max(0, targetWater - D.water.amount);
-        document.getElementById('normWater').textContent = waterLeft;
-    } else {
-        document.getElementById('normWater').textContent = '2000';
-    }
-
-    const n=normLeft(); 
-    if(!n||!n.totK){ card.style.display='none'; lastPct=null; return; }
-    card.style.display='';
-    
-    let remainingK = n.totK - n.closedK;
-    let pct = Math.min(100, Math.round((n.closedK / n.totK) * 100));
-    lastPct = pct;
-
-    const elKcal = document.getElementById('normKcal');
-    const elKcalLabel = document.getElementById('normKcalLabel');
-    const elP = document.getElementById('normP');
-
-    if (remainingK < 0) {
-        elKcal.textContent = Math.abs(Math.round(remainingK));
-        elKcal.style.color = '#ff4444';
-        elKcalLabel.textContent = 'ккал перебор';
-    } else {
-        elKcal.textContent = Math.round(remainingK);
-        elKcal.style.color = '#FF6B1A';
-        elKcalLabel.textContent = 'ккал осталось';
-    }
-
-    let remainingP = n.totP - n.closedP;
-    if (remainingP < 0) {
-        elP.textContent = Math.abs(Math.round(remainingP));
-        elP.style.color = '#ff4444';
-    } else {
-        elP.textContent = Math.round(remainingP);
-        elP.style.color = '#FF6B1A';
-    }
-
-    document.getElementById('normFill').style.width = pct+'%';
-  }
-
-  function renderEvaBriefing() {
-    const el = document.getElementById('evaBriefing');
-    if (!el) return;
-    
-    if (!P) {
-      el.textContent = 'Протокола пока нет. Собери его на главной за 2 минуты — и я подстрою цели, слоты и ориентиры под тебя.';
-      return;
-    }
-    const dn = dayNum();
-    const yesterday = dateBack(1);
-    const yesterdaySlots = D.slots[yesterday] || {};
-    const yesterdayList = slotList();
-    const yesterdayMarked = yesterdayList.filter(n => yesterdaySlots[n] && ['protocol','approx','joy'].includes(yesterdaySlots[n].st));
-    const yesterdayDone = yesterdayMarked.length;
-    const yesterdayTotal = yesterdayList.length;
-    const lastEnergy = D.energy.slice(-1)[0];
-    const lastSleep = D.sleep.slice(-1)[0];
-
-    let text = '';
-    if (dn === 7) {
-      text = `День 7. Ты прошёл первую неделю. Закрыл ${Math.round(adherence7() || 0)}% слотов — это выше среднего. 60% людей бросают на 4-й день. Ты — не они. Сегодня — первый чек-ин, я подкручу протокол.`;
-    } else if (dn === 14) {
-      text = `День 14. Стрик ${D.streak}. Твоя кривая энергии впервые ровная за две недели. Поленья работают. Держим темп.`;
-    } else if (dn === 30) {
-      text = `День 30. Месяц протокола позади. Ты в том 1%, кто дошёл. Сегодня сделаю полный отчёт и предложу следующую цель.`;
-    } else {
-      text = 'День ' + dn + '. ';
-      if (yesterdayDone > 0) {
-        text += `Вчера ты закрыл ${yesterdayDone} из ${yesterdayTotal} слотов. `;
-        if (yesterdayDone === yesterdayTotal) text += 'Чисто. ';
-        else if (yesterdayDone >= yesterdayTotal - 1) text += 'Почти идеально. ';
-      }
-      if (lastSleep && lastSleep.v <= 6) text += 'Сон был короткий — сегодня завтрак с белком особенно важен.';
-    }
-
-    if (el.dataset.last !== text) { el.dataset.last = text; const f = document.querySelector('.eva-hud-frame'); if (f) { f.classList.remove('pulse'); void f.offsetWidth; f.classList.add('pulse'); } }
-    el.textContent = text.trim();
-  }
-
-  function renderComment(){
-    if(!P){
-      document.getElementById('evaComment').innerHTML = '<b>ЭЙВА:</b> Протокола пока нет — собери его на главной за 2 минуты.';
-      return;
-    }
-    
-    let isOver = false;
-    const n = normLeft();
-    if (n && (n.closedK > n.totK)) isOver = true;
-
-    if(isOver){
-        document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Счетчик в минусе. Это перебор. Завтра вернем поленья и все выровняется. Без вины.';
+    if (!P || !P.kcal) {
+        document.getElementById('normKcal').textContent = '—';
+        document.getElementById('normP').textContent = '—';
         return;
     }
+    
+    // Вода
+    const targetWater = Math.round(parseFloat(P.weight || 70) * 30);
+    document.getElementById('normWater').textContent = Math.max(0, targetWater - D.water.amount);
 
-    if(lastPct===100){
-      document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Норма закрыта слотами на 100% — день исполнен по протоколу. 🏁 Завтра держим то же пламя.';
-      return;
+    let totK = P.kcal;
+    let totP = P.protein;
+    let spentK = 0;
+    let spentP = 0;
+    
+    const sl = D.slots[today()] || {};
+
+    if (PF && PF.slots) {
+        PF.slots.forEach(s => {
+            const rec = sl[s.name];
+            if (rec) {
+                // Если есть данные от ИИ — вычитаем ИХ
+                if (rec.aiCal) {
+                    spentK += rec.aiCal;
+                    spentP += (rec.aiProt || 0);
+                } 
+                // Если нет данных от ИИ, но есть статус (ручной клик)
+                else if (rec.st) {
+                    const planK = Math.round(P.kcal * (s.share || 0.25));
+                    const planP = Math.round(P.protein * (s.share || 0.25));
+                    let mult = 1.0;
+                    if (rec.st === 'joy') mult = 1.2;
+                    if (rec.st === 'missed') mult = 0;
+                    spentK += planK * mult;
+                    spentP += planP * mult;
+                }
+            }
+        });
     }
 
-    const j=joyCount(), js=joyStreak(); let t;
-    if(js>=4) t='Радость четыре дня подряд — это уже не радость, а протокол. Возвращаем слоты: начнём с завтрака, без вины.';
-    else if(j>=3) t='Бюджет радости закрыт на неделю: 3/3. Дальше — поленья, иначе кривая поедет. Радость вернётся в понедельник по расписанию.';
-    else if(j===0&&dayNum()>=5) t='Пустой бюджет радости ещё ждёт. Он твой по праву, а не по срыву: запланируй 🍩 слот на этих выходных.';
-    else if(D.streak>=3) t='Стрик '+D.streak+'. Твоя кривая энергии ровная. Поленья работают.';
-    else t='Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.';
+    let remK = totK - spentK;
+    let remP = totP - spentP;
     
-    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> '+t;
-  }
+    const elK = document.getElementById('normKcal');
+    const elL = document.getElementById('normKcalLabel');
+    elK.textContent = Math.abs(Math.round(remK));
+    elK.style.color = remK < 0 ? '#ff4444' : '#FF6B1A';
+    elL.textContent = remK < 0 ? 'ккал перебор' : 'ккал осталось';
 
-  function renderDash(){
-    const dn=dayNum();
-    document.getElementById('dayNum').textContent=dn;
-    document.getElementById('ringArc').style.transform='rotate('+(Math.min(dn,30)/30*360)+'deg)';
-    document.getElementById('streakV').textContent=D.streak;
-    const sl=D.slots[today()]||{}; const list=slotList();
-    document.getElementById('discV').textContent=list.filter(n=>sl[n]&&['protocol','approx','joy'].includes(sl[n].st)).length+'/'+list.length;
-    document.getElementById('joyV').textContent=joyCount()+'/3';
-    document.getElementById('weightV').textContent=D.weights.length?D.weights[D.weights.length-1].kg:'—';
-    
-    spark('sparkE',D.energy.slice(-7).map(r=>r.v),1,5);
-    spark('sparkW',D.weights.slice(-8).map(w=>w.kg));
-    
-    renderEvaBriefing();
-    renderNorm();
-    renderBadges();
-    renderComment();
-    
-    if(dn>=8){ document.getElementById('upsell8').classList.remove('hidden'); }
-    const need=!D.checkins.length||(Date.now()-D.checkins[D.checkins.length-1].date)>6*DAY;
-    if(need&&dn>=7) document.getElementById('checkinCard').classList.remove('hidden');
-  }
+    const elP = document.getElementById('normP');
+    elP.textContent = Math.abs(Math.round(remP));
+    elP.style.color = remP < 0 ? '#ff4444' : '#FF6B1A';
 
-  // НОВЫЕ СТАТУСЫ
-  const ST=[
-      ['protocol','✅ По плану'], 
-      ['approx','🟡 Почти'], 
-      ['joy','🍩 Радость'], 
-      ['missed','❌ Пропустил']
-  ];
+    let pct = Math.min(100, Math.round((spentK / totK) * 100));
+    document.getElementById('normFill').style.width = pct + '%';
+  }
 
   function renderSlots(){
-    const box=document.getElementById('slotsBox');
-    D.slots[today()]=D.slots[today()]||{};
-    const sl=D.slots[today()];
+    const box = document.getElementById('slotsBox');
+    if (!box) return;
+    const sl = D.slots[today()] || {};
     
-    box.innerHTML=slotList().map(n=>{
-      const rec=sl[n]||{};
-      return `<div class="slot" style="position:relative;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-            <div class="name">${n}</div>
-            <button onclick="startVoice('${n}')" style="background:var(--accent); border:none; border-radius:50%; width:36px; height:36px; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:1.2rem;" title="Надиктовать, что съел">🎙</button>
-        </div>
-        <div class="hint">${slotHint(n)}</div>
-        <div class="stbtns">
-            ${ST.map(s=>`
-                <button class="stb ${rec.st===s[0]?'sel':''}" onclick="markSlot('${n}','${s[0]}')">
-                    ${s[1]}
-                </button>
-            `).join('')}
-        </div>
-        <input class="note" placeholder="Заметка (нажми на 🎙, чтобы надиктовать)" value="${rec.note||''}" onchange="saveNote('${n}',this.value)">
-      </div>`;
+    box.innerHTML = slotList().map(n => {
+        const rec = sl[n] || {};
+        
+        // Берем план из протокола
+        let planKcal = 300, planB = 20, planF = 10, planC = 30;
+        if (PF && PF.slots) {
+            const s = PF.slots.find(x => x.name === n);
+            if (s && s.share) {
+                planKcal = Math.round(P.kcal * s.share);
+                planB = Math.round(P.protein * s.share);
+                planF = Math.round(P.fat * s.share);
+                planC = Math.round(P.carbs * s.share);
+            }
+        }
+
+        return `<div class="slot">
+            <!-- ЛЕВАЯ КОЛОНКА: ПЛАН -->
+            <div class="slot-col">
+                <div class="slot-title">План (Протокол)</div>
+                <div class="slot-name">${n}</div>
+                <div class="plan-box">
+                    <div class="plan-kcal">${planKcal} ккал</div>
+                    <div class="plan-macros">Б: ${planB} · Ж: ${planF} · У: ${planC}</div>
+                </div>
+            </div>
+
+            <!-- ПРАВАЯ КОЛОНКА: ФАКТ -->
+            <div class="slot-col">
+                <div class="slot-title" style="display:flex; justify-content:space-between;">
+                    Факт (Съедено)
+                    <button class="voice-btn" onclick="startVoice('${n}')" title="Надиктовать">🎙</button>
+                </div>
+                <div class="fact-box">
+                    <textarea class="note" placeholder="Нажми 🎙 и скажи, что съел..." onchange="saveNote('${n}',this.value)">${rec.note || ''}</textarea>
+                    ${rec.aiCal ? `<div class="fact-kcal">✅ ИИ: ${rec.aiCal} ккал</div>` : '<div class="fact-kcal" style="color:#777;">Нет данных</div>'}
+                </div>
+                
+                <div class="stbtns">
+                    <button class="stb ${rec.st==='protocol'?'sel':''}" onclick="markSlot('${n}','protocol')">По плану</button>
+                    <button class="stb ${rec.st==='joy'?'sel':''}" onclick="markSlot('${n}','joy')">Радость</button>
+                    <button class="stb ${rec.st==='missed'?'sel':''}" onclick="markSlot('${n}','missed')">Пропустил</button>
+                </div>
+            </div>
+        </div>`;
     }).join('');
   }
 
-  // === ГОЛОСОВОЙ ВВОД (Web Speech API) ===
+  function markSlot(name, st){
+    D.slots[today()] = D.slots[today()] || {};
+    D.slots[today()][name] = Object.assign(D.slots[today()][name] || {}, {st: st});
+    save(); renderSlots(); renderNorm();
+  }
+
+  function saveNote(name, v){
+    D.slots[today()] = D.slots[today()] || {};
+    D.slots[today()][name] = Object.assign(D.slots[today()][name] || {}, {note: v});
+    save();
+  }
+
+  // === ГОЛОСОВОЙ ВВОД ===
   let activeRecognition = null;
-
   function startVoice(slotName) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SR) { alert('Браузер не поддерживает микрофон'); return; }
       
-      if (!SpeechRecognition) {
-          alert('Твой браузер не поддерживает голосовой ввод. Используй Chrome или Safari.');
-          return;
-      }
+      if (activeRecognition) { activeRecognition.stop(); activeRecognition = null; return; }
 
-      if (activeRecognition) {
-          activeRecognition.stop();
-          activeRecognition = null;
-          return;
-      }
-
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'ru-RU';
-      recognition.continuous = true;
-      recognition.interimResults = false;
-      
-      activeRecognition = recognition;
+      const rec = new SR();
+      rec.lang = 'ru-RU'; rec.continuous = true; rec.interimResults = false;
+      activeRecognition = rec;
       let fullText = '';
-
-      if (typeof showToast === 'function') showToast('Слушаю...', 'Перечисли блюда. Нажми 🎙 еще раз, чтобы остановить.', '🎙');
 
       const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
       if (btn) { btn.style.background = '#ff4444'; btn.innerHTML = '⏹'; }
 
-      recognition.onresult = function(event) {
-          let text = event.results[event.resultIndex][0].transcript;
-          fullText += text + '. ';
-          
-          const noteInput = document.querySelector(`input[onchange="saveNote('${slotName}',this.value)"]`);
-          if (noteInput) noteInput.value = fullText;
+      rec.onresult = (e) => {
+          fullText += e.results[e.resultIndex][0].transcript + '. ';
+          const area = document.querySelector(`textarea[onchange="saveNote('${slotName}',this.value)"]`);
+          if (area) area.value = fullText;
       };
 
-      recognition.onend = async function() {
+      rec.onend = async () => {
           activeRecognition = null;
-          
-          const btn = document.querySelector(`button[onclick="startVoice('${slotName}')"]`);
           if (btn) { btn.style.background = 'var(--accent)'; btn.innerHTML = '🎙'; }
+          if (!fullText.trim()) return;
 
-          const finalText = fullText.trim();
-          if (!finalText) return;
-
-          const noteInput = document.querySelector(`input[onchange="saveNote('${slotName}',this.value)"]`);
-          if (noteInput) noteInput.value = '⏳ Анализирую через ИИ...';
+          const area = document.querySelector(`textarea[onchange="saveNote('${slotName}',this.value)"]`);
+          if (area) area.value = '⏳ Анализ...';
           
-          if (typeof showToast === 'function') showToast('Анализ', 'GigaChat считает калории...', '⏳');
-
           try {
-              // ОТПРАВЛЯЕМ ТЕКСТ НА PYTHON-СЕРВЕР
-              const response = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ text: finalText })
+              const res = await fetch('https://c37-python-rag.de1.netrun.io/api/parse-food', {
+                  method: 'POST', headers: {'Content-Type':'application/json'},
+                  body: JSON.stringify({ text: fullText })
               });
+              const data = await res.json();
               
-              const data = await response.json();
-              
-              // Если сервер вернул ошибку или пустой массив
-              if (!data.items || data.items.length === 0) {
-                  throw new Error(data.error || "ИИ не нашел еду в тексте");
-              }
+              if (!data.items || data.items.length === 0) throw new Error(data.error || "Еда не найдена");
 
-              let totalCal = 0, totalProt = 0, totalFat = 0, totalCarb = 0;
-              let itemsList = [];
+              let cals=0, pr=0, ft=0, cb=0;
+              data.items.forEach(i => { cals+=i.cal; pr+=i.prot; ft+=i.fat; cb+=i.carb; });
 
-              data.items.forEach(item => {
-                  totalCal += (item.cal || 0);
-                  totalProt += (item.prot || 0);
-                  totalFat += (item.fat || 0);
-                  totalCarb += (item.carb || 0);
-                  itemsList.push(item.name);
-              });
-
-                            let status = 'protocol';
-              let slotCalGoal = 300; // Базовая заглушка, если протокола нет
-              
-              // Безопасно проверяем, есть ли протокол и слоты в нем
-              if (P && P.kcal) {
-                  let share = 0;
-                  if (P.slots && Array.isArray(P.slots)) {
-                      const slotData = P.slots.find(s => s.name === slotName);
-                      if (slotData && slotData.share) share = slotData.share;
-                  }
-                  slotCalGoal = Math.round(P.kcal * share);
-              }
-
-              if (totalCal > slotCalGoal * 1.2) {
-                  status = 'joy';
-              }
-
+              D.slots[today()] = D.slots[today()] || {};
               D.slots[today()][slotName] = { 
-                  st: status, 
-                  note: finalText,
-                  aiCal: totalCal,
-                  aiProt: totalProt,
-                  aiFat: totalFat,
-                  aiCarb: totalCarb
+                  note: fullText, 
+                  aiCal: cals, aiProt: pr, aiFat: ft, aiCarb: cb,
+                  st: 'protocol' // статус ставим по умолчанию
               };
               
-              if (noteInput) noteInput.value = `${finalText} [ИИ: ~${totalCal} ккал]`;
+              if (area) area.value = fullText;
+              save(); renderSlots(); renderNorm();
               
-              bumpStreak(); save(); renderSlots(); renderDash();
-              
-              if (typeof showToast === 'function') {
-                  showToast('Распознано!', `${itemsList.join(', ')}. Итого: ${totalCal} ккал`, '✅');
-              }
+              if (typeof showToast === 'function') showToast('Записано!', `${cals} ккал`, '✅');
 
-          } catch (error) {
-              console.error('Ошибка анализа:', error);
-              if (noteInput) noteInput.value = finalText + ' (ошибка ИИ)';
-              D.slots[today()][slotName] = { st: 'protocol', note: finalText };
-              save(); renderSlots(); renderDash();
-              
-              // Показываем реальную ошибку, которую вернул сервер
-              if (typeof showToast === 'function') {
-                  showToast('Ошибка ИИ', error.message, '❌');
-              }
+          } catch (err) {
+              if (area) area.value = fullText;
+              D.slots[today()][slotName] = { note: fullText };
+              save(); renderSlots();
+              if (typeof showToast === 'function') showToast('Ошибка', err.message, '❌');
           }
       };
-
-      recognition.onerror = function(event) {
-          console.error('Ошибка распознавания:', event.error);
-          activeRecognition = null;
-      };
-
-      recognition.start();
+      rec.start();
   }
 
-  function markSlot(name,st){
-    D.slots[today()]=D.slots[today()]||{};
-    D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{st:st});
-    bumpStreak(); save(); renderSlots(); renderDash();
-  }
+  function addWater(a) { D.water.amount += a; save(); renderNorm(); }
+  function saveGoal() { alert('Цель сохранена (в разработке)'); }
 
-  function saveNote(name,v){ 
-      D.slots[today()][name]=Object.assign(D.slots[today()][name]||{},{note:v}); 
-      save(); 
-  }
-
-  function bumpStreak(){ 
-      const t=today(); 
-      if(D.lastDay===t)return; 
-      const y=dateBack(1); 
-      
-      // Стрик обрывается, если вчера были только пропуски или ничего
-      const ySlots = D.slots[y] || {};
-      const hasRealAction = Object.values(ySlots).some(r => ['protocol','approx','joy'].includes(r.st));
-
-      if(D.lastDay===y && hasRealAction) D.streak += 1;
-      else if (D.lastDay===y && !hasRealAction) D.streak = 1; // Обрыв, начинаем заново
-      else D.streak = 1; // Новый стрик
-      
-      D.lastDay=t; 
-      save(); 
-  }
-  
-  function bindTap(id,key){
-    document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{
-      document.querySelectorAll('#'+id+' button').forEach(x=>x.classList.remove('sel'));
-      b.classList.add('sel');
-      const rec=D[key].find(r=>r.date===today());
-      if(rec)rec.v=+b.dataset.v; else D[key].push({date:today(),v:+b.dataset.v});
-      bumpStreak(); save(); renderDash();
-    });
-  }
-
-  let ciCraving=null;
-  document.querySelectorAll('#ciCraving button').forEach(b=>b.onclick=()=>{
-    document.querySelectorAll('#ciCraving button').forEach(x=>x.classList.remove('sel'));
-    b.classList.add('sel'); ciCraving=b.dataset.v;
-  });
-
-  function submitCheckin(){
-    const w=parseFloat(document.getElementById('ciWeight').value);
-    const warn=document.getElementById('ciWarn');
-    if(!w||w<30||w>250){ warn.style.display='block'; warn.textContent='Проверь вес: 30–250 кг.'; return; }
-    const waist=document.getElementById('ciWaist').value||null;
-    const prev=D.weights.length?D.weights[D.weights.length-1].kg:null;
-    D.weights.push({date:Date.now(),kg:w,waist:waist});
-    const rec={date:Date.now(),kg:w,waist:waist,craving:ciCraving,delta:null,adj:null,adh:adherence7()};
-    let msg='';
-    if(prev){
-      const delta=(w-prev)/prev*100; rec.delta=+delta.toFixed(2);
-      const goal=P?P.goal:'Похудение';
-      if(goal==='Похудение'){
-        if(delta<=-1){ rec.adj='carbs+10'; msg='Темп быстрее −1% в неделю — это вода и мышцы. Добавляю +10% углеводов в обед.'; }
-        else if(delta<=-0.25){ msg='Норма: −'+Math.abs(delta).toFixed(1)+'% за неделю. Ровно то, что горит без мышц.'; }
-        else{ const pc=D.checkins.slice(-1)[0]; if(pc&&pc.delta!==null&&pc.delta>-0.25){ rec.adj='carbs-10'; msg='Две недели плато. Выбирай: −10% углеводов или +2 000 шагов.'; } else msg='Пока плато, но это одна неделя. Держим линию.'; }
-      }else if(goal==='Мышцы'){
-        if(delta>=0.2&&delta<=0.5)msg='+0,2–0,5% в неделю — чистый набор. Держим.';
-        else if(delta>0.5){ rec.adj='carbs-10'; msg='Растёшь быстрее плана — скорее вода. Срезаю 10% углеводов.'; }
-        else{ rec.adj='carbs+10'; msg='Мало роста. +10% углеводов в обед.'; }
-      }else msg='Цель «энергия»: вес не главный маркер. Смотрю на кривую энергии.';
-    }else msg='Первая точка зафиксирована. Через неделю смогу считать тренд.';
-    D.checkins.push(rec); save();
-    document.getElementById('checkinCard').classList.add('hidden');
-    document.getElementById('evaComment').innerHTML='<b>ЭЙВА (чек-ин):</b> '+msg+(rec.adj?' <button class="btn-diary" onclick="applyAdj(\''+rec.adj+'\')">Применить</button>':'');
-    renderDash();
-  }
-
-  function applyAdj(adj){
-    if(!P){ alert('Сначала собери протокол на сайте.'); return; }
-    P.adj=adj; localStorage.setItem(LS_P,JSON.stringify(P));
-    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Применено. Протокол обновлён.';
-  }
-
-  function addWater(amount) {
-    D.water.amount += amount;
-    save();
-    renderNorm(); // Обновляем счетчик
-    if (typeof showToast === 'function') showToast('Вода', `Записано +${amount} мл`, '💧');
-  }
-
-  function saveGoal(){
-    const cur=parseFloat(document.getElementById('wNow').value)||(D.weights.length?D.weights[D.weights.length-1].kg:null);
-    const g=parseFloat(document.getElementById('wGoal').value);
-    const weeks=parseInt(document.getElementById('wWeeks').value)||8;
-    const warn=document.getElementById('goalWarn');
-    if(!cur||!g){ warn.style.display='block'; warn.textContent='Заполни текущий вес и цель.'; return; }
-    const diff=Math.abs(cur-g);
-    const safeMinWeeks=Math.ceil(diff/(cur*0.01));
-    if(g<cur&&weeks<safeMinWeeks){ warn.style.display='block'; warn.textContent='За '+weeks+' недель это '+((diff/cur/weeks)*100).toFixed(1)+'% в неделю. Безопасный темп — до 1% в неделю, то есть минимум '+safeMinWeeks+' недель.'; return; }
-    warn.style.display='none'; D.goal={cur:cur,goal:g,weeks:weeks}; save();
-    document.getElementById('evaComment').innerHTML='<b>ЭЙВА:</b> Цель: '+g+' кг за '+weeks+' недель. Безопасно. Иду с тобой по чек-инам.';
-  }
-
-  function goSub(plan){ location.href='index.html'; }
-
-  bindTap('tapEnergy','energy'); bindTap('tapSleep','sleep');
-  renderSlots(); renderDash();
+  // Запуск
+  renderSlots(); renderNorm();
+  if (typeof renderDash === 'function') renderDash();
 </script>
 </body>
 </html>
