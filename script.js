@@ -423,10 +423,13 @@ function renderProtocolInto(PF){
         whyText = `<b>Зачем:</b> Перекус нужен, чтобы не съесть слона на ужин. Орехи или батончик отлично держат голод.`;
     }
 
-    let barBadge = s.bar ? `<span style="font-size:0.7rem; background:var(--accent); color:#111; padding:2px 6px; border-radius:4px; margin-left:10px; vertical-align:middle;">Бар: ${s.bar}</span>` : '';
+    // ИСПРАВЛЕНО: "Бар" на "Батончик"
+    let barBadge = s.bar ? `<span style="font-size:0.7rem; background:var(--accent); color:#111; padding:2px 6px; border-radius:4px; margin-left:10px; vertical-align:middle;">Батончик: ${s.bar}</span>` : '';
 
     return `
     <div class="proto-card reveal">
+        
+        <!-- ЛЕВАЯ КОЛОНКА (Тарелка + Легенда) -->
         ${plateClass ? `
         <div class="plate-container">
             <div class="plate-visual ${plateClass}">
@@ -436,8 +439,16 @@ function renderProtocolInto(PF){
                 </div>
             </div>
             <div class="plate-label">ТВОЯ ТАРЕЛКА</div>
+            
+            <!-- Легенда в столбик -->
+            <div style="font-size:0.75rem; color:#aaa; margin-top:5px; display:flex; flex-direction:column; gap:5px; width:100%; padding-left:15px;">
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:#4CAF50; border-radius:50%; display:inline-block;"></span> Овощи</span>
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:#FF6B1A; border-radius:50%; display:inline-block;"></span> Белки</span>
+                <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:#FFD700; border-radius:50%; display:inline-block;"></span> Углеводы</span>
+            </div>
         </div>` : ''}
 
+        <!-- ПРАВАЯ КОЛОНКА (Текст) -->
         <div class="proto-info">
             <div class="proto-title">
                 ${n} ${barBadge}
@@ -450,13 +461,6 @@ function renderProtocolInto(PF){
                 <div style="color:#fff; font-weight:bold;">Жиры: ${targetFat} г</div>
                 <div style="color:#FFD700; font-weight:bold;">Углеводы: ${targetCarb} г</div>
             </div>
-
-            ${plateClass ? `
-            <div style="font-size:0.75rem; color:#777; margin-bottom:10px; display:flex; gap:12px; align-items:center;">
-                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#4CAF50; border-radius:50%; display:inline-block;"></span> Овощи</span>
-                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#FF6B1A; border-radius:50%; display:inline-block;"></span> Белки</span>
-                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#FFD700; border-radius:50%; display:inline-block;"></span> Углеводы</span>
-            </div>` : ''}
 
             <div class="proto-layer">
                 ${visualHtml}
@@ -472,6 +476,7 @@ function renderProtocolInto(PF){
   }).join('');
   
   return `
+   <!-- ГЛАВНАЯ НОРМА -->
    <div style="border:2px solid var(--accent);border-radius:16px;padding:25px;margin-bottom:25px;background:linear-gradient(135deg, rgba(255,107,26,.1), rgba(20,24,28,.95)); position:relative; overflow:hidden;">
      <div style="position:absolute; top:-20px; right:-20px; font-size:8rem; opacity:0.05; font-weight:900; font-style:italic;">C37</div>
      <div style="font-size:.8rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
