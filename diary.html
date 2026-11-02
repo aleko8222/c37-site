@@ -522,8 +522,67 @@
           evaBox.innerHTML = `<b>ЭЙВА:</b> Вес стоит на месте. Это плато. Если затянется на 2 недели, мы урежем 10% углеводов. Пока просто продолжай.`;
       }
   }
+  function renderDash() {
+    if (!P) return;
+    
+    // 1. Считаем день
+    const start = D.start || Date.now();
+    const dayNum = Math.floor((Date.now() - start) / 86400000) + 1;
+    document.getElementById('dayNum').textContent = dayNum;
+    
+    // 2. Стрик (упрощенно)
+    document.getElementById('streakV').textContent = D.streak || 0;
+    
+    // 3. Слоты сегодня
+    const sl = D.slots[today()] || {};
+    const totalSlots = slotList().length;
+    let closedSlots = 0;
+    let joyCount = 0;
 
-  // === ГОЛОСОВОЙ ВВОД ===
+    slotList().forEach(n => {
+        const rec = sl[n];
+        if (rec) {
+            if (rec.st === 'joy') joyCount++;
+            if (['protocol', 'approx', 'joy'].includes(rec.st) || rec.items) closedSlots++;
+        }
+    });
+
+    document.getElementById('discV').textContent = `${closedSlots}/${totalSlots}`;
+    document.getElementById('joyV').textContent = `${joyCount}/3`;
+    
+    // 4. Вес
+    if (D.weights && D.weights.length > 0) {
+        document.getElementById('weightV').textContent = D.weights[D.weights.length - 1].value;
+    }
+
+    // 5. Брифинг ЭЙВЫ (верхний текст)
+    const evaBriefing = document.getElementById('evaBriefing');
+    if (evaBriefing) {
+        if (closedSlots === 0) {
+            evaBriefing.innerHTML = `Доброе утро! Твой план на сегодня — ${P.kcal} ккал. Начни с завтрака и не забудь про воду.`;
+        } else if (closedSlots === totalSlots) {
+            evaBriefing.innerHTML = `Отлично! Все слоты закрыты. Ты справился с протоколом на сегодня.`;
+        } else {
+            evaBriefing.innerHTML = `Ты уже закрыл ${closedSlots} из ${totalSlots} слотов. Продолжай в том же духе!`;
+        }
+    }
+
+    // 6. Комментарий внизу
+    const evaComment = document.getElementById('evaComment');
+    if (evaComment) {
+        let text = "Протокол — это слоты, а не подвиги. Отметь сегодня статусы — и день засчитан.";
+        
+        if (closedSlots === totalSlots) {
+            text = "🏁 День закрыт на 100%. Ты в норме. Отдыхай!";
+        } else if (joyCount >= 3) {
+            text = "Бюджет радости на неделю исчерпан. Дальше — только полезная еда.";
+        } else {
+            text = `Ты прошел ${Math.round((closedSlots/totalSlots)*100)}% дня. ${closedSlots === 0 ? 'Пора начинать!' : 'Не сбавляй темп.'}`;
+        }
+        
+        evaComment.innerHTML = `<b>ЭЙВА:</b> ${text}`;
+    }
+  }  // === ГОЛОСОВОЙ ВВОД ===
   let activeRecognition = null;
   function startVoice(slotName) {
       const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
