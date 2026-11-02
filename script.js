@@ -367,16 +367,15 @@ if (a.activity === 'Высокий' || a.goal === 'Мышцы') {
 
 function renderProtocolInto(PF){
   const slotsHtml = PF.slots.map(s => {
-    // 1. Базовые цифры
-    let targetKcal = 0, targetProt = 0, targetFat = 0, targetCarb = 0;
-    if (s.share) {
-        targetKcal = Math.round(PF.kcal * s.share);
-        targetProt = Math.round(PF.protein * s.share);
-        targetFat = Math.round(PF.fat * s.share);
-        targetCarb = Math.round(PF.carbs * s.share);
-    }
+    // 1. Базовые цифры (если share=0, даем 10% для отображения)
+    let shareForCalc = (s.share === 0) ? 0.10 : (s.share || 0.25);
+    
+    let targetKcal = Math.round(PF.kcal * shareForCalc);
+    let targetProt = Math.round(PF.protein * shareForCalc);
+    let targetFat = Math.round(PF.fat * shareForCalc);
+    let targetCarb = Math.round(PF.carbs * shareForCalc);
 
-    // 2. НОВОЕ: Подменяем названия для старых сохраненных протоколов
+    // 2. Подменяем названия для старых сохраненных протоколов
     let displayName = s.name;
     if (displayName === 'Предтрен') displayName = 'Предтренировочный';
     if (displayName === 'Посттрен') displayName = 'Посттренировочный';
@@ -428,11 +427,11 @@ function renderProtocolInto(PF){
         whyText = `<b>Зачем:</b> Перекус нужен, чтобы не съесть слона на ужин. Орехи или батончик отлично держат голод.`;
     }
 
-    // ИСПРАВЛЕНО: "Бар" на "Батончик"
     let barBadge = s.bar ? `<span style="font-size:0.7rem; background:var(--accent); color:#111; padding:2px 6px; border-radius:4px; margin-left:10px; vertical-align:middle;">Батончик: ${s.bar}</span>` : '';
 
+    // ВАЖНО: Убрали класс "reveal" из proto-card, чтобы карточки не были прозрачными при первом рендере
     return `
-    <div class="proto-card reveal">
+    <div class="proto-card">
         
         <!-- ЛЕВАЯ КОЛОНКА (Тарелка + Легенда) -->
         ${plateClass ? `
@@ -445,7 +444,6 @@ function renderProtocolInto(PF){
             </div>
             <div class="plate-label">ТВОЯ ТАРЕЛКА</div>
             
-            <!-- Легенда в столбик -->
             <div style="font-size:0.75rem; color:#aaa; margin-top:5px; display:flex; flex-direction:column; gap:5px; width:100%; padding-left:15px;">
                 <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:#4CAF50; border-radius:50%; display:inline-block;"></span> Овощи</span>
                 <span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; background:#FF6B1A; border-radius:50%; display:inline-block;"></span> Белки</span>
@@ -455,7 +453,7 @@ function renderProtocolInto(PF){
 
         <!-- ПРАВАЯ КОЛОНКА (Текст) -->
         <div class="proto-info">
-                <div class="proto-title">
+            <div class="proto-title">
                 ${displayName} ${barBadge}
                 <span class="proto-time">${s.time}</span>
             </div>
@@ -481,7 +479,6 @@ function renderProtocolInto(PF){
   }).join('');
   
   return `
-   <!-- ГЛАВНАЯ НОРМА -->
    <div style="border:2px solid var(--accent);border-radius:16px;padding:25px;margin-bottom:25px;background:linear-gradient(135deg, rgba(255,107,26,.1), rgba(20,24,28,.95)); position:relative; overflow:hidden;">
      <div style="position:absolute; top:-20px; right:-20px; font-size:8rem; opacity:0.05; font-weight:900; font-style:italic;">C37</div>
      <div style="font-size:.8rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
@@ -501,7 +498,7 @@ function renderProtocolInto(PF){
       ${PF.rules.map(r => `<div style="background:rgba(0,0,0,0.4); border:1px solid #333; padding:15px; border-radius:12px; font-size:0.9rem; color:#ddd;">✅ ${r}</div>`).join('')}
    </div>
 
-   ${PF.warnings.length ? `<div style="background:rgba(255,204,0,0.1); border-left:3px solid #ffcc00; padding:15px; border-radius:8px; margin-bottom:30px; font-size:0.85rem; color:#ffcc00;">⚠️ ${PF.warnings.join(' ')}</div>` : ''}
+   ${PF.warnings.length ? `<div style="background:rgba(255,204,0,0.1); border-left:3px solid #ffcc00; padding:15px; border-radius:8px; margin-bottom:30px; font-size:0.85rem; color:#ffcc00;">⚠️ ${PF.warnings.join(' ').replace(/Бар /g, 'Батончик ').replace(/Предтрен/g, 'Предтренировочный')}</div>` : ''}
    
    <div style="display:flex;flex-direction:column;gap:12px;margin-top:30px;">
      <button class="btn" onclick="addToCart('ПРОТОКОЛ НЕДЕЛИ (7 шт)', 1190)">Заказать бокс по этому протоколу — 1 190 ₽</button>
