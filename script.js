@@ -388,58 +388,58 @@ function renderProtocolInto(PF){
 
     if (n.includes('Завтрак')) {
         plateClass = 'plate-breakfast';
-        visualHtml = `<b>Как собрать:</b> 1 ладонь белка (2-3 яйца или творог) 🖐 + 1 палец жиров (авокадо или масло) 👍. Углеводов минимум.`;
-        altText = `<b>Если нет времени:</b> Стакан воды и батончик C37. Это лучше, чем пропустить прием пищи и сорваться на сладкое.`;
+        visualHtml = `<b>Как собрать (см. тарелку):</b> ½ — Белок (омлет/творог) 🟠. ¼ — Углеводы (хлеб/фрукт) 🟡. ¼ — Овощи (помидор/огурец) 🟢. Жиры: ложка масла или орехи.`;
+        altText = `<b>Если нет времени:</b> Стакан воды и батончик C37. Это лучше, чем пропустить прием пищи.`;
         whyText = `<b>Зачем:</b> Утром нам не нужен сахар. Белок и жиры дадут ровную энергию, и ты не захочешь спать в 11 утра.`;
     } 
     else if (n.includes('Обед')) {
         plateClass = 'plate-lunch';
-        visualHtml = `<b>Как собрать:</b> ½ тарелки — овощи. ¼ — белок (кусок мяса/рыбы с ладонь) 🖐. ¼ — сложные углеводы (гарнир объемом с кулак) ✊.`;
+        visualHtml = `<b>Как собрать (см. тарелку):</b> ½ — Овощи (салат) 🟢. ¼ — Белок (мясо/рыба с ладонь) 🟠. ¼ — Углеводы (гарнир с кулак) 🟡. Жиры: заправь салат маслом.`;
         altText = `<b>Если обед в кафе:</b> Возьми суп с мясом и овощной салат. От хлеба и десерта лучше отказаться.`;
-        whyText = `<b>Зачем:</b> Это даст тебе 4 часа ровной энергии. Ты не будешь клевать носом после еды и не захочешь сладкого в 16:00.`;
+        whyText = `<b>Зачем:</b> Это даст тебе 4 часа ровной энергии. Ты не будешь клевать носом после еды.`;
     } 
     else if (n.includes('Ужин')) {
         plateClass = 'plate-dinner';
-        visualHtml = `<b>Как собрать:</b> ½ тарелки — овощи. ½ — легкий белок (рыба, курица, тофу или творог) 🖐. Углеводы — только если очень хочется.`;
-        altText = `<b>Если ужинаешь поздно:</b> Сделай его максимально легким. Пачка творога с зеленью или батончик C37 с чаем.`;
+        visualHtml = `<b>Как собрать (см. тарелку):</b> ½ — Овощи (тушеная капуста, брокколи) 🟢. ½ — Белок (рыба, курица, тофу) 🟠. <i>Углеводов на тарелке нет</i>. Жиры: оливковое масло.`;
+        altText = `<b>Если ужинаешь поздно:</b> Сделай его максимально легким. Пачка творога с зеленью или батончик C37.`;
         whyText = `<b>Зачем:</b> Ночью организм восстанавливается. Ему нужен белок, но не нужно забивать ЖКТ тяжелой едой перед сном.`;
     }
     else if (n.includes('Предтрен')) {
-        visualHtml = `<b>Как собрать:</b> 1 кулак быстрых углеводов ✊ (банан, тост с джемом). Никаких тяжелых белков и жиров!`;
+        visualHtml = `<b>Как собрать:</b> 1 кулак быстрых углеводов ✊ (банан, тост с джемом) 🟡. Никаких тяжелых белков и жиров!`;
         altText = `<b>Если бежишь в зал:</b> Съешь батончик «Энергия Дисциплины» прямо по дороге.`;
         whyText = `<b>Зачем:</b> Перед тренировкой нужна быстрая энергия. Если набьешь желудок мясом, кровь пойдет в живот, а не в мышцы.`;
     }
     else if (n.includes('Посттрен')) {
-        visualHtml = `<b>Как собрать:</b> Порция протеина или творог (1 ладонь) 🖐 + быстрый углевод (банан или порция риса) ✊.`;
+        visualHtml = `<b>Как собрать:</b> Порция протеина или творог (1 ладонь) 🟠 + быстрый углевод (банан или рис) 🟡.`;
         altText = `<b>Если едешь домой:</b> Батончик «Восстановление» сразу после зала.`;
         whyText = `<b>Зачем:</b> В течение часа после зала организм работает как губка. Он хочет засосать белок и углеводы, чтобы закрыть микротравмы.`;
     }
     else if (n.includes('Вместо сладкого')) {
         visualHtml = `<b>Как собрать:</b> Батончик «База Лимитированная» или горсть ягод с чаем.`;
         altText = `<b>Альтернатива:</b> Горький шоколад (не более 20 г).`;
-        whyText = `<b>Зачем:</b> Обмануть мозг без последствий для фигуры. Ты не должен лишать себя удовольствия, просто замени пустые конфеты на топливо.`;
+        whyText = `<b>Зачем:</b> Обмануть мозг без последствий для фигуры. Ты не должен лишать себя удовольствия.`;
     }
     else { // Перекусы
-        visualHtml = `<b>Как собрать:</b> 1 ладонь белка (греческий йогурт, горсть орехов) 🖐 или 1 батончик C37 + клетчатка (яблоко).`;
+        visualHtml = `<b>Как собрать:</b> 1 ладонь белка (греческий йогурт, орехи) 🟠 или 1 батончик C37 + клетчатка (яблоко) 🟢.`;
         altText = `<b>Если на ходу:</b> Просто батончик C37 и стакан воды.`;
         whyText = `<b>Зачем:</b> Перекус нужен, чтобы не съесть слона на ужин. Орехи или батончик отлично держат голод.`;
     }
 
-    // Если это слот с баром (например, "Вместо сладкого" или "Предтрен")
     let barBadge = s.bar ? `<span style="font-size:0.7rem; background:var(--accent); color:#111; padding:2px 6px; border-radius:4px; margin-left:10px; vertical-align:middle;">Бар: ${s.bar}</span>` : '';
 
     return `
     <div class="proto-card reveal">
-        <!-- ТАРЕЛКА (если есть) -->
         ${plateClass ? `
-        <div class="plate-visual ${plateClass}">
-            <div class="plate-center">
-                <span>${targetKcal}</span>
-                <small>ккал</small>
+        <div class="plate-container">
+            <div class="plate-visual ${plateClass}">
+                <div class="plate-center">
+                    <span>${targetKcal}</span>
+                    <small>ккал</small>
+                </div>
             </div>
+            <div class="plate-label">ТВОЯ ТАРЕЛКА</div>
         </div>` : ''}
 
-        <!-- ИНФО -->
         <div class="proto-info">
             <div class="proto-title">
                 ${n} ${barBadge}
@@ -447,14 +447,21 @@ function renderProtocolInto(PF){
             </div>
             
             <div class="proto-macros">
-                <div>Цель: <b>${targetKcal}</b> ккал</div>
-                <div>Б: <b>${targetProt}</b> г</div>
-                <div>Ж: <b>${targetFat}</b> г</div>
-                <div>У: <b>${targetCarb}</b> г</div>
+                <div>Цель: <b style="color:var(--accent); font-size:1.1rem;">${targetKcal}</b> ккал</div>
+                <div style="color:#FF6B1A; font-weight:bold;">Белки: ${targetProt} г</div>
+                <div style="color:#fff; font-weight:bold;">Жиры: ${targetFat} г</div>
+                <div style="color:#FFD700; font-weight:bold;">Углеводы: ${targetCarb} г</div>
             </div>
 
+            ${plateClass ? `
+            <div style="font-size:0.75rem; color:#777; margin-bottom:10px; display:flex; gap:12px; align-items:center;">
+                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#4CAF50; border-radius:50%; display:inline-block;"></span> Овощи</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#FF6B1A; border-radius:50%; display:inline-block;"></span> Белки</span>
+                <span style="display:flex; align-items:center; gap:4px;"><span style="width:10px; height:10px; background:#FFD700; border-radius:50%; display:inline-block;"></span> Углеводы</span>
+            </div>` : ''}
+
             <div class="proto-layer">
-                ${visualHtml.replace('🖐', '<span class="hand-icon">🖐</span>').replace('✊', '<span class="hand-icon">✊</span>').replace('👍', '<span class="hand-icon">👍</span>')}
+                ${visualHtml}
             </div>
             <div class="proto-layer alt">
                 ${altText}
@@ -467,15 +474,14 @@ function renderProtocolInto(PF){
   }).join('');
   
   return `
-   <!-- ГЛАВНАЯ НОРМА -->
    <div style="border:2px solid var(--accent);border-radius:16px;padding:25px;margin-bottom:25px;background:linear-gradient(135deg, rgba(255,107,26,.1), rgba(20,24,28,.95)); position:relative; overflow:hidden;">
      <div style="position:absolute; top:-20px; right:-20px; font-size:8rem; opacity:0.05; font-weight:900; font-style:italic;">C37</div>
      <div style="font-size:.8rem;letter-spacing:2px;color:var(--accent);font-weight:800;">ТВОЯ НОРМА НА ДЕНЬ</div>
      <div style="font-size:3.5rem;font-weight:900;color:#fff; line-height:1.1;">${PF.kcal} <span style="font-size:1.5rem; color:#888;">ккал</span></div>
      <div style="font-size:1.1rem;color:#ccc; margin-top:5px; display:flex; gap:15px; flex-wrap:wrap;">
-        <span>Белки: <b style="color:#fff;">${PF.protein} г</b></span>
+        <span>Белки: <b style="color:#FF6B1A;">${PF.protein} г</b></span>
         <span>Жиры: <b style="color:#fff;">${PF.fat} г</b></span>
-        <span>Углеводы: <b style="color:#fff;">${PF.carbs} г</b></span>
+        <span>Углеводы: <b style="color:#FFD700;">${PF.carbs} г</b></span>
      </div>
    </div>
    
