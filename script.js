@@ -376,7 +376,12 @@ function renderProtocolInto(PF){
         targetCarb = Math.round(PF.carbs * s.share);
     }
 
-    // 2. Логика для визуала, альтернативы и смысла
+    // 2. НОВОЕ: Подменяем названия для старых сохраненных протоколов
+    let displayName = s.name;
+    if (displayName === 'Предтрен') displayName = 'Предтренировочный';
+    if (displayName === 'Посттрен') displayName = 'Посттренировочный';
+
+    // 3. Логика для визуала, альтернативы и смысла
     let plateClass = '';
     let visualHtml = '';
     let altText = '';
