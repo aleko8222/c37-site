@@ -472,19 +472,17 @@
 
   function markSlot(name, st){
     D.slots[today()] = D.slots[today()] || {};
-    // Берем текущие данные слота (включая еду от ИИ) и меняем только статус
     let current = D.slots[today()][name] || {};
-    current.st = st; 
-    D.slots[today()][name] = current;
     
+    // Если нажали на тот же статус, который уже стоит — снимаем его (откат)
+    if (current.st === st) {
+        current.st = null;
+    } else {
+        current.st = st;
+    }
+    
+    D.slots[today()][name] = current;
     save(); renderSlots(); renderNorm();
-  }
-
-  function resetSlot(name) {
-      if(confirm('Удалить распознанную еду?')) {
-          D.slots[today()][name] = {};
-          save(); renderSlots(); renderNorm();
-      }
   }
 
   // === ТРЕКЕР ВЕСА ===
