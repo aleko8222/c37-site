@@ -455,8 +455,8 @@ function renderProtocolInto(PF){
 
         <!-- ПРАВАЯ КОЛОНКА (Текст) -->
         <div class="proto-info">
-            <div class="proto-title">
-                ${n} ${barBadge}
+                <div class="proto-title">
+                ${displayName} ${barBadge}
                 <span class="proto-time">${s.time}</span>
             </div>
             
