@@ -384,8 +384,9 @@
 
         // ПРАВАЯ КОЛОНКА (Факт)
         let factHtml = '';
+        
+        // 1. Если ИИ распознал еду
         if (rec.items && rec.items.length > 0) {
-            // Если ИИ уже распознал еду
             let listHtml = rec.items.map(item => `
                 <li>
                     <div>
@@ -399,10 +400,35 @@
             factHtml = `
                 <ul class="food-list">${listHtml}</ul>
                 <div class="fact-total">Итого: ${rec.aiCal} ккал</div>
-                <button onclick="resetSlot('${n}')" style="background:#ff4444; color:#fff; border:none; font-size:0.75rem; cursor:pointer; margin-top:10px; padding:6px 12px; border-radius:6px; width:100%; font-weight:bold;">🗑 Очистить и надиктовать заново</button>
             `;
-        } else {
-            factHtml = `<div style="color:#666; font-size:0.85rem; margin-bottom:10px;">Нажми 🎙 и скажи, что съел. Или выбери статус ниже.</div>`;
+        } 
+        // 2. Если выбран ручной статус (по плану/радость/пропустил)
+        else if (rec.st) {
+            let label = '', icon = '', color = '';
+            if (rec.st === 'protocol') { label = 'ПО ПЛАНУ'; icon = '✅'; color = '#4CAF50'; }
+            if (rec.st === 'joy') { label = 'РАДОСТЬ'; icon = '🍩'; color = 'var(--accent)'; }
+            if (rec.st === 'missed') { label = 'ПРОПУСТИЛ'; icon = '❌'; color = '#ff4444'; }
+
+            factHtml = `
+                <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100px; height:100%;">
+                    <div style="font-size:2.5rem; margin-bottom:5px; text-shadow:0 0 10px ${color};">${icon}</div>
+                    <div style="font-size:1.2rem; font-weight:900; color:${color}; text-transform:uppercase; letter-spacing:1px;">${label}</div>
+                </div>
+            `;
+        } 
+        // 3. Если пусто
+        else {
+            factHtml = `<div style="color:#666; font-size:0.85rem; display:flex; align-items:center; height:100%; min-height:100px;">Нажми 🎙 и скажи, что съел. Или выбери статус ниже.</div>`;
+        }
+
+        // Кнопка сброса (появляется, если есть еда или статус)
+        let resetBtn = '';
+        if (rec.st || (rec.items && rec.items.length > 0)) {
+            resetBtn = `
+                <div style="margin-top:10px; width:100%;">
+                    <button onclick="resetSlot('${n}')" style="background:rgba(255,68,68,0.05); border:1px solid #ff4444; color:#ff4444; font-size:0.75rem; cursor:pointer; padding:8px; border-radius:8px; font-weight:bold; width:100%; transition:0.3s;" onmouseover="this.style.background='rgba(255,68,68,0.2)'" onmouseout="this.style.background='rgba(255,68,68,0.05)'">✕ Сбросить</button>
+                </div>
+            `;
         }
 
         return `<div class="slot">
@@ -426,11 +452,14 @@
                     Факт (Съедено)
                     <button class="voice-btn" onclick="startVoice('${n}')" title="Надиктовать">🎙</button>
                 </div>
-                <div class="fact-box">
-                    ${factHtml}
+                <div class="fact-box" style="display:flex; flex-direction:column; justify-content:space-between; padding:15px;">
+                    <div style="flex:1;">
+                        ${factHtml}
+                    </div>
+                    ${resetBtn}
                 </div>
                 
-                <!-- Кнопки статусов (работают всегда) -->
+                <!-- Кнопки статусов (всегда внизу) -->
                 <div class="stbtns">
                     <button class="stb ${rec.st==='protocol' ? 'sel':''}" onclick="markSlot('${n}','protocol')">✅ По плану</button>
                     <button class="stb ${rec.st==='joy' ? 'sel':''}" onclick="markSlot('${n}','joy')">🍩 Радость</button>
