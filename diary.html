@@ -443,7 +443,11 @@
 
   function markSlot(name, st){
     D.slots[today()] = D.slots[today()] || {};
-    D.slots[today()][name] = { st: st }; 
+    // Берем текущие данные слота (включая еду от ИИ) и меняем только статус
+    let current = D.slots[today()][name] || {};
+    current.st = st; 
+    D.slots[today()][name] = current;
+    
     save(); renderSlots(); renderNorm();
   }
 
