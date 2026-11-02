@@ -390,7 +390,7 @@
             let listHtml = rec.items.map(item => `
                 <li>
                     <div>
-                        <div class="food-name">${item.name}</div>
+                        <div class="food-name">${item.name} <span style="color:#777; font-size:0.8rem; font-weight:normal;">(${item.grams} г)</span></div>
                         <div class="food-macros">Б:${item.prot} Ж:${item.fat} У:${item.carb}</div>
                     </div>
                     <div class="food-cal">${item.cal} ккал</div>
