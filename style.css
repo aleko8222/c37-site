@@ -257,7 +257,22 @@ footer a:hover { color: var(--accent); }
 #chat-window { position: fixed; bottom: 100px; right: 30px; width: 350px; height: 500px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; display: none; flex-direction: column; box-shadow: 0 10px 40px rgba(0,0,0,0.9); z-index: 1000; backdrop-filter: blur(20px); overflow: hidden; }
 .chat-header { display: flex; align-items: center; padding: 15px; border-bottom: 1px solid #333; background: rgba(0,0,0,0.5); gap: 12px;}
 .chat-avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); background: #000; }
-.chat-name { font-weight: 800; font-size: 1.1rem; letter-spacing: 1px;}
+.chat-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.voice-toggle-btn {
+    background: none;
+    border: none;
+    color: #FF6B1A;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    transition: transform 0.2s;
+}
+.voice-toggle-btn:hover { transform: scale(1.2); }
 .chat-status { font-size: 0.8rem; color: #4CAF50; }
 .close-chat { margin-left: auto; background: none; border: none; color: #aaa; font-size: 1.5rem; cursor: pointer; transition: color 0.2s; }
 .close-chat:hover { color: var(--accent); }
@@ -269,8 +284,30 @@ footer a:hover { color: var(--accent); }
 .chat-input input:focus { border-color: var(--accent); }
 .chat-input button { background: var(--accent); border: none; color: #111; padding: 0 20px; margin-left: 10px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.2rem; transition: transform 0.2s;}
 .chat-input button:hover { transform: scale(1.05); }
-
-@media (max-width: 768px) {
+.chat-input .chat-mic-btn {
+    background: transparent;
+    color: #FF6B1A;
+    font-size: 1.4rem;
+    padding: 0 8px;
+    margin-left: 0;
+    margin-right: 6px;
+    border: none;
+    border-radius: 0;
+    transition: transform 0.2s;
+}
+.chat-input .chat-mic-btn:hover {
+    background: transparent;
+    color: #FF6B1A;
+    transform: scale(1.15);
+}
+.chat-input .chat-mic-btn.recording {
+    color: #ff4444;
+    animation: micPulse 1s infinite;
+}
+@keyframes micPulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 0 #ff4444; }
+    50% { transform: scale(1.2); text-shadow: 0 0 15px #ff4444; }
+}@media (max-width: 768px) {
     .hero { flex-direction: column; text-align: center; padding: 40px 0; }
     .hero-text h1 { font-size: 2.5rem; }
     .hero-text p { margin: 0 auto 30px; }
