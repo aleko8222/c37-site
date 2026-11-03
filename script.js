@@ -321,6 +321,7 @@ async function sendMessage() {
         messages.appendChild(evaMsg);
         messages.scrollTop = messages.scrollHeight;
         track('chat_message');
+        speakEva(data.reply || '');    
     } catch (error) {
         isTyping = false;
         clearTimeout(timeoutId);
