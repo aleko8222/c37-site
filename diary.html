@@ -470,7 +470,7 @@
       }
   }
 
-  // === ТРЕКЕР ВЕСА (ПРЕМИАЛЬНЫЙ) ===
+  // === ТРЕКЕР ВЕСА (ПРЕМИАЛЬНЫЙ, СТАРТ ИЗ ПРОТОКОЛА) ===
   function saveWeight() {
       const input = document.getElementById('wNow');
       const goalInput = document.getElementById('wGoal');
@@ -502,19 +502,37 @@
       const evaBox = document.getElementById('evaWeightComment');
       const goalWrap = document.getElementById('goalWrap');
       const goalInput = document.getElementById('wGoal');
-      
-      const savedGoal = localStorage.getItem('c37_weight_goal');
+      const startHint = document.getElementById('wStartVal');
+
+      // Старт — из протокола (квиза). Если протокола нет — фолбэк на первое взвешивание.
+      const startWeight = (P && P.weight) ? parseFloat(P.weight) : (D.weights[0] ? D.weights[0].value : null);
+
+      // Восстанавливаем цель
+      let savedGoal = localStorage.getItem('c37_weight_goal');
+      // Если цели нет, а протокол есть — подставляем разумный дефолт от цели квиза
+      if (!savedGoal && startWeight && P && P.goal) {
+          let defGoal = null;
+          if (P.goal === 'Похудение') defGoal = Math.round((startWeight * 0.9) * 2) / 2; // −10%, кратно 0.5
+          else if (P.goal === 'Мышцы') defGoal = Math.round((startWeight + 5) * 2) / 2;  // +5 кг
+          // Для «Энергия» цель = старт, прогресс-бар не нужен
+          if (defGoal && defGoal !== startWeight) {
+              savedGoal = defGoal;
+              localStorage.setItem('c37_weight_goal', defGoal);
+          }
+      }
       if (savedGoal && goalInput && !goalInput.value) goalInput.value = savedGoal;
 
-      if (!D.weights || D.weights.length === 0) {
+      // Показываем стартовый вес под инпутом
+      if (startHint) startHint.textContent = startWeight ? `${startWeight} кг` : '—';
+
+      if (!startWeight) {
           if (resultsBox) resultsBox.style.display = 'none';
           return;
       }
       if (resultsBox) resultsBox.style.display = 'block';
 
-      const first = D.weights[0];
-      const last = D.weights[D.weights.length - 1];
-      const diff = (last.value - first.value).toFixed(1);
+      const last = D.weights.length ? D.weights[D.weights.length - 1] : { value: startWeight };
+      const diff = (last.value - startWeight).toFixed(1);
       
       const hugeDiff = document.getElementById('wDiffHuge');
       const emotion = document.getElementById('wEmotion');
@@ -536,13 +554,13 @@
       }
 
       const goalVal = parseFloat(savedGoal);
-      if (goalVal && !isNaN(goalVal) && goalWrap) {
+      if (goalVal && !isNaN(goalVal) && goalWrap && goalVal !== startWeight) {
           goalWrap.style.display = 'block';
-          document.getElementById('goalStartLbl').textContent = `Старт: ${first.value} кг`;
+          document.getElementById('goalStartLbl').textContent = `Старт: ${startWeight} кг`;
           document.getElementById('goalTargetLbl').textContent = `Цель: ${goalVal} кг`;
 
-          const totalDist = Math.abs(first.value - goalVal);
-          const currentDist = Math.abs(first.value - last.value);
+          const totalDist = Math.abs(startWeight - goalVal);
+          const currentDist = Math.abs(startWeight - last.value);
           let pct = 0;
           if (totalDist > 0) pct = Math.min(100, Math.max(0, (currentDist / totalDist) * 100));
           
@@ -558,12 +576,14 @@
 
       if (evaBox) {
           evaBox.style.display = 'block';
-          if (D.weights.length === 1) {
-              evaBox.innerHTML = `<b>ЭЙВА:</b> Стартовая точка! Взвешивайся раз в неделю.`;
+          if (D.weights.length === 0) {
+              evaBox.innerHTML = `<b>ЭЙВА:</b> Старт из протокола — ${startWeight} кг. Взвесься, чтобы начать трекинг.`;
+          } else if (D.weights.length === 1) {
+              evaBox.innerHTML = `<b>ЭЙВА:</b> Первое взвешивание записано. Теперь раз в неделю — и увидим тренд.`;
           } else if (diff < -0.2) {
-              evaBox.innerHTML = `<b>ЭЙВА:</b> Отличный темп! Минус ${Math.abs(diff)} кг. Продолжаем!`;
+              evaBox.innerHTML = `<b>ЭЙВА:</b> Отличный темп! Минус ${Math.abs(diff)} кг от старта. Продолжаем!`;
           } else if (diff > 0.2) {
-              evaBox.innerHTML = `<b>ЭЙВА:</b> Вес подрос. Это может быть вода. Без паники. Завтра вернемся в протокол.`;
+              evaBox.innerHTML = `<b>ЭЙВА:</b> Вес подрос на ${diff} кг от старта. Это может быть вода. Без паники.`;
           } else {
               evaBox.innerHTML = `<b>ЭЙВА:</b> Вес на месте. Это плато. Если затянется — урежем углеводы.`;
           }
@@ -576,13 +596,18 @@
       
       svg.querySelectorAll('path, circle, polyline, polygon').forEach(el => el.remove());
 
-      if (!D.weights || D.weights.length === 0) return;
-      if (D.weights.length === 1) {
+      const startWeight = (P && P.weight) ? parseFloat(P.weight) : (D.weights[0] ? D.weights[0].value : null);
+      if (!startWeight) return;
+
+      // Серия: старт из протокола + все ручные взвешивания
+      const series = [{ date: 'Старт', value: startWeight }, ...D.weights];
+
+      if (series.length === 1) {
           svg.innerHTML += `<circle cx="150" cy="50" r="5" fill="#FF6B1A" filter="drop-shadow(0 0 5px #FF6B1A)" />`;
           return;
       }
 
-      const values = D.weights.map(w => w.value);
+      const values = series.map(w => w.value);
       const minW = Math.min(...values) - 1;
       const maxW = Math.max(...values) + 1;
       const range = maxW - minW || 1;
@@ -592,8 +617,8 @@
       const padding = 10;
 
       let points = [];
-      D.weights.forEach((w, i) => {
-          const x = padding + (i * (width - padding * 2) / (D.weights.length - 1));
+      series.forEach((w, i) => {
+          const x = padding + (i * (width - padding * 2) / (series.length - 1));
           const y = height - padding - ((w.value - minW) / range) * (height - padding * 2);
           points.push({x, y});
       });
@@ -629,58 +654,8 @@
           circle.setAttribute('cx', p.x);
           circle.setAttribute('cy', p.y);
           circle.setAttribute('r', i === points.length - 1 ? '5' : '3');
-          circle.setAttribute('fill', i === points.length - 1 ? '#FF6B1A' : '#111');
-          circle.setAttribute('stroke', '#FF6B1A');
-          circle.setAttribute('stroke-width', '2');
-          svg.appendChild(circle);
-      });
-  }
-
-  function drawChart() {
-      const svg = document.getElementById('weightChart');
-      svg.innerHTML = ''; // Очищаем
-
-      if (!D.weights || D.weights.length === 0) return;
-      if (D.weights.length === 1) {
-          // Если только одна точка — рисуем точку по центру
-          svg.innerHTML = `<circle cx="150" cy="50" r="4" fill="#FF6B1A" />`;
-          return;
-      }
-
-      const values = D.weights.map(w => w.value);
-      const minW = Math.min(...values) - 1;
-      const maxW = Math.max(...values) + 1;
-      const range = maxW - minW || 1;
-
-      const width = 300;
-      const height = 100;
-      const padding = 10;
-
-      let points = [];
-      D.weights.forEach((w, i) => {
-          const x = padding + (i * (width - padding * 2) / (D.weights.length - 1));
-          // Инвертируем Y (в SVG 0 сверху)
-          const y = height - padding - ((w.value - minW) / range) * (height - padding * 2);
-          points.push({x, y});
-      });
-
-      // Линия
-      const polyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
-      polyline.setAttribute('points', points.map(p => `${p.x},${p.y}`).join(' '));
-      polyline.setAttribute('fill', 'none');
-      polyline.setAttribute('stroke', '#FF6B1A');
-      polyline.setAttribute('stroke-width', '3');
-      polyline.setAttribute('stroke-linecap', 'round');
-      polyline.setAttribute('stroke-linejoin', 'round');
-      svg.appendChild(polyline);
-
-      // Точки
-      points.forEach(p => {
-          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-          circle.setAttribute('cx', p.x);
-          circle.setAttribute('cy', p.y);
-          circle.setAttribute('r', '4');
-          circle.setAttribute('fill', '#fff');
+          // Первая точка (старт) — полая, чтобы визуально отличать от взвешиваний
+          circle.setAttribute('fill', i === 0 ? '#111' : (i === points.length - 1 ? '#FF6B1A' : '#111'));
           circle.setAttribute('stroke', '#FF6B1A');
           circle.setAttribute('stroke-width', '2');
           svg.appendChild(circle);
