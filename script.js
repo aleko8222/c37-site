@@ -736,12 +736,21 @@ function startChatVoice() {
 
 // --- Озвучка ответов ЭЙВЫ ---
 let evaVoice = null;
+let evaUtterances = [];   // держим ссылки, иначе Chrome съедает их GC
+
 function loadEvaVoice() {
     if (!('speechSynthesis' in window)) return;
-    const voices = speechSynthesis.getVoices();
-    evaVoice = voices.find(v => v.lang === 'ru-RU' && /female|жен|milena|alena|yuliya|anna/i.test(v.name))
-             || voices.find(v => v.lang === 'ru-RU')
-             || null;
+    const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('ru'));
+    if (!voices.length) return;
+
+    // Приоритет: Google (лучший на Chrome) → Milena/Katya (macOS) → любой женский ru
+    evaVoice =
+        voices.find(v => /google/i.test(v.name)) ||
+        voices.find(v => /milena|katya|yuliya|elena|alena|anna|female|женск/i.test(v.name)) ||
+        voices.find(v => !/male|мужск/i.test(v.name)) ||
+        voices[0];
+
+    console.log('EVA voice:', evaVoice.name, evaVoice.lang);
 }
 if ('speechSynthesis' in window) {
     speechSynthesis.onvoiceschanged = loadEvaVoice;
@@ -753,27 +762,42 @@ function speakEva(text) {
     if (localStorage.getItem('c37_voice_reply') === 'off') return;
 
     speechSynthesis.cancel();
-    const clean = text.replace(/<[^>]*>/g, '').replace(/[👍🤔🫂⚖️✅❌🎯🚀💧🏁📋]/g, '');
-    const utt = new SpeechSynthesisUtterance(clean);
-    utt.lang = 'ru-RU';
-    utt.rate = 1.05;
-    utt.pitch = 1.1;
-    if (evaVoice) utt.voice = evaVoice;
-    speechSynthesis.speak(utt);
-}
 
-function toggleVoiceReply() {
-    const cur = localStorage.getItem('c37_voice_reply') || 'on';
-    const next = cur === 'on' ? 'off' : 'on';
-    localStorage.setItem('c37_voice_reply', next);
-    updateVoiceBtn();
-    if (next === 'off') speechSynthesis.cancel();
+    // Чистим от HTML и эмодзи
+    const clean = text
+        .replace(/<[^>]*>/g, '')
+        .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
+        .trim();
+    if (!clean) return;
+
+    // Разбиваем на предложения
+    const sentences = clean.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || [clean];
+
+    // Группируем в куски ≤180 символов (лимит Chrome)
+    const chunks = [];
+    let cur = '';
+    for (const s of sentences) {
+        if ((cur + s).length > 180) {
+            if (cur) chunks.push(cur.trim());
+            cur = s;
+        } else {
+            cur += s;
+        }
+    }
+    if (cur.trim()) chunks.push(cur.trim());
+
+    // Держим ссылки, чтобы не съел GC
+    evaUtterances = chunks.map((chunk, i) => {
+        const utt = new SpeechSynthesisUtterance(chunk);
+        utt.lang = 'ru-RU';
+        utt.rate = 1.0;      // было 1.05 — чуть медленнее = естественнее
+        utt.pitch = 1.0;     // было 1.1 — ниже = меньше «робота»
+        utt.volume = 1;
+        if (evaVoice) utt.voice = evaVoice;
+        // Небольшая пауза между кусками, чтобы речь не была рваной
+        if (i > 0) utt.rate = 1.02;
+        return utt;
+    });
+
+    evaUtterances.forEach(u => speechSynthesis.speak(u));
 }
-function updateVoiceBtn() {
-    const btn = document.getElementById('voice-toggle');
-    if (!btn) return;
-    const on = (localStorage.getItem('c37_voice_reply') || 'on') === 'on';
-    btn.textContent = on ? '🔊' : '🔇';
-    btn.title = on ? 'Голос ЭЙВЫ включён' : 'Голос ЭЙВЫ выключен';
-}
-document.addEventListener('DOMContentLoaded', updateVoiceBtn);
