@@ -784,3 +784,44 @@ header .nav a:hover { color:var(--accent) !important; }
     0%, 100% { transform: scale(1); text-shadow: 0 0 0 #ff4444; }
     50% { transform: scale(1.2); text-shadow: 0 0 15px #ff4444; }
 }
+/* --- ФИНАЛЬНЫЙ ФИКС ШАПКИ ЧАТА --- */
+.chat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Прижимает текст влево, к фото */
+    justify-content: center;
+    flex: 1; /* Занимает свободное место, прижимая крестик вправо */
+}
+
+.chat-name {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: #fff;
+    line-height: 1.2;
+}
+
+.voice-toggle-btn {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-size: 1.3rem !important; 
+    cursor: pointer;
+    line-height: 1;
+    box-shadow: none !important;
+    /* Принудительно включаем цветной эмодзи-шрифт, чтобы не было белого квадрата */
+    font-family: "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif !important; 
+}
+.voice-toggle-btn:hover {
+    transform: scale(1.15);
+}
+
+.chat-status {
+    font-size: 0.8rem;
+    color: #4CAF50;
+    margin-top: 2px; /* Чуть отступа от имени */
+}
