@@ -685,3 +685,94 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('quiz-content')) renderStep();
 });
 
+// ==========================================
+// ГОЛОС В ЧАТЕ (Web Speech API)
+// ==========================================
+
+// --- Голосовой ввод ---
+let chatRecognition = null;
+function startChatVoice() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+        if (typeof showToast === 'function') showToast('Не поддерживается', 'Нужен Chrome/Edge', '❌');
+        return;
+    }
+    if (chatRecognition) { chatRecognition.stop(); chatRecognition = null; return; }
+
+    const input = document.getElementById('chat-input-field');
+    const btn = document.querySelector('.chat-mic-btn');
+
+    const rec = new SR();
+    rec.lang = 'ru-RU';
+    rec.continuous = false;
+    rec.interimResults = true;
+    chatRecognition = rec;
+    if (btn) btn.classList.add('recording');
+
+    rec.onresult = (e) => {
+        let transcript = '';
+        for (let i = e.resultIndex; i < e.results.length; i++) {
+            transcript += e.results[i][0].transcript;
+        }
+        if (input) input.value = transcript;
+    };
+
+    rec.onend = () => {
+        chatRecognition = null;
+        if (btn) btn.classList.remove('recording');
+        const text = (input && input.value.trim()) || '';
+        if (text) sendMessage();
+    };
+
+    rec.onerror = () => {
+        chatRecognition = null;
+        if (btn) btn.classList.remove('recording');
+    };
+
+    rec.start();
+    track('chat_voice_input');
+}
+
+// --- Озвучка ответов ЭЙВЫ ---
+let evaVoice = null;
+function loadEvaVoice() {
+    if (!('speechSynthesis' in window)) return;
+    const voices = speechSynthesis.getVoices();
+    evaVoice = voices.find(v => v.lang === 'ru-RU' && /female|жен|milena|alena|yuliya|anna/i.test(v.name))
+             || voices.find(v => v.lang === 'ru-RU')
+             || null;
+}
+if ('speechSynthesis' in window) {
+    speechSynthesis.onvoiceschanged = loadEvaVoice;
+    loadEvaVoice();
+}
+
+function speakEva(text) {
+    if (!('speechSynthesis' in window)) return;
+    if (localStorage.getItem('c37_voice_reply') === 'off') return;
+
+    speechSynthesis.cancel();
+    const clean = text.replace(/<[^>]*>/g, '').replace(/[👍🤔🫂⚖️✅❌🎯🚀💧🏁📋]/g, '');
+    const utt = new SpeechSynthesisUtterance(clean);
+    utt.lang = 'ru-RU';
+    utt.rate = 1.05;
+    utt.pitch = 1.1;
+    if (evaVoice) utt.voice = evaVoice;
+    speechSynthesis.speak(utt);
+}
+
+function toggleVoiceReply() {
+    const cur = localStorage.getItem('c37_voice_reply') || 'on';
+    const next = cur === 'on' ? 'off' : 'on';
+    localStorage.setItem('c37_voice_reply', next);
+    updateVoiceBtn();
+    if (next === 'off') speechSynthesis.cancel();
+}
+function updateVoiceBtn() {
+    const btn = document.getElementById('voice-toggle');
+    if (!btn) return;
+    const on = (localStorage.getItem('c37_voice_reply') || 'on') === 'on';
+    btn.textContent = on ? '🔊' : '🔇';
+    btn.title = on ? 'Голос ЭЙВЫ включён' : 'Голос ЭЙВЫ выключен';
+}
+document.addEventListener('DOMContentLoaded', updateVoiceBtn);
