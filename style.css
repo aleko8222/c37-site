@@ -825,3 +825,15 @@ header .nav a:hover { color:var(--accent) !important; }
     color: #4CAF50;
     margin-top: 2px; /* Чуть отступа от имени */
 }
+/* --- УЛУЧШЕНИЕ ЧИТАЕМОСТИ ЧАТА --- */
+.message-eva, .message-user {
+    color: #ffffff !important; /* Чисто белый цвет */
+    font-weight: 500;          /* Делаем шрифт чуть плотнее */
+    line-height: 1.5;          /* Чуть больше воздуха между строками */
+}
+
+.message-eva {
+    /* Делаем фон сообщения ЭЙВЫ чуть темнее, чтобы белый текст на нем "выстреливал" */
+    background: rgba(255, 107, 26, 0.15); 
+    border: 1px solid rgba(255, 107, 26, 0.4);
+}
