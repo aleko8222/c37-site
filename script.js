@@ -736,22 +736,26 @@ function startChatVoice() {
 
 // --- Озвучка ответов ЭЙВЫ ---
 let evaVoice = null;
-let evaUtterances = [];   // держим ссылки, иначе Chrome съедает их GC
+let evaUtterances = [];
+
+// Глобальная переменная состояния (чтобы не зависеть от localStorage при клике)
+let isVoiceEnabled = localStorage.getItem('c37_voice_reply') !== 'off';
 
 function loadEvaVoice() {
     if (!('speechSynthesis' in window)) return;
     const voices = speechSynthesis.getVoices().filter(v => v.lang.startsWith('ru'));
     if (!voices.length) return;
 
-    // Приоритет: Google (лучший на Chrome) → Milena/Katya (macOS) → любой женский ru
     evaVoice =
-        voices.find(v => /google/i.test(v.name)) ||
-        voices.find(v => /milena|katya|yuliya|elena|alena|anna|female|женск/i.test(v.name)) ||
-        voices.find(v => !/male|мужск/i.test(v.name)) ||
+        voices.find(v => v.name.includes('Google')) ||
+        voices.find(v => v.name.includes('Online')) ||
+        voices.find(v => /milena|katya|yuliya|elena|alena|anna/i.test(v.name)) ||
         voices[0];
-
-    console.log('EVA voice:', evaVoice.name, evaVoice.lang);
+        
+    // Обновляем иконку, как только голоса загрузились (на случай, если кнопка уже в DOM)
+    updateVoiceBtn();
 }
+
 if ('speechSynthesis' in window) {
     speechSynthesis.onvoiceschanged = loadEvaVoice;
     loadEvaVoice();
@@ -759,21 +763,14 @@ if ('speechSynthesis' in window) {
 
 function speakEva(text) {
     if (!('speechSynthesis' in window)) return;
-    if (localStorage.getItem('c37_voice_reply') === 'off') return;
+    if (!isVoiceEnabled) return; // Если выключено — молчим
 
-    speechSynthesis.cancel();
+    speechSynthesis.cancel(); // Останавливаем предыдущую речь
 
-    // Чистим от HTML и эмодзи
-    const clean = text
-        .replace(/<[^>]*>/g, '')
-        .replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '')
-        .trim();
+    const clean = text.replace(/<[^>]*>/g, '').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, '').trim();
     if (!clean) return;
 
-    // Разбиваем на предложения
     const sentences = clean.match(/[^.!?…]+[.!?…]+|[^.!?…]+$/g) || [clean];
-
-    // Группируем в куски ≤180 символов (лимит Chrome)
     const chunks = [];
     let cur = '';
     for (const s of sentences) {
@@ -786,18 +783,43 @@ function speakEva(text) {
     }
     if (cur.trim()) chunks.push(cur.trim());
 
-    // Держим ссылки, чтобы не съел GC
-    evaUtterances = chunks.map((chunk, i) => {
+    evaUtterances = chunks.map((chunk) => {
         const utt = new SpeechSynthesisUtterance(chunk);
         utt.lang = 'ru-RU';
-        utt.rate = 1.0;      // было 1.05 — чуть медленнее = естественнее
-        utt.pitch = 1.0;     // было 1.1 — ниже = меньше «робота»
+        utt.rate = 1.0;
+        utt.pitch = 1.0;
         utt.volume = 1;
         if (evaVoice) utt.voice = evaVoice;
-        // Небольшая пауза между кусками, чтобы речь не была рваной
-        if (i > 0) utt.rate = 1.02;
         return utt;
     });
 
     evaUtterances.forEach(u => speechSynthesis.speak(u));
 }
+
+// Твоя кнопка вызывает эту функцию
+function toggleVoiceReply() {
+    // Переключаем состояние
+    isVoiceEnabled = !isVoiceEnabled;
+    localStorage.setItem('c37_voice_reply', isVoiceEnabled ? 'on' : 'off');
+    
+    // Обновляем иконку
+    updateVoiceBtn();
+    
+    // Жестко обрубаем речь, если выключили
+    if (!isVoiceEnabled && 'speechSynthesis' in window) {
+        speechSynthesis.cancel();
+    }
+}
+
+// Эта функция меняет иконку и ищет кнопку каждый раз заново
+function updateVoiceBtn() {
+    const btn = document.getElementById('voice-toggle');
+    if (btn) {
+        btn.textContent = isVoiceEnabled ? '🔊' : '🔇';
+        btn.title = isVoiceEnabled ? 'Голос ЭЙВЫ включён' : 'Голос ЭЙВЫ выключен';
+    }
+}
+
+// Так как footer.html подгружается асинхронно, принудительно проверяем кнопку раз в секунду
+// (это гарантирует, что иконка обновится, как только футер появится на странице)
+setInterval(updateVoiceBtn, 1000);
