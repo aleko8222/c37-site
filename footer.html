@@ -7,13 +7,15 @@
     <div id="chat-window">
 <div class="chat-header">
     <img src="eva_avatar.jpg" alt="ЭЙВА" class="chat-avatar" onerror="this.src='https://placehold.co/45x45/2A2F35/FF6B1A?text=Э'">
-    <div style="flex:1;">
+    
+    <div class="chat-info">
         <div class="chat-name">
             ЭЙВА
             <button id="voice-toggle" onclick="toggleVoiceReply()" title="Голос ЭЙВЫ" class="voice-toggle-btn">🔊</button>
         </div>
         <div class="chat-status">В сети</div>
     </div>
+    
     <button class="close-chat" onclick="toggleChat()">✕</button>
 </div>
         <div class="chat-messages" id="chat-messages">
